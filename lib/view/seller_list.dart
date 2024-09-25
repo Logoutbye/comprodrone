@@ -23,7 +23,29 @@ class SellerListScreen extends StatelessWidget {
         },
         child: Icon(Icons.add),
       ),
-      appBar: AppBar(title: Text('Sellers')),
+      appBar: AppBar(
+        title: Text('Sellers'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.import_contacts),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DroneListScreen()),
+              );
+            },
+          ),
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AddDroneScreen()),
+              );
+            },
+          ),
+        ],
+      ),
       body: StreamBuilder<List<Seller>>(
         stream: sellerService.getAllSellers(), // Fetch the sellers in real-time
         builder: (context, snapshot) {
@@ -84,25 +106,6 @@ class SellerListScreen extends StatelessWidget {
                                 context,
                                 seller
                                     .id); // Call confirmation dialog before deleting
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.import_contacts),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => DroneListScreen()),
-                            );
-                          },
-                        ), IconButton(
-                          icon: Icon(Icons.add),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => AddDroneScreen()),
-                            );
                           },
                         ),
                       ],

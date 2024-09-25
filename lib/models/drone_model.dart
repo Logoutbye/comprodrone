@@ -10,7 +10,7 @@ class Drone {
   double customerPrice;   // Price given to the customer
   String commision;       // Commission for sale
   String followUp;        // Follow-up status or actions
-  DateTime soldDate;
+  DateTime? soldDate;     // Sold date (optional)
   String contractNo;      // Contract number for the sale
 
   Drone({
@@ -25,7 +25,7 @@ class Drone {
     required this.customerPrice,
     required this.commision,
     required this.followUp,
-    required this.soldDate,
+    this.soldDate,         // Make soldDate optional
     required this.contractNo,
   });
 
@@ -43,7 +43,7 @@ class Drone {
       'customerPrice': customerPrice,
       'commision': commision,
       'followUp': followUp,
-      'soldDate': soldDate.toIso8601String(),  // Convert DateTime to ISO format
+      'soldDate': soldDate?.toIso8601String(),  // Convert DateTime to ISO format, null if soldDate is null
       'contractNo': contractNo,
     };
   }
@@ -62,7 +62,7 @@ class Drone {
       customerPrice: map['customerPrice'],
       commision: map['commision'],
       followUp: map['followUp'],
-      soldDate: DateTime.parse(map['soldDate']),  // Parse ISO formatted date
+      soldDate: map['soldDate'] != null ? DateTime.parse(map['soldDate']) : null,  // Handle null value
       contractNo: map['contractNo'],
     );
   }
