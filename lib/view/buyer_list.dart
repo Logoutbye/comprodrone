@@ -1,6 +1,7 @@
 import 'package:com_pro_drone/models/buyer_model.dart';
 import 'package:com_pro_drone/view/add_buyer.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart'; // Import for date formatting
 import '../services/buyer_services.dart';
 
 class BuyerListScreen extends StatelessWidget {
@@ -27,8 +28,7 @@ class BuyerListScreen extends StatelessWidget {
           }
 
           if (snapshot.hasError) {
-            return Center(
-                child: Text('Error: ${snapshot.error}')); // Error state
+            return Center(child: Text('Error: ${snapshot.error}')); // Error state
           }
 
           if (!snapshot.hasData || snapshot.data!.isEmpty) {
@@ -40,8 +40,7 @@ class BuyerListScreen extends StatelessWidget {
           return SingleChildScrollView(
             scrollDirection: Axis.horizontal, // Handle overflow
             child: DataTable(
-              border: TableBorder.all(
-                  color: Colors.grey), // Add border to the table
+              border: TableBorder.all(color: Colors.grey), // Add border to the table
               columns: [
                 DataColumn(label: Text('ID')),
                 DataColumn(label: Text('Date')),
@@ -80,9 +79,8 @@ class BuyerListScreen extends StatelessWidget {
                         ),
                         IconButton(
                           icon: Icon(Icons.delete),
-                          onPressed: () async {
-                            await buyerService
-                                .deleteBuyer(buyer.id); // Delete buyer
+                          onPressed: () {
+                            _confirmDelete(context, buyer.id); // Call confirmation dialog before deleting
                           },
                         ),
                       ],
@@ -120,6 +118,19 @@ class BuyerListScreen extends StatelessWidget {
     final TextEditingController budgetController =
         TextEditingController(text: buyer.budget);
 
+    // Function to handle date picking
+    Future<void> _selectDate(BuildContext context) async {
+      final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: DateFormat('dd-MM-yyyy').parse(buyer.date), // Use the current date as initial
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2101),
+      );
+      if (picked != null) {
+        dateController.text = DateFormat('dd-MM-yyyy').format(picked); // Format the date
+      }
+    }
+
     showDialog(
       context: context,
       builder: (context) {
@@ -130,8 +141,16 @@ class BuyerListScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TextField(
+                  readOnly: true, // Make this field read-only
                   controller: dateController,
-                  decoration: InputDecoration(labelText: 'Date'),
+                  decoration: InputDecoration(
+                    labelText: 'Date',
+                    hintText: 'Select date',
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.calendar_today),
+                      onPressed: () => _selectDate(context), // Open date picker
+                    ),
+                  ),
                 ),
                 TextField(
                   controller: nameController,
@@ -200,6 +219,34 @@ class BuyerListScreen extends StatelessWidget {
                 Navigator.of(context).pop(); // Close the dialog
               },
               child: Text('Update'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Method to show a confirmation dialog before deleting
+  Future<void> _confirmDelete(BuildContext context, String buyerId) async {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Confirm Deletion'),
+          content: Text('Are you sure you want to delete this buyer?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                await buyerService.deleteBuyer(buyerId); // Delete buyer
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Delete'),
             ),
           ],
         );

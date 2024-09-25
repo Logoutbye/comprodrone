@@ -15,6 +15,17 @@ class _AddBuyerScreenState extends State<AddBuyerScreen> {
   String _selectedDate = ''; // Store the selected date
   final BuyerService buyerService = BuyerService();
 
+  // Focus nodes for each text field
+  FocusNode _buyerNameFocusNode = FocusNode();
+  FocusNode _emailFocusNode = FocusNode();
+  FocusNode _phoneFocusNode = FocusNode();
+  FocusNode _cityFocusNode = FocusNode();
+  FocusNode _budgetFocusNode = FocusNode();
+  FocusNode _requirementsFocusNode = FocusNode();
+  FocusNode _remarksFocusNode = FocusNode();
+  FocusNode _followUpFocusNode = FocusNode();
+  FocusNode _notesFocusNode = FocusNode();
+
   // Function to handle date picking
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -52,6 +63,21 @@ class _AddBuyerScreenState extends State<AddBuyerScreen> {
   }
 
   @override
+  void dispose() {
+    // Dispose of all FocusNodes
+    _buyerNameFocusNode.dispose();
+    _emailFocusNode.dispose();
+    _phoneFocusNode.dispose();
+    _cityFocusNode.dispose();
+    _budgetFocusNode.dispose();
+    _requirementsFocusNode.dispose();
+    _remarksFocusNode.dispose();
+    _followUpFocusNode.dispose();
+    _notesFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Add Buyer')),
@@ -62,45 +88,90 @@ class _AddBuyerScreenState extends State<AddBuyerScreen> {
           child: ListView(
             children: [
               TextFormField(
+                focusNode: _buyerNameFocusNode,
                 decoration: InputDecoration(labelText: 'Buyer Name'),
                 validator: (value) => value!.isEmpty ? 'Enter a name' : null,
                 onSaved: (value) => _buyerName = value,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).requestFocus(_emailFocusNode);
+                },
               ),
               TextFormField(
+                focusNode: _emailFocusNode,
                 decoration: InputDecoration(labelText: 'Email'),
                 validator: (value) => value!.isEmpty ? 'Enter an email' : null,
                 onSaved: (value) => _email = value,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).requestFocus(_phoneFocusNode);
+                },
               ),
               TextFormField(
+                focusNode: _phoneFocusNode,
                 decoration: InputDecoration(labelText: 'Phone'),
                 validator: (value) => value!.isEmpty ? 'Enter a phone' : null,
                 onSaved: (value) => _phone = value,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).requestFocus(_cityFocusNode);
+                },
               ),
               TextFormField(
+                focusNode: _cityFocusNode,
                 decoration: InputDecoration(labelText: 'City'),
                 validator: (value) => value!.isEmpty ? 'Enter a city' : null,
                 onSaved: (value) => _city = value,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).requestFocus(_budgetFocusNode);
+                },
               ),
               TextFormField(
+                focusNode: _budgetFocusNode,
                 decoration: InputDecoration(labelText: 'Budget'),
                 validator: (value) => value!.isEmpty ? 'Enter a budget' : null,
                 onSaved: (value) => _budget = value,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).requestFocus(_requirementsFocusNode);
+                },
               ),
               TextFormField(
+                focusNode: _requirementsFocusNode,
                 decoration: InputDecoration(labelText: 'Requirements'),
                 onSaved: (value) => _requirements = value,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).requestFocus(_remarksFocusNode);
+                },
               ),
               TextFormField(
+                focusNode: _remarksFocusNode,
                 decoration: InputDecoration(labelText: 'Remarks'),
                 onSaved: (value) => _remarks = value,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).requestFocus(_followUpFocusNode);
+                },
               ),
               TextFormField(
+                focusNode: _followUpFocusNode,
                 decoration: InputDecoration(labelText: 'Follow Up'),
                 onSaved: (value) => _followUp = value,
+                textInputAction: TextInputAction.next,
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).requestFocus(_notesFocusNode);
+                },
               ),
               TextFormField(
+                focusNode: _notesFocusNode,
                 decoration: InputDecoration(labelText: 'Notes'),
                 onSaved: (value) => _notes = value,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (_) {
+                  _submitForm(); // Submit the form when done
+                },
               ),
               SizedBox(height: 16),
               TextFormField(
