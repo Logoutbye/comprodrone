@@ -1,0 +1,169 @@
+import 'package:com_pro_drone/models/buyer_model.dart';
+import 'package:com_pro_drone/view/add_buyer.dart';
+import 'package:flutter/material.dart';
+import '../services/buyer_services.dart';
+
+class BuyerListScreen extends StatelessWidget {
+  final BuyerService buyerService = BuyerService(); // Instantiate the service
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddBuyerScreen()),
+          );
+        },
+        child: Icon(Icons.add),
+      ),
+      appBar: AppBar(title: Text('Buyers')),
+      body: StreamBuilder<List<Buyer>>(
+        stream: buyerService.getAllBuyers(), // Fetch the buyers in real-time
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator()); // Loading state
+          }
+
+          if (snapshot.hasError) {
+            return Center(
+                child: Text('Error: ${snapshot.error}')); // Error state
+          }
+
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No Buyers Found')); // Empty state
+          }
+
+          // If we have data, display it in a DataTable
+          List<Buyer> buyers = snapshot.data!;
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal, // Handle overflow
+            child: DataTable(
+              border: TableBorder.all(
+                  color: Colors.grey), // Add border to the table
+              columns: [
+                DataColumn(label: Text('ID')),
+                DataColumn(label: Text('Name')),
+                DataColumn(label: Text('Email')),
+                DataColumn(label: Text('City')),
+                DataColumn(label: Text('Phone')),
+                DataColumn(label: Text('Budget')),
+                DataColumn(label: Text('Actions')),
+              ],
+              rows: buyers.map((buyer) {
+                return DataRow(cells: [
+                  DataCell(Text(buyer.id)),
+                  DataCell(Text(buyer.buyer)),
+                  DataCell(Text(buyer.email)),
+                  DataCell(Text(buyer.city)),
+                  DataCell(Text(buyer.phone)),
+                  DataCell(Text(buyer.budget)),
+                  DataCell(
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () {
+                            _showEditDialog(context, buyer); // Show dialog
+                          },
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () async {
+                            await buyerService
+                                .deleteBuyer(buyer.id); // Delete buyer
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ]);
+              }).toList(),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  // Method to show the edit dialog
+  void _showEditDialog(BuildContext context, Buyer buyer) {
+    final TextEditingController nameController =
+        TextEditingController(text: buyer.buyer);
+    final TextEditingController emailController =
+        TextEditingController(text: buyer.email);
+    final TextEditingController phoneController =
+        TextEditingController(text: buyer.phone);
+    final TextEditingController cityController =
+        TextEditingController(text: buyer.city);
+    final TextEditingController budgetController =
+        TextEditingController(text: buyer.budget);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Edit Buyer'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextField(
+                  controller: nameController,
+                  decoration: InputDecoration(labelText: 'Name'),
+                ),
+                TextField(
+                  controller: emailController,
+                  decoration: InputDecoration(labelText: 'Email'),
+                ),
+                TextField(
+                  controller: phoneController,
+                  decoration: InputDecoration(labelText: 'Phone'),
+                ),
+                TextField(
+                  controller: cityController,
+                  decoration: InputDecoration(labelText: 'City'),
+                ),
+                TextField(
+                  controller: budgetController,
+                  decoration: InputDecoration(labelText: 'Budget'),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () async {
+                // Update the buyer's information
+                Buyer updatedBuyer = Buyer(
+                  id: buyer.id, // Keep the same ID
+                  date: buyer.date, // Preserving other fields as needed
+                  buyer: nameController.text,
+                  email: emailController.text,
+                  phone: phoneController.text,
+                  city: cityController.text,
+                  requirements: buyer.requirements, // Preserve existing fields
+                  remarks: buyer.remarks,
+                  followUp: buyer.followUp,
+                  notes: buyer.notes,
+                  budget: budgetController.text,
+                );
+
+                await buyerService.updateBuyer(
+                    buyer.id, updatedBuyer); // Update the buyer
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text('Update'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
