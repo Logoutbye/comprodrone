@@ -44,21 +44,31 @@ class BuyerListScreen extends StatelessWidget {
                   color: Colors.grey), // Add border to the table
               columns: [
                 DataColumn(label: Text('ID')),
+                DataColumn(label: Text('Date')),
                 DataColumn(label: Text('Name')),
                 DataColumn(label: Text('Email')),
                 DataColumn(label: Text('City')),
                 DataColumn(label: Text('Phone')),
+                DataColumn(label: Text('Requirements')),
+                DataColumn(label: Text('Remarks')),
+                DataColumn(label: Text('Follow Up')),
+                DataColumn(label: Text('Notes')),
                 DataColumn(label: Text('Budget')),
                 DataColumn(label: Text('Actions')),
               ],
               rows: buyers.map((buyer) {
                 return DataRow(cells: [
                   DataCell(Text(buyer.id)),
+                  DataCell(Text(buyer.date)),
                   DataCell(Text(buyer.buyer)),
                   DataCell(Text(buyer.email)),
                   DataCell(Text(buyer.city)),
                   DataCell(Text(buyer.phone)),
-                  DataCell(Text(buyer.budget)),
+                  DataCell(Text(buyer.requirements)),
+                  DataCell(Text(buyer.remarks)), // Show remarks
+                  DataCell(Text(buyer.followUp)), // Show follow-up
+                  DataCell(Text(buyer.notes)), // Show notes
+                  DataCell(Text(buyer.budget)), // Show budget
                   DataCell(
                     Row(
                       children: [
@@ -89,6 +99,8 @@ class BuyerListScreen extends StatelessWidget {
 
   // Method to show the edit dialog
   void _showEditDialog(BuildContext context, Buyer buyer) {
+    final TextEditingController dateController =
+        TextEditingController(text: buyer.date);
     final TextEditingController nameController =
         TextEditingController(text: buyer.buyer);
     final TextEditingController emailController =
@@ -97,6 +109,14 @@ class BuyerListScreen extends StatelessWidget {
         TextEditingController(text: buyer.phone);
     final TextEditingController cityController =
         TextEditingController(text: buyer.city);
+    final TextEditingController requirementsController =
+        TextEditingController(text: buyer.requirements);
+    final TextEditingController remarksController =
+        TextEditingController(text: buyer.remarks);
+    final TextEditingController followUpController =
+        TextEditingController(text: buyer.followUp);
+    final TextEditingController notesController =
+        TextEditingController(text: buyer.notes);
     final TextEditingController budgetController =
         TextEditingController(text: buyer.budget);
 
@@ -107,7 +127,12 @@ class BuyerListScreen extends StatelessWidget {
           title: Text('Edit Buyer'),
           content: SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                TextField(
+                  controller: dateController,
+                  decoration: InputDecoration(labelText: 'Date'),
+                ),
                 TextField(
                   controller: nameController,
                   decoration: InputDecoration(labelText: 'Name'),
@@ -123,6 +148,22 @@ class BuyerListScreen extends StatelessWidget {
                 TextField(
                   controller: cityController,
                   decoration: InputDecoration(labelText: 'City'),
+                ),
+                TextField(
+                  controller: requirementsController,
+                  decoration: InputDecoration(labelText: 'Requirements'),
+                ),
+                TextField(
+                  controller: remarksController,
+                  decoration: InputDecoration(labelText: 'Remarks'),
+                ),
+                TextField(
+                  controller: followUpController,
+                  decoration: InputDecoration(labelText: 'Follow Up'),
+                ),
+                TextField(
+                  controller: notesController,
+                  decoration: InputDecoration(labelText: 'Notes'),
                 ),
                 TextField(
                   controller: budgetController,
@@ -143,20 +184,19 @@ class BuyerListScreen extends StatelessWidget {
                 // Update the buyer's information
                 Buyer updatedBuyer = Buyer(
                   id: buyer.id, // Keep the same ID
-                  date: buyer.date, // Preserving other fields as needed
+                  date: dateController.text, // Update date
                   buyer: nameController.text,
                   email: emailController.text,
                   phone: phoneController.text,
                   city: cityController.text,
-                  requirements: buyer.requirements, // Preserve existing fields
-                  remarks: buyer.remarks,
-                  followUp: buyer.followUp,
-                  notes: buyer.notes,
+                  requirements: requirementsController.text, // Add requirements
+                  remarks: remarksController.text, // Add remarks
+                  followUp: followUpController.text, // Add followUp
+                  notes: notesController.text, // Add notes
                   budget: budgetController.text,
                 );
 
-                await buyerService.updateBuyer(
-                    buyer.id, updatedBuyer); // Update the buyer
+                await buyerService.updateBuyer(buyer.id, updatedBuyer); // Update the buyer
                 Navigator.of(context).pop(); // Close the dialog
               },
               child: Text('Update'),
