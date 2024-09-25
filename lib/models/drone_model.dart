@@ -3,7 +3,7 @@ class Drone {
   String sId;             // Seller ID
   String bId;             // Buyer ID
   String brand;
-  String status;
+  bool status;
   String model;
   String serialNumber;
   double webPrice;        // Price on the website
@@ -12,7 +12,6 @@ class Drone {
   String followUp;        // Follow-up status or actions
   DateTime soldDate;
   String contractNo;      // Contract number for the sale
-  List<String> images;    // List of image URLs
 
   Drone({
     required this.dId,
@@ -28,7 +27,6 @@ class Drone {
     required this.followUp,
     required this.soldDate,
     required this.contractNo,
-    required this.images,
   });
 
   // Convert to Map (useful for Firestore or other database storage)
@@ -47,7 +45,6 @@ class Drone {
       'followUp': followUp,
       'soldDate': soldDate.toIso8601String(),  // Convert DateTime to ISO format
       'contractNo': contractNo,
-      'images': images,
     };
   }
 
@@ -67,7 +64,6 @@ class Drone {
       followUp: map['followUp'],
       soldDate: DateTime.parse(map['soldDate']),  // Parse ISO formatted date
       contractNo: map['contractNo'],
-      images: List<String>.from(map['images']),   // Convert the list to List<String>
     );
   }
 }
