@@ -1,14 +1,13 @@
-import 'package:com_pro_drone/models/seller_model.dart'; // Ensure correct model path
+import 'package:com_pro_drone/models/seller_model.dart'; // Asegúrate de que esta ruta sea correcta
 import 'package:com_pro_drone/view/add_drone.dart';
 import 'package:com_pro_drone/view/add_seller_screen.dart';
 import 'package:com_pro_drone/view/drone_list_screen.dart';
 import 'package:flutter/material.dart';
-import '../services/seller_services.dart'; // Ensure correct service path
-import 'package:url_launcher/url_launcher.dart'; // Import url_launcher
+import '../services/seller_services.dart'; // Asegúrate de que esta ruta sea correcta
+import 'package:url_launcher/url_launcher.dart'; // Importar url_launcher
 
 class SellerListScreen extends StatelessWidget {
-  final SellerService sellerService =
-      SellerService(); // Instantiate the service
+  final SellerService sellerService = SellerService(); // Instanciar el servicio
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +30,7 @@ class SellerListScreen extends StatelessWidget {
           appBar: AppBar(
             backgroundColor: Colors.blue,
             foregroundColor: Colors.white,
-            title: Text('Sellers'),
+            title: Text('Vendedores'),
             actions: [
               IconButton(
                 icon: Icon(Icons.import_contacts),
@@ -57,7 +56,7 @@ class SellerListScreen extends StatelessWidget {
             child: Column(
               children: [
                 StreamBuilder<List<Seller>>(
-                  stream: sellerService.getAllSellers(), // Fetch sellers
+                  stream: sellerService.getAllSellers(), // Obtener vendedores
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(child: CircularProgressIndicator());
@@ -70,7 +69,7 @@ class SellerListScreen extends StatelessWidget {
                     if (!snapshot.hasData || snapshot.data!.isEmpty) {
                       return Center(
                         child: Text(
-                          'No Sellers Found',
+                          'No se encontraron vendedores',
                           style: TextStyle(fontSize: 18, color: Colors.grey),
                         ),
                       );
@@ -89,18 +88,18 @@ class SellerListScreen extends StatelessWidget {
     );
   }
 
-  // Build the responsive DataTable
+  // Construir la DataTable responsiva
   Widget _buildResponsiveDataTable(
       BuildContext context, List<Seller> sellers, BoxConstraints constraints) {
     final bool isSmallScreen = constraints.maxWidth < 600;
     return SingleChildScrollView(
-      scrollDirection: Axis.horizontal, // Enable horizontal scroll
+      scrollDirection: Axis.horizontal, // Habilitar desplazamiento horizontal
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: DataTable(
             border: TableBorder.all(color: Colors.grey[300]!, width: 1),
-            columns: _buildTableColumns(isSmallScreen), // Adjust columns
+            columns: _buildTableColumns(isSmallScreen), // Ajustar columnas
             rows: sellers
                 .map((seller) => _buildDataRow(context, seller, isSmallScreen))
                 .toList(),
@@ -110,24 +109,26 @@ class SellerListScreen extends StatelessWidget {
     );
   }
 
-  // Create the DataTable columns based on screen size
+  // Crear las columnas de DataTable según el tamaño de la pantalla
   List<DataColumn> _buildTableColumns(bool isSmallScreen) {
     return [
       DataColumn(label: Text('ID', style: _tableHeaderStyle())),
-      DataColumn(label: Text('Seller Name', style: _tableHeaderStyle())),
+      DataColumn(
+          label: Text('Nombre del Vendedor', style: _tableHeaderStyle())),
       if (!isSmallScreen) ...[
-        DataColumn(label: Text('Email', style: _tableHeaderStyle())),
-        DataColumn(label: Text('Phone', style: _tableHeaderStyle())),
-        DataColumn(label: Text('City', style: _tableHeaderStyle())),
-        DataColumn(label: Text('Type', style: _tableHeaderStyle())),
-        DataColumn(label: Text('Address', style: _tableHeaderStyle())),
+        DataColumn(
+            label: Text('Correo Electrónico', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Teléfono', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Ciudad', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Tipo', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Dirección', style: _tableHeaderStyle())),
         DataColumn(label: Text('WhatsApp', style: _tableHeaderStyle())),
       ],
-      DataColumn(label: Text('Actions', style: _tableHeaderStyle())),
+      DataColumn(label: Text('Acciones', style: _tableHeaderStyle())),
     ];
   }
 
-  // Create the DataRow for each seller
+  // Crear DataRow para cada vendedor
   DataRow _buildDataRow(
       BuildContext context, Seller seller, bool isSmallScreen) {
     return DataRow(
@@ -145,7 +146,7 @@ class SellerListScreen extends StatelessWidget {
                   onPressed: () {
                     _launchWhatsApp(context, seller.whatsappNo);
                   },
-                  tooltip: 'Chat on WhatsApp',
+                  tooltip: 'Chatear en WhatsApp',
                 ),
               ],
             ),
@@ -163,14 +164,14 @@ class SellerListScreen extends StatelessWidget {
                 onPressed: () {
                   _showEditDialog(context, seller);
                 },
-                tooltip: 'Edit Seller',
+                tooltip: 'Editar Vendedor',
               ),
               IconButton(
                 icon: Icon(Icons.delete, color: Colors.redAccent),
                 onPressed: () {
                   _confirmDelete(context, seller.id);
                 },
-                tooltip: 'Delete Seller',
+                tooltip: 'Eliminar Vendedor',
               ),
             ],
           ),
@@ -179,27 +180,27 @@ class SellerListScreen extends StatelessWidget {
     );
   }
 
-  // Method to launch WhatsApp
+  // Método para lanzar WhatsApp
   void _launchWhatsApp(BuildContext context, String phoneNumber) async {
-    // Ensure the phone number is in international format without '+' or dashes
+    // Asegurarse de que el número de teléfono esté en formato internacional sin '+' ni guiones
     String formattedNumber =
         phoneNumber.replaceAll('+', '').replaceAll('-', '');
     final Uri whatsappUri = Uri.parse("https://wa.me/$formattedNumber");
 
-    // Check if the device can launch WhatsApp
+    // Verificar si el dispositivo puede abrir WhatsApp
     if (await canLaunchUrl(whatsappUri)) {
       await launchUrl(whatsappUri, mode: LaunchMode.externalApplication);
     } else {
-      // Show an error message if WhatsApp is not installed
+      // Mostrar mensaje de error si WhatsApp no está instalado
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("WhatsApp is not installed on this device."),
+          content: Text("WhatsApp no está instalado en este dispositivo."),
         ),
       );
     }
   }
 
-  // Method to show the edit dialog
+  // Método para mostrar el cuadro de diálogo de edición
   void _showEditDialog(BuildContext context, Seller seller) {
     final TextEditingController nameController =
         TextEditingController(text: seller.sellerName);
@@ -220,17 +221,17 @@ class SellerListScreen extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Edit Seller'),
+          title: Text('Editar Vendedor'),
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildTextField(nameController, 'Seller Name'),
-                _buildTextField(emailController, 'Email'),
-                _buildTextField(phoneController, 'Phone'),
-                _buildTextField(cityController, 'City'),
-                _buildTextField(typeController, 'Type of Seller'),
-                _buildTextField(addressController, 'Address'),
+                _buildTextField(nameController, 'Nombre del Vendedor'),
+                _buildTextField(emailController, 'Correo Electrónico'),
+                _buildTextField(phoneController, 'Teléfono'),
+                _buildTextField(cityController, 'Ciudad'),
+                _buildTextField(typeController, 'Tipo de Vendedor'),
+                _buildTextField(addressController, 'Dirección'),
                 _buildTextField(whatsappController, 'WhatsApp No'),
               ],
             ),
@@ -240,7 +241,7 @@ class SellerListScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: Text('Cancelar'),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -258,7 +259,7 @@ class SellerListScreen extends StatelessWidget {
                 await sellerService.updateSeller(seller.id, updatedSeller);
                 Navigator.of(context).pop();
               },
-              child: Text('Update'),
+              child: Text('Actualizar'),
             ),
           ],
         );
@@ -266,7 +267,7 @@ class SellerListScreen extends StatelessWidget {
     );
   }
 
-  // Method to build a TextField for the Edit dialog
+  // Método para construir un TextField para el cuadro de diálogo de edición
   Widget _buildTextField(TextEditingController controller, String label) {
     return Padding(
       padding: const EdgeInsets.only(top: 10.0),
@@ -280,20 +281,20 @@ class SellerListScreen extends StatelessWidget {
     );
   }
 
-  // Method to show a confirmation dialog before deleting
+  // Método para mostrar el cuadro de confirmación antes de eliminar
   Future<void> _confirmDelete(BuildContext context, String sellerId) async {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Confirm Deletion'),
-          content: Text('Are you sure you want to delete this seller?'),
+          title: Text('Confirmar Eliminación'),
+          content: Text('¿Estás seguro de que deseas eliminar este vendedor?'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: Text('Cancelar'),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -302,7 +303,7 @@ class SellerListScreen extends StatelessWidget {
               },
               style:
                   ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
-              child: Text('Delete'),
+              child: Text('Eliminar'),
             ),
           ],
         );
@@ -310,7 +311,7 @@ class SellerListScreen extends StatelessWidget {
     );
   }
 
-  // Table Header Styling
+  // Estilo del encabezado de la tabla
   TextStyle _tableHeaderStyle() {
     return TextStyle(
       fontWeight: FontWeight.bold,

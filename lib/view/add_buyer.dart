@@ -1,7 +1,7 @@
-import 'package:com_pro_drone/models/buyer_model.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Import for date formatting
+import 'package:intl/intl.dart'; // Importar para formateo de fecha
 import '../services/buyer_services.dart';
+import '../models/buyer_model.dart';
 
 class AddBuyerScreen extends StatefulWidget {
   @override
@@ -12,10 +12,10 @@ class _AddBuyerScreenState extends State<AddBuyerScreen> {
   final _formKey = GlobalKey<FormState>();
   String? _buyerName, _email, _phone, _city, _budget;
   String? _requirements, _remarks, _followUp, _notes;
-  String _selectedDate = ''; // Store the selected date
+  String _selectedDate = ''; // Almacenar la fecha seleccionada
   final BuyerService buyerService = BuyerService();
 
-  // Focus nodes for each text field
+  // FocusNodes para cada campo de texto
   FocusNode _buyerNameFocusNode = FocusNode();
   FocusNode _emailFocusNode = FocusNode();
   FocusNode _phoneFocusNode = FocusNode();
@@ -26,7 +26,7 @@ class _AddBuyerScreenState extends State<AddBuyerScreen> {
   FocusNode _followUpFocusNode = FocusNode();
   FocusNode _notesFocusNode = FocusNode();
 
-  // Function to handle date picking
+  // Función para manejar la selección de fecha
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -37,7 +37,7 @@ class _AddBuyerScreenState extends State<AddBuyerScreen> {
     if (picked != null) {
       setState(() {
         _selectedDate =
-            DateFormat('dd-MM-yyyy').format(picked); // Format the date
+            DateFormat('dd-MM-yyyy').format(picked); // Formatear la fecha
       });
     }
   }
@@ -50,25 +50,25 @@ class _AddBuyerScreenState extends State<AddBuyerScreen> {
         date: _selectedDate.isNotEmpty
             ? _selectedDate
             : DateFormat('dd-MM-yyyy')
-                .format(DateTime.now()), // Use selected date or current date
+                .format(DateTime.now()), // Usar la fecha seleccionada o la actual
         buyer: _buyerName!,
         email: _email!,
         phone: _phone!,
         city: _city!,
-        requirements: _requirements ?? 'None',
-        remarks: _remarks ?? 'None',
-        followUp: _followUp ?? 'None',
-        notes: _notes ?? 'None',
+        requirements: _requirements ?? 'Ninguno',
+        remarks: _remarks ?? 'Ninguno',
+        followUp: _followUp ?? 'Ninguno',
+        notes: _notes ?? 'Ninguno',
         budget: _budget!,
       );
-      buyerService.addBuyer(newBuyer); // Add buyer to Firestore
-      Navigator.pop(context); // Go back after adding
+      buyerService.addBuyer(newBuyer); // Agregar comprador a la base de datos
+      Navigator.pop(context); // Volver después de agregar
     }
   }
 
   @override
   void dispose() {
-    // Dispose of all FocusNodes
+    // Eliminar todos los FocusNodes
     _buyerNameFocusNode.dispose();
     _emailFocusNode.dispose();
     _phoneFocusNode.dispose();
@@ -84,11 +84,11 @@ class _AddBuyerScreenState extends State<AddBuyerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Add Buyer')),
+      appBar: AppBar(title: Text('Agregar Comprador')),
       body: Center(
         child: ConstrainedBox(
           constraints: BoxConstraints(
-            maxWidth: 600, // Limit the maximum width
+            maxWidth: 600, // Limitar el ancho máximo
           ),
           child: Padding(
             padding: const EdgeInsets.all(20.0),
@@ -97,16 +97,16 @@ class _AddBuyerScreenState extends State<AddBuyerScreen> {
               child: ListView(
                 shrinkWrap: true,
                 children: [
-                  // Buyer Name Field
+                  // Campo de Nombre del Comprador
                   TextFormField(
                     focusNode: _buyerNameFocusNode,
                     decoration: InputDecoration(
-                      labelText: 'Buyer Name',
+                      labelText: 'Nombre del Comprador',
                       prefixIcon: Icon(Icons.person),
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) =>
-                        value!.isEmpty ? 'Enter a name' : null,
+                        value!.isEmpty ? 'Ingresa un nombre' : null,
                     onSaved: (value) => _buyerName = value,
                     textInputAction: TextInputAction.next,
                     onFieldSubmitted: (_) {
@@ -115,16 +115,16 @@ class _AddBuyerScreenState extends State<AddBuyerScreen> {
                   ),
                   SizedBox(height: 20),
 
-                  // Email Field
+                  // Campo de Correo
                   TextFormField(
                     focusNode: _emailFocusNode,
                     decoration: InputDecoration(
-                      labelText: 'Email',
+                      labelText: 'Correo',
                       prefixIcon: Icon(Icons.email),
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) =>
-                        value!.isEmpty ? 'Enter an email' : null,
+                        value!.isEmpty ? 'Ingresa un correo' : null,
                     onSaved: (value) => _email = value,
                     textInputAction: TextInputAction.next,
                     onFieldSubmitted: (_) {
@@ -133,16 +133,16 @@ class _AddBuyerScreenState extends State<AddBuyerScreen> {
                   ),
                   SizedBox(height: 20),
 
-                  // Phone Field
+                  // Campo de Teléfono
                   TextFormField(
                     focusNode: _phoneFocusNode,
                     decoration: InputDecoration(
-                      labelText: 'Phone',
+                      labelText: 'Teléfono',
                       prefixIcon: Icon(Icons.phone),
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) =>
-                        value!.isEmpty ? 'Enter a phone number' : null,
+                        value!.isEmpty ? 'Ingresa un número de teléfono' : null,
                     onSaved: (value) => _phone = value,
                     textInputAction: TextInputAction.next,
                     onFieldSubmitted: (_) {
@@ -151,16 +151,16 @@ class _AddBuyerScreenState extends State<AddBuyerScreen> {
                   ),
                   SizedBox(height: 20),
 
-                  // City Field
+                  // Campo de Ciudad
                   TextFormField(
                     focusNode: _cityFocusNode,
                     decoration: InputDecoration(
-                      labelText: 'City',
+                      labelText: 'Ciudad',
                       prefixIcon: Icon(Icons.location_city),
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) =>
-                        value!.isEmpty ? 'Enter a city' : null,
+                        value!.isEmpty ? 'Ingresa una ciudad' : null,
                     onSaved: (value) => _city = value,
                     textInputAction: TextInputAction.next,
                     onFieldSubmitted: (_) {
@@ -169,16 +169,16 @@ class _AddBuyerScreenState extends State<AddBuyerScreen> {
                   ),
                   SizedBox(height: 20),
 
-                  // Budget Field
+                  // Campo de Presupuesto
                   TextFormField(
                     focusNode: _budgetFocusNode,
                     decoration: InputDecoration(
-                      labelText: 'Budget',
+                      labelText: 'Presupuesto',
                       prefixIcon: Icon(Icons.money),
                       border: OutlineInputBorder(),
                     ),
                     validator: (value) =>
-                        value!.isEmpty ? 'Enter a budget' : null,
+                        value!.isEmpty ? 'Ingresa un presupuesto' : null,
                     onSaved: (value) => _budget = value,
                     textInputAction: TextInputAction.next,
                     onFieldSubmitted: (_) {
@@ -188,11 +188,11 @@ class _AddBuyerScreenState extends State<AddBuyerScreen> {
                   ),
                   SizedBox(height: 20),
 
-                  // Requirements Field
+                  // Campo de Requisitos
                   TextFormField(
                     focusNode: _requirementsFocusNode,
                     decoration: InputDecoration(
-                      labelText: 'Requirements',
+                      labelText: 'Requisitos',
                       prefixIcon: Icon(Icons.list_alt),
                       border: OutlineInputBorder(),
                     ),
@@ -204,11 +204,11 @@ class _AddBuyerScreenState extends State<AddBuyerScreen> {
                   ),
                   SizedBox(height: 20),
 
-                  // Remarks Field
+                  // Campo de Observaciones
                   TextFormField(
                     focusNode: _remarksFocusNode,
                     decoration: InputDecoration(
-                      labelText: 'Remarks',
+                      labelText: 'Observaciones',
                       prefixIcon: Icon(Icons.comment),
                       border: OutlineInputBorder(),
                     ),
@@ -220,11 +220,11 @@ class _AddBuyerScreenState extends State<AddBuyerScreen> {
                   ),
                   SizedBox(height: 20),
 
-                  // Follow-Up Field
+                  // Campo de Seguimiento
                   TextFormField(
                     focusNode: _followUpFocusNode,
                     decoration: InputDecoration(
-                      labelText: 'Follow Up',
+                      labelText: 'Seguimiento',
                       prefixIcon: Icon(Icons.calendar_today_outlined),
                       border: OutlineInputBorder(),
                     ),
@@ -236,11 +236,11 @@ class _AddBuyerScreenState extends State<AddBuyerScreen> {
                   ),
                   SizedBox(height: 20),
 
-                  // Notes Field
+                  // Campo de Notas
                   TextFormField(
                     focusNode: _notesFocusNode,
                     decoration: InputDecoration(
-                      labelText: 'Notes',
+                      labelText: 'Notas',
                       prefixIcon: Icon(Icons.note_add),
                       border: OutlineInputBorder(),
                     ),
@@ -252,12 +252,12 @@ class _AddBuyerScreenState extends State<AddBuyerScreen> {
                   ),
                   SizedBox(height: 20),
 
-                  // Date Field with Calendar Picker
+                  // Campo de Fecha con Selector de Calendario
                   TextFormField(
                     readOnly: true,
                     decoration: InputDecoration(
-                      labelText: 'Date',
-                      hintText: 'Select date',
+                      labelText: 'Fecha',
+                      hintText: 'Seleccionar fecha',
                       suffixIcon: IconButton(
                         icon: Icon(Icons.calendar_today),
                         onPressed: () => _selectDate(context),
@@ -265,18 +265,18 @@ class _AddBuyerScreenState extends State<AddBuyerScreen> {
                       border: OutlineInputBorder(),
                     ),
                     controller: TextEditingController(
-                        text: _selectedDate), // Display selected date
+                        text: _selectedDate), // Mostrar fecha seleccionada
                   ),
                   SizedBox(height: 30),
 
-                  // Add Buyer Button
+                  // Botón de Agregar Comprador
                   ElevatedButton(
                     onPressed: _submitForm,
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 16),
                       textStyle: TextStyle(fontSize: 18),
                     ),
-                    child: Text('Add Buyer'),
+                    child: Text('Agregar Comprador'),
                   ),
                 ],
               ),

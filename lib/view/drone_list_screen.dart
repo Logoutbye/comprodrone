@@ -2,7 +2,7 @@ import 'package:com_pro_drone/services/buyer_services.dart';
 import 'package:com_pro_drone/services/seller_services.dart';
 import 'package:com_pro_drone/view/add_drone.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // For date formatting
+import 'package:intl/intl.dart'; // Para formateo de fechas
 import '../models/buyer_model.dart';
 import '../models/drone_model.dart';
 import '../models/seller_model.dart';
@@ -29,7 +29,7 @@ class _DroneListScreenState extends State<DroneListScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _fetchNames(); // Fetch buyers and sellers
+    _fetchNames(); // Obtener compradores y vendedores
   }
 
   Future<void> _fetchNames() async {
@@ -58,21 +58,21 @@ class _DroneListScreenState extends State<DroneListScreen>
       appBar: AppBar(
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
-        title: const Text('Drone List'),
+        title: const Text('Lista de Drones'),
         bottom: TabBar(
           labelStyle: TextStyle(color: Colors.white),
           controller: _tabController,
           tabs: const [
             Tab(
-              text: 'Active Drones',
+              text: 'Drones Activos',
             ),
-            Tab(text: 'Non-Active Drones'),
+            Tab(text: 'Drones No Activos'),
           ],
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
-            tooltip: 'Add Drone',
+            tooltip: 'Agregar Drone',
             onPressed: () {
               Navigator.push(
                   context,
@@ -86,8 +86,8 @@ class _DroneListScreenState extends State<DroneListScreen>
       body: TabBarView(
         controller: _tabController,
         children: [
-          _buildDroneList(true), // Active Drones
-          _buildDroneList(false), // Non-Active Drones
+          _buildDroneList(true), // Drones Activos
+          _buildDroneList(false), // Drones No Activos
         ],
       ),
     );
@@ -106,7 +106,7 @@ class _DroneListScreenState extends State<DroneListScreen>
         }
 
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(child: Text('No drones available.'));
+          return Center(child: Text('No hay drones disponibles.'));
         }
 
         final drones =
@@ -117,24 +117,24 @@ class _DroneListScreenState extends State<DroneListScreen>
           child: DataTable(
             border: TableBorder.all(color: Colors.grey[300]!),
             columns: [
-              DataColumn(label: Text('Drone ID', style: _tableHeaderStyle())),
-              DataColumn(label: Text('Brand', style: _tableHeaderStyle())),
-              DataColumn(label: Text('Model', style: _tableHeaderStyle())),
-              DataColumn(label: Text('Status', style: _tableHeaderStyle())),
-              DataColumn(label: Text('Web Price', style: _tableHeaderStyle())),
+              DataColumn(label: Text('ID del Drone', style: _tableHeaderStyle())),
+              DataColumn(label: Text('Marca', style: _tableHeaderStyle())),
+              DataColumn(label: Text('Modelo', style: _tableHeaderStyle())),
+              DataColumn(label: Text('Estado', style: _tableHeaderStyle())),
+              DataColumn(label: Text('Precio Web', style: _tableHeaderStyle())),
               DataColumn(
-                  label: Text('Customer Price', style: _tableHeaderStyle())),
-              DataColumn(label: Text('Commission', style: _tableHeaderStyle())),
-              DataColumn(label: Text('Follow Up', style: _tableHeaderStyle())),
-              DataColumn(label: Text('Sold Date', style: _tableHeaderStyle())),
-              DataColumn(label: Text('Actions', style: _tableHeaderStyle())),
+                  label: Text('Precio al Cliente', style: _tableHeaderStyle())),
+              DataColumn(label: Text('Comisión', style: _tableHeaderStyle())),
+              DataColumn(label: Text('Seguimiento', style: _tableHeaderStyle())),
+              DataColumn(label: Text('Fecha de Venta', style: _tableHeaderStyle())),
+              DataColumn(label: Text('Acciones', style: _tableHeaderStyle())),
             ],
             rows: drones.map((drone) {
               return DataRow(cells: [
                 DataCell(Text(drone.dId)),
                 DataCell(Text(drone.brand)),
                 DataCell(Text(drone.model)),
-                DataCell(Text(drone.status ? 'Active' : 'Non-Active')),
+                DataCell(Text(drone.status ? 'Activo' : 'No Activo')),
                 DataCell(Text(drone.webPrice.toString())),
                 DataCell(Text(drone.customerPrice.toString())),
                 DataCell(Text(drone.commision)),
@@ -147,16 +147,16 @@ class _DroneListScreenState extends State<DroneListScreen>
                       IconButton(
                         icon: Icon(Icons.edit, color: Colors.blueAccent),
                         onPressed: () {
-                          _showUpdateDialog(context, drone); // Update dialog
+                          _showUpdateDialog(context, drone); // Dialogo para actualizar
                         },
-                        tooltip: 'Edit Drone',
+                        tooltip: 'Editar Drone',
                       ),
                       IconButton(
                         icon: Icon(Icons.delete, color: Colors.redAccent),
                         onPressed: () {
                           _confirmDelete(context, drone.dId);
                         },
-                        tooltip: 'Delete Drone',
+                        tooltip: 'Eliminar Drone',
                       ),
                     ],
                   ),
@@ -169,29 +169,29 @@ class _DroneListScreenState extends State<DroneListScreen>
     );
   }
 
-  // Method to confirm drone deletion
+  // Método para confirmar eliminación del drone
   void _confirmDelete(BuildContext context, String droneId) {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Confirm Delete'),
-          content: Text('Are you sure you want to delete this drone?'),
+          title: Text('Confirmar Eliminación'),
+          content: Text('¿Estás seguro de que deseas eliminar este drone?'),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close dialog
+                Navigator.of(context).pop(); // Cerrar diálogo
               },
-              child: Text('Cancel'),
+              child: Text('Cancelar'),
             ),
             ElevatedButton(
               style:
                   ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
               onPressed: () {
-                droneService.deleteDrone(droneId); // Call delete method
-                Navigator.of(context).pop(); // Close dialog
+                droneService.deleteDrone(droneId); // Llamar método de eliminación
+                Navigator.of(context).pop(); // Cerrar diálogo
               },
-              child: Text('Delete'),
+              child: Text('Eliminar'),
             ),
           ],
         );
@@ -199,7 +199,7 @@ class _DroneListScreenState extends State<DroneListScreen>
     );
   }
 
-  // Method to show drone update dialog
+  // Método para mostrar diálogo de actualización de drone
   void _showUpdateDialog(BuildContext context, Drone drone) {
     final TextEditingController brandController =
         TextEditingController(text: drone.brand);
@@ -227,22 +227,22 @@ class _DroneListScreenState extends State<DroneListScreen>
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Update Drone'),
+          title: Text('Actualizar Drone'),
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildTextField(brandController, 'Brand'),
-                _buildTextField(modelController, 'Model'),
-                _buildTextField(webPriceController, 'Web Price',
+                _buildTextField(brandController, 'Marca'),
+                _buildTextField(modelController, 'Modelo'),
+                _buildTextField(webPriceController, 'Precio Web',
                     keyboardType: TextInputType.number),
-                _buildTextField(customerPriceController, 'Customer Price',
+                _buildTextField(customerPriceController, 'Precio al Cliente',
                     keyboardType: TextInputType.number),
-                _buildTextField(commissionController, 'Commission'),
-                _buildTextField(followUpController, 'Follow Up'),
+                _buildTextField(commissionController, 'Comisión'),
+                _buildTextField(followUpController, 'Seguimiento'),
                 _buildDropdownButton(
                   context,
-                  'Select Seller',
+                  'Seleccionar Vendedor',
                   selectedSellerId,
                   sellers.map<DropdownMenuItem<String>>((Seller seller) {
                     return DropdownMenuItem<String>(
@@ -253,7 +253,7 @@ class _DroneListScreenState extends State<DroneListScreen>
                 ),
                 _buildDropdownButton(
                   context,
-                  'Select Buyer',
+                  'Seleccionar Comprador',
                   selectedBuyerId,
                   buyers.map<DropdownMenuItem<String>>((Buyer buyer) {
                     return DropdownMenuItem<String>(
@@ -262,12 +262,12 @@ class _DroneListScreenState extends State<DroneListScreen>
                     );
                   }).toList(),
                 ),
-                _buildDateField(soldDateController, context, 'Sold Date'),
+                _buildDateField(soldDateController, context, 'Fecha de Venta'),
                 ValueListenableBuilder<bool>(
                   valueListenable: isActive,
                   builder: (context, value, child) {
                     return CheckboxListTile(
-                      title: Text('Is Active?'),
+                      title: Text('¿Activo?'),
                       value: value,
                       onChanged: (newValue) {
                         isActive.value = newValue ?? false;
@@ -281,9 +281,9 @@ class _DroneListScreenState extends State<DroneListScreen>
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close dialog
+                Navigator.of(context).pop(); // Cerrar diálogo
               },
-              child: Text('Cancel'),
+              child: Text('Cancelar'),
             ),
             ElevatedButton(
               onPressed: () {
@@ -293,21 +293,21 @@ class _DroneListScreenState extends State<DroneListScreen>
                   sId: selectedSellerId.value!,
                   brand: brandController.text,
                   model: modelController.text,
-                  serialNumber: drone.serialNumber, // Unchanged serial number
+                  serialNumber: drone.serialNumber, // Número de serie sin cambios
                   webPrice: webPriceController.text,
                   customerPrice: customerPriceController.text,
                   commision: commissionController.text,
                   followUp: followUpController.text,
-                  status: isActive.value, // Updated status
+                  status: isActive.value, // Estado actualizado
                   soldDate: soldDateController.text.isNotEmpty
                       ? DateTime.tryParse(soldDateController.text)
                       : null,
                   contractNo: drone.contractNo,
                 );
                 droneService.updateDrone(drone.dId, updatedDrone);
-                Navigator.of(context).pop(); // Close dialog after updating
+                Navigator.of(context).pop(); // Cerrar diálogo después de actualizar
               },
-              child: Text('Update'),
+              child: Text('Actualizar'),
             ),
           ],
         );
@@ -315,7 +315,7 @@ class _DroneListScreenState extends State<DroneListScreen>
     );
   }
 
-  // Helper to build a text field
+  // Helper para construir un campo de texto
   Widget _buildTextField(TextEditingController controller, String label,
       {TextInputType keyboardType = TextInputType.text}) {
     return Padding(
@@ -331,7 +331,7 @@ class _DroneListScreenState extends State<DroneListScreen>
     );
   }
 
-  // Helper to build a date field
+  // Helper para construir un campo de fecha
   Widget _buildDateField(TextEditingController controller, BuildContext context,
       String labelText) {
     return Padding(
@@ -357,7 +357,7 @@ class _DroneListScreenState extends State<DroneListScreen>
     );
   }
 
-  // Helper to build a dropdown button
+  // Helper para construir un botón de lista desplegable
   Widget _buildDropdownButton(BuildContext context, String hint,
       ValueNotifier<String?> selectedId, List<DropdownMenuItem<String>> items) {
     return Padding(
@@ -379,7 +379,7 @@ class _DroneListScreenState extends State<DroneListScreen>
     );
   }
 
-  // Helper method for table headers
+  // Método helper para encabezados de tabla
   TextStyle _tableHeaderStyle() {
     return TextStyle(
       fontWeight: FontWeight.bold,

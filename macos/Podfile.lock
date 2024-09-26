@@ -1297,8 +1297,6 @@ PODS:
   - nanopb (3.30910.0):
     - nanopb/decode (= 3.30910.0)
     - nanopb/encode (= 3.30910.0)
-  - nanopb/decode (3.30910.0)
-  - nanopb/encode (3.30910.0)
   - printing (1.0.0):
     - FlutterMacOS
   - url_launcher_macos (0.0.1):
@@ -1363,6 +1361,6 @@ SPEC CHECKSUMS:
   printing: 1dd6a1fce2209ec240698e2439a4adbb9b427637
   url_launcher_macos: c82c93949963e55b228a30115bd219499a6fe404
 
-PODFILE CHECKSUM: 9ebaf0ce3d369aaa26a9ea0e159195ed94724cf3
+PODFILE CHECKSUM: 3722386436f9d7bf55912559f6b341c72a553b1c
 
 COCOAPODS: 1.15.2

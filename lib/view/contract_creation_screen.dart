@@ -10,7 +10,7 @@ class ContractCreationScreen extends StatefulWidget {
 class _ContractCreationScreenState extends State<ContractCreationScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  // Controllers for buyer and seller details
+  // Controladores para los detalles del comprador y vendedor
   TextEditingController buyerNameController = TextEditingController();
   TextEditingController buyerEmailController = TextEditingController();
   TextEditingController buyerPhoneController = TextEditingController();
@@ -58,7 +58,7 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
                 pw.Text(
-                  "COMPRODRONE SALES AGREEMENT",
+                  "ACUERDO DE VENTA COMPRODRONE",
                   style: pw.TextStyle(
                     fontSize: 24,
                     fontWeight: pw.FontWeight.bold,
@@ -66,80 +66,80 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
                 ),
                 pw.SizedBox(height: 20),
 
-                // Contract Number
+                // Número de contrato
                 pw.Text(
-                  "Contract Number: ${contractNumberController.text}",
+                  "Número de Contrato: ${contractNumberController.text}",
                   style: pw.TextStyle(fontSize: 16),
                 ),
                 pw.SizedBox(height: 20),
 
-                // Agreement Text
+                // Texto del acuerdo
                 pw.Text(
-                  "This agreement is made between the seller and the buyer on the terms and conditions outlined below:",
+                  "Este acuerdo se celebra entre el vendedor y el comprador en los términos y condiciones que se detallan a continuación:",
                   style: pw.TextStyle(fontSize: 14),
                 ),
                 pw.SizedBox(height: 10),
 
-                // Buyer Information
-                pw.Text("Buyer Information:",
+                // Información del Comprador
+                pw.Text("Información del Comprador:",
                     style: pw.TextStyle(
                         fontSize: 16, fontWeight: pw.FontWeight.bold)),
-                pw.Text("Name: ${buyerNameController.text}"),
-                pw.Text("Email: ${buyerEmailController.text}"),
-                pw.Text("Phone: ${buyerPhoneController.text}"),
-                pw.Text("City: ${buyerCityController.text}"),
+                pw.Text("Nombre: ${buyerNameController.text}"),
+                pw.Text("Correo: ${buyerEmailController.text}"),
+                pw.Text("Teléfono: ${buyerPhoneController.text}"),
+                pw.Text("Ciudad: ${buyerCityController.text}"),
                 pw.SizedBox(height: 10),
 
-                // Seller Information
-                pw.Text("Seller Information:",
+                // Información del Vendedor
+                pw.Text("Información del Vendedor:",
                     style: pw.TextStyle(
                         fontSize: 16, fontWeight: pw.FontWeight.bold)),
-                pw.Text("Name: ${sellerNameController.text}"),
-                pw.Text("Email: ${sellerEmailController.text}"),
-                pw.Text("Phone: ${sellerPhoneController.text}"),
-                pw.Text("City: ${sellerCityController.text}"),
+                pw.Text("Nombre: ${sellerNameController.text}"),
+                pw.Text("Correo: ${sellerEmailController.text}"),
+                pw.Text("Teléfono: ${sellerPhoneController.text}"),
+                pw.Text("Ciudad: ${sellerCityController.text}"),
                 pw.SizedBox(height: 10),
 
-                // Drone Information
-                pw.Text("Drone Information:",
+                // Información del Drone
+                pw.Text("Información del Drone:",
                     style: pw.TextStyle(
                         fontSize: 16, fontWeight: pw.FontWeight.bold)),
-                pw.Text("Model: ${droneModelController.text}"),
-                pw.Text("Brand: DroneX"),
-                pw.Text("Serial Number: SN-123456789"),
-                pw.Text("Price: \$9500.00"),
-                pw.Text("Commission: \$500"),
+                pw.Text("Modelo: ${droneModelController.text}"),
+                pw.Text("Marca: DroneX"),
+                pw.Text("Número de Serie: SN-123456789"),
+                pw.Text("Precio: \$9500.00"),
+                pw.Text("Comisión: \$500"),
                 pw.SizedBox(height: 20),
 
-                // Constant Terms and Conditions
+                // Términos y Condiciones
                 pw.Text(
-                  "Terms and Conditions:",
+                  "Términos y Condiciones:",
                   style: pw.TextStyle(
                       fontSize: 16, fontWeight: pw.FontWeight.bold),
                 ),
                 pw.Text(
-                  "1. The seller guarantees that the drone is in good working condition.",
+                  "1. El vendedor garantiza que el dron está en buenas condiciones.",
                   style: pw.TextStyle(fontSize: 14),
                 ),
                 pw.Text(
-                  "2. The buyer agrees to the price and terms of payment.",
+                  "2. El comprador acepta el precio y los términos de pago.",
                   style: pw.TextStyle(fontSize: 14),
                 ),
                 pw.Text(
-                  "3. This contract is binding upon both parties.",
+                  "3. Este contrato es vinculante para ambas partes.",
                   style: pw.TextStyle(fontSize: 14),
                 ),
                 pw.SizedBox(height: 20),
 
                 pw.Text(
-                  "Signatures:",
+                  "Firmas:",
                   style: pw.TextStyle(
                       fontSize: 16, fontWeight: pw.FontWeight.bold),
                 ),
                 pw.SizedBox(height: 30),
-                pw.Text("Buyer Signature: ______________________"),
+                pw.Text("Firma del Comprador: ______________________"),
                 pw.SizedBox(height: 20),
-                pw.Text("Seller Signature: ______________________"),
+                pw.Text("Firma del Vendedor: ______________________"),
               ],
             ),
           );
@@ -149,7 +149,7 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
 
     await Printing.sharePdf(
       bytes: await pdf.save(),
-      filename: 'contract_${contractNumberController.text}.pdf',
+      filename: 'contrato_${contractNumberController.text}.pdf',
     );
   }
 
@@ -158,38 +158,38 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Preview Contract Details'),
+          title: Text('Previsualizar Detalles del Contrato'),
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("Buyer Name: ${buyerNameController.text}"),
-                Text("Buyer Email: ${buyerEmailController.text}"),
-                Text("Buyer Phone: ${buyerPhoneController.text}"),
-                Text("Buyer City: ${buyerCityController.text}"),
+                Text("Nombre del Comprador: ${buyerNameController.text}"),
+                Text("Correo del Comprador: ${buyerEmailController.text}"),
+                Text("Teléfono del Comprador: ${buyerPhoneController.text}"),
+                Text("Ciudad del Comprador: ${buyerCityController.text}"),
                 SizedBox(height: 10),
-                Text("Seller Name: ${sellerNameController.text}"),
-                Text("Seller Email: ${sellerEmailController.text}"),
-                Text("Seller Phone: ${sellerPhoneController.text}"),
-                Text("Seller City: ${sellerCityController.text}"),
+                Text("Nombre del Vendedor: ${sellerNameController.text}"),
+                Text("Correo del Vendedor: ${sellerEmailController.text}"),
+                Text("Teléfono del Vendedor: ${sellerPhoneController.text}"),
+                Text("Ciudad del Vendedor: ${sellerCityController.text}"),
                 SizedBox(height: 10),
-                Text("Drone Model: ${droneModelController.text}"),
-                Text("Contract Number: ${contractNumberController.text}"),
+                Text("Modelo del Drone: ${droneModelController.text}"),
+                Text("Número de Contrato: ${contractNumberController.text}"),
               ],
             ),
           ),
           actions: [
             TextButton(
-              child: Text('Edit'),
+              child: Text('Editar'),
               onPressed: () {
-                Navigator.of(context).pop(); // Go back to the form
+                Navigator.of(context).pop(); // Volver al formulario
               },
             ),
             ElevatedButton(
-              child: Text('Generate PDF'),
+              child: Text('Generar PDF'),
               onPressed: () {
-                Navigator.of(context).pop(); // Close the preview dialog
-                _generateContractPDF(); // Generate the PDF
+                Navigator.of(context).pop(); // Cerrar el diálogo de vista previa
+                _generateContractPDF(); // Generar el PDF
               },
             ),
           ],
@@ -204,7 +204,7 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
       appBar: AppBar(
         foregroundColor: Colors.white,
         title: Text(
-          'Create Contract',
+          'Crear Contrato',
           style: TextStyle(fontSize: 20),
         ),
         centerTitle: true,
@@ -216,9 +216,9 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
           key: _formKey,
           child: ListView(
             children: [
-              // Buyer Section
+              // Sección del Comprador
               Text(
-                'Buyer Details',
+                'Detalles del Comprador',
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -233,22 +233,22 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
                     children: [
                       _buildTextField(
                           controller: buyerNameController,
-                          labelText: 'Buyer Name',
+                          labelText: 'Nombre del Comprador',
                           icon: Icons.person),
                       SizedBox(height: 10),
                       _buildTextField(
                           controller: buyerEmailController,
-                          labelText: 'Buyer Email',
+                          labelText: 'Correo del Comprador',
                           icon: Icons.email),
                       SizedBox(height: 10),
                       _buildTextField(
                           controller: buyerPhoneController,
-                          labelText: 'Buyer Phone',
+                          labelText: 'Teléfono del Comprador',
                           icon: Icons.phone),
                       SizedBox(height: 10),
                       _buildTextField(
                           controller: buyerCityController,
-                          labelText: 'Buyer City',
+                          labelText: 'Ciudad del Comprador',
                           icon: Icons.location_city),
                     ],
                   ),
@@ -256,9 +256,9 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
               ),
               Divider(),
 
-              // Seller Section
+              // Sección del Vendedor
               Text(
-                'Seller Details',
+                'Detalles del Vendedor',
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -273,22 +273,22 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
                     children: [
                       _buildTextField(
                           controller: sellerNameController,
-                          labelText: 'Seller Name',
+                          labelText: 'Nombre del Vendedor',
                           icon: Icons.person),
                       SizedBox(height: 10),
                       _buildTextField(
                           controller: sellerEmailController,
-                          labelText: 'Seller Email',
+                          labelText: 'Correo del Vendedor',
                           icon: Icons.email),
                       SizedBox(height: 10),
                       _buildTextField(
                           controller: sellerPhoneController,
-                          labelText: 'Seller Phone',
+                          labelText: 'Teléfono del Vendedor',
                           icon: Icons.phone),
                       SizedBox(height: 10),
                       _buildTextField(
                           controller: sellerCityController,
-                          labelText: 'Seller City',
+                          labelText: 'Ciudad del Vendedor',
                           icon: Icons.location_city),
                     ],
                   ),
@@ -296,9 +296,9 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
               ),
               Divider(),
 
-              // Drone and Contract Section
+              // Sección del Drone y Contrato
               Text(
-                'Contract & Drone Details',
+                'Detalles del Contrato & Drone',
                 style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
@@ -313,12 +313,12 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
                     children: [
                       _buildTextField(
                           controller: droneModelController,
-                          labelText: 'Drone Model',
+                          labelText: 'Modelo del Drone',
                           icon: Icons.toys),
                       SizedBox(height: 10),
                       _buildTextField(
                           controller: contractNumberController,
-                          labelText: 'Contract Number',
+                          labelText: 'Número de Contrato',
                           icon: Icons.confirmation_number),
                     ],
                   ),
@@ -326,13 +326,13 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
               ),
               SizedBox(height: 20),
 
-              // Submit Button
+              // Botón de enviar
               ElevatedButton(
                 onPressed: () async {
                   await _submitForm();
                 },
                 child: Text(
-                  'Preview and Generate Contract',
+                  'Previsualizar y Generar Contrato',
                   style: TextStyle(color: Colors.white),
                 ),
                 style: ElevatedButton.styleFrom(
@@ -348,7 +348,7 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
     );
   }
 
-  // Helper method to build TextFormFields with icon and validation
+  // Helper para construir TextFormFields con ícono y validación
   Widget _buildTextField(
       {required TextEditingController controller,
       required String labelText,
@@ -362,7 +362,7 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
           borderRadius: BorderRadius.circular(8.0),
         ),
       ),
-      validator: (value) => value!.isEmpty ? 'Enter $labelText' : null,
+      validator: (value) => value!.isEmpty ? 'Ingresa $labelText' : null,
     );
   }
 }

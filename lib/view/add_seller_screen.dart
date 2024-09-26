@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/seller_model.dart';
-import '../services/seller_services.dart'; // Update the path to your SellerService
+import '../services/seller_services.dart'; // Actualiza la ruta al servicio SellerService
 
 class AddSellerScreen extends StatefulWidget {
   @override
@@ -10,7 +10,7 @@ class AddSellerScreen extends StatefulWidget {
 class _AddSellerScreenState extends State<AddSellerScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  // FocusNodes for managing focus transitions between text fields
+  // FocusNodes para manejar las transiciones entre los campos de texto
   final FocusNode _sellerNameFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _phoneFocus = FocusNode();
@@ -19,7 +19,7 @@ class _AddSellerScreenState extends State<AddSellerScreen> {
   final FocusNode _addressFocus = FocusNode();
   final FocusNode _whatsappNoFocus = FocusNode();
 
-  // Variables to store the form data
+  // Variables para almacenar los datos del formulario
   String? _sellerName,
       _email,
       _phone,
@@ -28,17 +28,17 @@ class _AddSellerScreenState extends State<AddSellerScreen> {
       _address,
       _whatsappNo;
 
-  // Seller service to handle saving seller data
+  // Servicio de vendedores para manejar la adición de datos del vendedor
   final SellerService sellerService = SellerService();
 
-  // Form submission function
+  // Función para enviar el formulario
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       Seller newSeller = Seller(
         id: DateTime.now()
             .millisecondsSinceEpoch
-            .toString(), // Use milliseconds since epoch for ID
+            .toString(), // Utilizar milisegundos desde el Epoch para ID
         sellerName: _sellerName!,
         email: _email!,
         phone: _phone!,
@@ -46,14 +46,14 @@ class _AddSellerScreenState extends State<AddSellerScreen> {
         typeOfSeller: _typeOfSeller!,
         address: _address!,
         whatsappNo:
-            _whatsappNo ?? '', // Default to empty string if not provided
+            _whatsappNo ?? '', // Valor por defecto vacío si no se proporciona
       );
-      sellerService.addSeller(newSeller); // Add seller to the database
-      Navigator.pop(context); // Go back after adding
+      sellerService.addSeller(newSeller); // Agregar vendedor a la base de datos
+      Navigator.pop(context); // Volver después de agregar
     }
   }
 
-  // Dispose focus nodes to free up memory
+  // Eliminar focus nodes para liberar memoria
   @override
   void dispose() {
     _sellerNameFocus.dispose();
@@ -66,13 +66,13 @@ class _AddSellerScreenState extends State<AddSellerScreen> {
     super.dispose();
   }
 
-  // Build the form fields with improved visuals and focus transitions
+  // Construir los campos del formulario con visuales mejorados y transiciones de enfoque
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         foregroundColor: Colors.white,
-        title: Text('Add Seller'),
+        title: Text('Agregar Vendedor'),
         backgroundColor: Colors.blueAccent,
       ),
       body: Padding(
@@ -81,83 +81,84 @@ class _AddSellerScreenState extends State<AddSellerScreen> {
           key: _formKey,
           child: ListView(
             children: [
-              // Seller Name Field
+              // Campo de Nombre del Vendedor
               _buildTextFormField(
-                label: 'Seller Name',
+                label: 'Nombre del Vendedor',
                 icon: Icons.person,
                 focusNode: _sellerNameFocus,
                 onSaved: (value) => _sellerName = value,
                 validator: (value) =>
-                    value!.isEmpty ? 'Enter a seller name' : null,
+                    value!.isEmpty ? 'Ingresa el nombre del vendedor' : null,
                 nextFocusNode: _emailFocus,
               ),
 
               SizedBox(height: 16),
 
-              // Email Field
+              // Campo de Correo
               _buildTextFormField(
-                label: 'Email',
+                label: 'Correo',
                 icon: Icons.email,
                 focusNode: _emailFocus,
                 onSaved: (value) => _email = value,
-                validator: (value) => value!.isEmpty ? 'Enter an email' : null,
+                validator: (value) =>
+                    value!.isEmpty ? 'Ingresa un correo' : null,
                 nextFocusNode: _phoneFocus,
               ),
 
               SizedBox(height: 16),
 
-              // Phone Field
+              // Campo de Teléfono
               _buildTextFormField(
-                label: 'Phone',
+                label: 'Teléfono',
                 icon: Icons.phone,
                 focusNode: _phoneFocus,
                 onSaved: (value) => _phone = value,
                 validator: (value) =>
-                    value!.isEmpty ? 'Enter a phone number' : null,
+                    value!.isEmpty ? 'Ingresa un número de teléfono' : null,
                 nextFocusNode: _cityFocus,
               ),
 
               SizedBox(height: 16),
 
-              // City Field
+              // Campo de Ciudad
               _buildTextFormField(
-                label: 'City',
+                label: 'Ciudad',
                 icon: Icons.location_city,
                 focusNode: _cityFocus,
                 onSaved: (value) => _city = value,
-                validator: (value) => value!.isEmpty ? 'Enter a city' : null,
+                validator: (value) => value!.isEmpty ? 'Ingresa una ciudad' : null,
                 nextFocusNode: _typeOfSellerFocus,
               ),
 
               SizedBox(height: 16),
 
-              // Type of Seller Field
+              // Campo de Tipo de Vendedor
               _buildTextFormField(
-                label: 'Type of Seller',
+                label: 'Tipo de Vendedor',
                 icon: Icons.store,
                 focusNode: _typeOfSellerFocus,
                 onSaved: (value) => _typeOfSeller = value,
                 validator: (value) =>
-                    value!.isEmpty ? 'Enter the type of seller' : null,
+                    value!.isEmpty ? 'Ingresa el tipo de vendedor' : null,
                 nextFocusNode: _addressFocus,
               ),
 
               SizedBox(height: 16),
 
-              // Address Field
+              // Campo de Dirección
               _buildTextFormField(
-                label: 'Address',
+                label: 'Dirección',
                 icon: Icons.home,
                 focusNode: _addressFocus,
                 onSaved: (value) => _address = value,
                 validator: (value) =>
-                    value!.isEmpty ? 'Enter an address' : null,
+                    value!.isEmpty ? 'Ingresa una dirección' : null,
                 nextFocusNode: _whatsappNoFocus,
               ),
 
               SizedBox(height: 16),
 
-              // WhatsApp No Field
+              // Campo de WhatsApp No
               _buildTextFormField(
                 label: 'WhatsApp No',
                 icon: Icons.chat,
@@ -165,19 +166,19 @@ class _AddSellerScreenState extends State<AddSellerScreen> {
                 onSaved: (value) => _whatsappNo = value,
                 textInputAction: TextInputAction.done,
                 onFieldSubmitted: (_) {
-                  _submitForm(); // Submit form when this field is done
+                  _submitForm(); // Enviar formulario cuando este campo esté hecho
                 },
                 validator: (String? value) {},
               ),
 
               SizedBox(height: 32),
 
-              // Submit Button
+              // Botón de Enviar
               ElevatedButton(
                 onPressed: _submitForm,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: Text('Add Seller', style: TextStyle(fontSize: 18)),
+                  child: Text('Agregar Vendedor', style: TextStyle(fontSize: 18)),
                 ),
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
@@ -194,7 +195,7 @@ class _AddSellerScreenState extends State<AddSellerScreen> {
     );
   }
 
-  // Helper method to build each form field
+  // Método auxiliar para construir cada campo del formulario
   Widget _buildTextFormField({
     required String label,
     required IconData icon,
@@ -221,9 +222,9 @@ class _AddSellerScreenState extends State<AddSellerScreen> {
       onFieldSubmitted: (_) {
         if (nextFocusNode != null) {
           FocusScope.of(context)
-              .requestFocus(nextFocusNode); // Move to the next field
+              .requestFocus(nextFocusNode); // Pasar al siguiente campo
         } else if (onFieldSubmitted != null) {
-          onFieldSubmitted(_); // Submit the form if this is the last field
+          onFieldSubmitted(_); // Enviar el formulario si es el último campo
         }
       },
     );
