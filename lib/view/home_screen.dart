@@ -10,116 +10,130 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Logo and Title
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Placeholder for logo
-                  // Image.network(
-                  //   'https://via.placeholder.com/100', // Use your own logo URL here
-                  //   height: 100,
-                  // ),
-                  // SizedBox(width: 10),
-                  Text(
-                    'COMPRODRONE',
-                    style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF1E88E5),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: 800, // Limit the content width to 800 pixels
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(40.0), // Larger padding for desktop
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Logo and Title
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(width: 10),
+                    Text(
+                      'COMPRODRONE',
+                      style: TextStyle(
+                        fontSize: 50, // Larger font size for desktop
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1E88E5),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-
-              SizedBox(height: 20),
-
-              // Subtitle
-              const Text(
-                'REGISTRO GENERAL',
-                style: TextStyle(
-                  fontSize: 24,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  backgroundColor: Color(0xFF29B6F6),
+                  ],
                 ),
-                textAlign: TextAlign.center,
-              ),
+                SizedBox(height: 20),
 
-              SizedBox(height: 30),
+                // Subtitle
+                Text(
+                  'REGISTRO GENERAL',
+                  style: TextStyle(
+                    fontSize: 28, // Increased font size
+                    color: Color(0xFF29B6F6),
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 50),
 
-              // Buttons Layout
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Column(
-                    children: [
-                      CustomButton(
-                        text: 'COMPRADORES / Buyers',
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => BuyerListScreen(),
-                              ));
-                        },
+                // Buttons Layout with more spacing for desktop
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          CustomButton(
+                            text: 'COMPRADORES / Buyers',
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => BuyerListScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                          SizedBox(height: 20),
+                          CustomButton(
+                            text: 'VENDEDORES / Sellers',
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SellerListScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                          SizedBox(height: 20),
+                        ],
                       ),
-                      SizedBox(height: 20),
-                      CustomButton(
-                        text: 'VENDEDORES / Sellers',
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SellerListScreen(),
-                              ));
-                        },
+                    ),
+                    SizedBox(
+                        width:
+                            40), // Increase the space between columns for desktop
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          CustomButton(
+                            text: 'PROVEEDORES / Suppliers',
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SupplierListScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                          SizedBox(height: 20),
+                          CustomButton(
+                            text: 'Crear contrato',
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ContractCreationScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
                       ),
-                      SizedBox(height: 20),
-                      CustomButton(
-                        text: 'TASACION / Assessment',
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => BuyerListScreen(),
-                              ));
-                        },
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      CustomButton(
-                        text: 'PROVEEDORES / Suppliers',
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => SupplierListScreen(),
-                              ));
-                        },
-                      ),
-                      SizedBox(height: 20),
-                      CustomButton(
-                        text: 'Crear contrato',
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ContractCreationScreen(),
-                              ));
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
+                    ),
+                  ],
+                ),
+                // CustomButton(
+                //   text: 'TASACION / Assessment',
+                //   onPressed: () {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //         builder: (context) => BuyerListScreen(),
+                //       ),
+                //     );
+                //   },
+                // )
+              ],
+            ),
           ),
         ),
       ),
@@ -127,31 +141,57 @@ class HomePage extends StatelessWidget {
   }
 }
 
-class CustomButton extends StatelessWidget {
+class CustomButton extends StatefulWidget {
   final String text;
-  final VoidCallback onPressed; // Accepts a callback function
+  final VoidCallback onPressed;
 
   const CustomButton({
     required this.text,
-    required this.onPressed, // This is the new parameter
+    required this.onPressed,
   });
 
   @override
+  _CustomButtonState createState() => _CustomButtonState();
+}
+
+class _CustomButtonState extends State<CustomButton> {
+  bool isHovered = false;
+
+  @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 200,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.grey[800],
-          padding: EdgeInsets.symmetric(vertical: 15),
-        ),
-        onPressed: onPressed, // Assign the passed callback function
-        child: Text(
-          text,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16,
+    return MouseRegion(
+      onEnter: (_) {
+        setState(() {
+          isHovered = true;
+        });
+      },
+      onExit: (_) {
+        setState(() {
+          isHovered = false;
+        });
+      },
+      child: SizedBox(
+        width: double.infinity, // Button takes full width of the column
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor:
+                isHovered ? Colors.blueGrey[700] : Colors.grey[800],
+            padding: EdgeInsets.symmetric(
+                vertical: 20), // Increased padding for desktop
+            elevation: isHovered ? 10 : 5, // Change elevation on hover
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+          onPressed: widget.onPressed,
+          child: Text(
+            widget.text,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 18, // Slightly larger font for desktop
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),

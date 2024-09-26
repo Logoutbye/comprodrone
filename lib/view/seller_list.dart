@@ -1,9 +1,9 @@
-import 'package:com_pro_drone/models/seller_model.dart'; // Make sure the correct path is used for your Seller model
+import 'package:com_pro_drone/models/seller_model.dart'; // Ensure correct model path
 import 'package:com_pro_drone/view/add_drone.dart';
 import 'package:com_pro_drone/view/add_seller_screen.dart';
 import 'package:com_pro_drone/view/drone_list_screen.dart';
 import 'package:flutter/material.dart';
-import '../services/seller_services.dart'; // Update this path to your SellerService
+import '../services/seller_services.dart'; // Ensure correct service path
 
 class SellerListScreen extends StatelessWidget {
   final SellerService sellerService =
@@ -11,112 +11,157 @@ class SellerListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>
-                    AddSellerScreen()), // Adjust path for AddSellerScreen
-          );
-        },
-        child: Icon(Icons.add),
-      ),
-      appBar: AppBar(
-        title: Text('Sellers'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.import_contacts),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Scaffold(
+          floatingActionButton: FloatingActionButton(
+            foregroundColor: Colors.white,
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => DroneListScreen()),
+                MaterialPageRoute(
+                  builder: (context) => AddSellerScreen(),
+                ),
               );
             },
+            child: Icon(Icons.add),
+            backgroundColor: Colors.blue,
           ),
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AddDroneScreen()),
-              );
-            },
+          appBar: AppBar(
+            backgroundColor: Colors.blue,
+            foregroundColor: Colors.white,
+            title: Text('Sellers'),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.import_contacts),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DroneListScreen()),
+                  );
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AddDroneScreen()),
+                  );
+                },
+              ),
+            ],
           ),
-        ],
-      ),
-      body: StreamBuilder<List<Seller>>(
-        stream: sellerService.getAllSellers(), // Fetch the sellers in real-time
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator()); // Loading state
-          }
+          body: Center(
+            child: Column(
+              children: [
+                StreamBuilder<List<Seller>>(
+                  stream: sellerService.getAllSellers(), // Fetch sellers
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    }
 
-          if (snapshot.hasError) {
-            return Center(
-                child: Text('Error: ${snapshot.error}')); // Error state
-          }
+                    if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    }
 
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No Sellers Found')); // Empty state
-          }
+                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Center(
+                        child: Text(
+                          'No Sellers Found',
+                          style: TextStyle(fontSize: 18, color: Colors.grey),
+                        ),
+                      );
+                    }
 
-          // If we have data, display it in a DataTable
-          List<Seller> sellers = snapshot.data!;
-          return SingleChildScrollView(
-            scrollDirection: Axis.horizontal, // Handle overflow
-            child: DataTable(
-              border: TableBorder.all(
-                  color: Colors.grey), // Add border to the table
-              columns: [
-                DataColumn(label: Text('ID')),
-                DataColumn(label: Text('Seller Name')),
-                DataColumn(label: Text('Email')),
-                DataColumn(label: Text('Phone')),
-                DataColumn(label: Text('City')),
-                DataColumn(label: Text('Type')),
-                DataColumn(label: Text('Address')),
-                DataColumn(label: Text('WhatsApp Link')),
-                DataColumn(label: Text('Actions')),
+                    List<Seller> sellers = snapshot.data!;
+                    return _buildResponsiveDataTable(
+                        context, sellers, constraints);
+                  },
+                ),
               ],
-              rows: sellers.map((seller) {
-                return DataRow(cells: [
-                  DataCell(Text(seller.id)),
-                  DataCell(Text(seller.sellerName)),
-                  DataCell(Text(seller.email)),
-                  DataCell(Text(seller.phone)),
-                  DataCell(Text(seller.city)),
-                  DataCell(Text(seller.typeOfSeller)),
-                  DataCell(Text(seller.address)),
-                  DataCell(Text(seller.whatsappNo)), // Show WhatsApp link
-                  DataCell(
-                    Row(
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.edit),
-                          onPressed: () {
-                            _showEditDialog(context, seller); // Show dialog
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () {
-                            _confirmDelete(
-                                context,
-                                seller
-                                    .id); // Call confirmation dialog before deleting
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                ]);
-              }).toList(),
             ),
-          );
-        },
+          ),
+        );
+      },
+    );
+  }
+
+  // Build the responsive DataTable
+  Widget _buildResponsiveDataTable(
+      BuildContext context, List<Seller> sellers, BoxConstraints constraints) {
+    final bool isSmallScreen = constraints.maxWidth < 600;
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal, // Enable horizontal scroll
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: DataTable(
+            border: TableBorder.all(color: Colors.grey[300]!, width: 1),
+            columns: _buildTableColumns(isSmallScreen), // Adjust columns
+            rows: sellers
+                .map((seller) => _buildDataRow(context, seller, isSmallScreen))
+                .toList(),
+          ),
+        ),
       ),
+    );
+  }
+
+  // Create the DataTable columns based on screen size
+  List<DataColumn> _buildTableColumns(bool isSmallScreen) {
+    return [
+      DataColumn(label: Text('ID', style: _tableHeaderStyle())),
+      DataColumn(label: Text('Seller Name', style: _tableHeaderStyle())),
+      if (!isSmallScreen) ...[
+        DataColumn(label: Text('Email', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Phone', style: _tableHeaderStyle())),
+        DataColumn(label: Text('City', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Type', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Address', style: _tableHeaderStyle())),
+        DataColumn(label: Text('WhatsApp', style: _tableHeaderStyle())),
+      ],
+      DataColumn(label: Text('Actions', style: _tableHeaderStyle())),
+    ];
+  }
+
+  // Create the DataRow for each seller
+  DataRow _buildDataRow(
+      BuildContext context, Seller seller, bool isSmallScreen) {
+    return DataRow(
+      cells: [
+        DataCell(Text(seller.id)),
+        DataCell(Text(seller.sellerName)),
+        if (!isSmallScreen) ...[
+          DataCell(Text(seller.email)),
+          DataCell(Text(seller.phone)),
+          DataCell(Text(seller.city)),
+          DataCell(Text(seller.typeOfSeller)),
+          DataCell(Text(seller.address)),
+          DataCell(Text(seller.whatsappNo)),
+        ],
+        DataCell(
+          Row(
+            children: [
+              IconButton(
+                icon: Icon(Icons.edit, color: Colors.blueAccent),
+                onPressed: () {
+                  _showEditDialog(context, seller);
+                },
+                tooltip: 'Edit Seller',
+              ),
+              IconButton(
+                icon: Icon(Icons.delete, color: Colors.redAccent),
+                onPressed: () {
+                  _confirmDelete(context, seller.id);
+                },
+                tooltip: 'Delete Seller',
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -146,49 +191,27 @@ class SellerListScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextField(
-                  controller: nameController,
-                  decoration: InputDecoration(labelText: 'Seller Name'),
-                ),
-                TextField(
-                  controller: emailController,
-                  decoration: InputDecoration(labelText: 'Email'),
-                ),
-                TextField(
-                  controller: phoneController,
-                  decoration: InputDecoration(labelText: 'Phone'),
-                ),
-                TextField(
-                  controller: cityController,
-                  decoration: InputDecoration(labelText: 'City'),
-                ),
-                TextField(
-                  controller: typeController,
-                  decoration: InputDecoration(labelText: 'Type of Seller'),
-                ),
-                TextField(
-                  controller: addressController,
-                  decoration: InputDecoration(labelText: 'Address'),
-                ),
-                TextField(
-                  controller: whatsappController,
-                  decoration: InputDecoration(labelText: 'WhatsApp No'),
-                ),
+                _buildTextField(nameController, 'Seller Name'),
+                _buildTextField(emailController, 'Email'),
+                _buildTextField(phoneController, 'Phone'),
+                _buildTextField(cityController, 'City'),
+                _buildTextField(typeController, 'Type of Seller'),
+                _buildTextField(addressController, 'Address'),
+                _buildTextField(whatsappController, 'WhatsApp No'),
               ],
             ),
           ),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
               child: Text('Cancel'),
             ),
-            TextButton(
+            ElevatedButton(
               onPressed: () async {
-                // Update the seller's information
                 Seller updatedSeller = Seller(
-                  id: seller.id, // Keep the same ID
+                  id: seller.id,
                   sellerName: nameController.text,
                   email: emailController.text,
                   phone: phoneController.text,
@@ -198,15 +221,28 @@ class SellerListScreen extends StatelessWidget {
                   whatsappNo: whatsappController.text,
                 );
 
-                await sellerService.updateSeller(
-                    seller.id, updatedSeller); // Update the seller
-                Navigator.of(context).pop(); // Close the dialog
+                await sellerService.updateSeller(seller.id, updatedSeller);
+                Navigator.of(context).pop();
               },
               child: Text('Update'),
             ),
           ],
         );
       },
+    );
+  }
+
+  // Method to build a TextField for the Edit dialog
+  Widget _buildTextField(TextEditingController controller, String label) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(),
+        ),
+      ),
     );
   }
 
@@ -221,20 +257,31 @@ class SellerListScreen extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
               child: Text('Cancel'),
             ),
-            TextButton(
+            ElevatedButton(
               onPressed: () async {
-                await sellerService.deleteSeller(sellerId); // Delete seller
-                Navigator.of(context).pop(); // Close the dialog
+                await sellerService.deleteSeller(sellerId);
+                Navigator.of(context).pop();
               },
+              style:
+                  ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
               child: Text('Delete'),
             ),
           ],
         );
       },
+    );
+  }
+
+  // Table Header Styling
+  TextStyle _tableHeaderStyle() {
+    return TextStyle(
+      fontWeight: FontWeight.bold,
+      color: Colors.black54,
+      fontSize: 16,
     );
   }
 }

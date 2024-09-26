@@ -56,17 +56,23 @@ class _DroneListScreenState extends State<DroneListScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
         title: const Text('Drone List'),
         bottom: TabBar(
+          labelStyle: TextStyle(color: Colors.white),
           controller: _tabController,
           tabs: const [
-            Tab(text: 'Active Drones'),
+            Tab(
+              text: 'Active Drones',
+            ),
             Tab(text: 'Non-Active Drones'),
           ],
         ),
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
+            tooltip: 'Add Drone',
             onPressed: () {
               Navigator.push(
                   context,
@@ -80,8 +86,8 @@ class _DroneListScreenState extends State<DroneListScreen>
       body: TabBarView(
         controller: _tabController,
         children: [
-          _buildDroneList(true),
-          _buildDroneList(false),
+          _buildDroneList(true), // Active Drones
+          _buildDroneList(false), // Non-Active Drones
         ],
       ),
     );
@@ -109,18 +115,19 @@ class _DroneListScreenState extends State<DroneListScreen>
         return SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: DataTable(
-            border: TableBorder.all(),
+            border: TableBorder.all(color: Colors.grey[300]!),
             columns: [
-              DataColumn(label: Text('Drone ID')),
-              DataColumn(label: Text('Brand')),
-              DataColumn(label: Text('Model')),
-              DataColumn(label: Text('Status')),
-              DataColumn(label: Text('Web Price')),
-              DataColumn(label: Text('Customer Price')),
-              DataColumn(label: Text('Commission')),
-              DataColumn(label: Text('Follow Up')),
-              DataColumn(label: Text('Sold Date')),
-              DataColumn(label: Text('Actions')),
+              DataColumn(label: Text('Drone ID', style: _tableHeaderStyle())),
+              DataColumn(label: Text('Brand', style: _tableHeaderStyle())),
+              DataColumn(label: Text('Model', style: _tableHeaderStyle())),
+              DataColumn(label: Text('Status', style: _tableHeaderStyle())),
+              DataColumn(label: Text('Web Price', style: _tableHeaderStyle())),
+              DataColumn(
+                  label: Text('Customer Price', style: _tableHeaderStyle())),
+              DataColumn(label: Text('Commission', style: _tableHeaderStyle())),
+              DataColumn(label: Text('Follow Up', style: _tableHeaderStyle())),
+              DataColumn(label: Text('Sold Date', style: _tableHeaderStyle())),
+              DataColumn(label: Text('Actions', style: _tableHeaderStyle())),
             ],
             rows: drones.map((drone) {
               return DataRow(cells: [
@@ -138,16 +145,18 @@ class _DroneListScreenState extends State<DroneListScreen>
                   Row(
                     children: [
                       IconButton(
-                        icon: Icon(Icons.edit),
+                        icon: Icon(Icons.edit, color: Colors.blueAccent),
                         onPressed: () {
                           _showUpdateDialog(context, drone); // Update dialog
                         },
+                        tooltip: 'Edit Drone',
                       ),
                       IconButton(
-                        icon: Icon(Icons.delete),
+                        icon: Icon(Icons.delete, color: Colors.redAccent),
                         onPressed: () {
                           _confirmDelete(context, drone.dId);
                         },
+                        tooltip: 'Delete Drone',
                       ),
                     ],
                   ),
@@ -160,6 +169,7 @@ class _DroneListScreenState extends State<DroneListScreen>
     );
   }
 
+  // Method to confirm drone deletion
   void _confirmDelete(BuildContext context, String droneId) {
     showDialog(
       context: context,
@@ -174,7 +184,9 @@ class _DroneListScreenState extends State<DroneListScreen>
               },
               child: Text('Cancel'),
             ),
-            TextButton(
+            ElevatedButton(
+              style:
+                  ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
               onPressed: () {
                 droneService.deleteDrone(droneId); // Call delete method
                 Navigator.of(context).pop(); // Close dialog
@@ -187,8 +199,8 @@ class _DroneListScreenState extends State<DroneListScreen>
     );
   }
 
+  // Method to show drone update dialog
   void _showUpdateDialog(BuildContext context, Drone drone) {
-    // Initialize controllers with existing drone data
     final TextEditingController brandController =
         TextEditingController(text: drone.brand);
     final TextEditingController modelController =
@@ -207,14 +219,10 @@ class _DroneListScreenState extends State<DroneListScreen>
           : '',
     );
 
-    // For dropdowns
     ValueNotifier<String?> selectedSellerId = ValueNotifier<String?>(drone.sId);
     ValueNotifier<String?> selectedBuyerId = ValueNotifier<String?>(drone.bId);
-
-    // Status of the drone (active or not) using ValueNotifier
     ValueNotifier<bool> isActive = ValueNotifier<bool>(drone.status);
 
-    // Show dialog
     showDialog(
       context: context,
       builder: (context) {
@@ -222,102 +230,47 @@ class _DroneListScreenState extends State<DroneListScreen>
           title: Text('Update Drone'),
           content: SingleChildScrollView(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                TextField(
-                  controller: brandController,
-                  decoration: InputDecoration(labelText: 'Brand'),
-                ),
-                TextField(
-                  controller: modelController,
-                  decoration: InputDecoration(labelText: 'Model'),
-                ),
-                TextField(
-                  controller: webPriceController,
-                  decoration: InputDecoration(labelText: 'Web Price'),
-                  keyboardType: TextInputType.number,
-                ),
-                TextField(
-                  controller: customerPriceController,
-                  decoration: InputDecoration(labelText: 'Customer Price'),
-                  keyboardType: TextInputType.number,
-                ),
-                TextField(
-                  controller: commissionController,
-                  decoration: InputDecoration(labelText: 'Commission'),
-                ),
-                TextField(
-                  controller: followUpController,
-                  decoration: InputDecoration(labelText: 'Follow Up'),
-                ),
-                // ValueListenableBuilder for Seller Dropdown
-                ValueListenableBuilder<String?>(
-                  valueListenable: selectedSellerId,
-                  builder: (context, value, child) {
-                    return DropdownButton<String>(
-                      value: value,
-                      hint: Text('Select Seller'),
-                      onChanged: (String? newValue) {
-                        selectedSellerId.value = newValue;
-                      },
-                      items: sellers
-                          .map<DropdownMenuItem<String>>((Seller seller) {
-                        return DropdownMenuItem<String>(
-                          value: seller.id,
-                          child: Text(seller.sellerName),
-                        );
-                      }).toList(),
+                _buildTextField(brandController, 'Brand'),
+                _buildTextField(modelController, 'Model'),
+                _buildTextField(webPriceController, 'Web Price',
+                    keyboardType: TextInputType.number),
+                _buildTextField(customerPriceController, 'Customer Price',
+                    keyboardType: TextInputType.number),
+                _buildTextField(commissionController, 'Commission'),
+                _buildTextField(followUpController, 'Follow Up'),
+                _buildDropdownButton(
+                  context,
+                  'Select Seller',
+                  selectedSellerId,
+                  sellers.map<DropdownMenuItem<String>>((Seller seller) {
+                    return DropdownMenuItem<String>(
+                      value: seller.id,
+                      child: Text(seller.sellerName),
                     );
-                  },
+                  }).toList(),
                 ),
-                // ValueListenableBuilder for Buyer Dropdown
-                ValueListenableBuilder<String?>(
-                  valueListenable: selectedBuyerId,
-                  builder: (context, value, child) {
-                    return DropdownButton<String>(
-                      value: value,
-                      hint: Text('Select Buyer'),
-                      onChanged: (String? newValue) {
-                        selectedBuyerId.value = newValue;
-                      },
-                      items:
-                          buyers.map<DropdownMenuItem<String>>((Buyer buyer) {
-                        return DropdownMenuItem<String>(
-                          value: buyer.id,
-                          child: Text(buyer.buyer),
-                        );
-                      }).toList(),
+                _buildDropdownButton(
+                  context,
+                  'Select Buyer',
+                  selectedBuyerId,
+                  buyers.map<DropdownMenuItem<String>>((Buyer buyer) {
+                    return DropdownMenuItem<String>(
+                      value: buyer.id,
+                      child: Text(buyer.buyer),
                     );
-                  },
+                  }).toList(),
                 ),
-                // Sold Date
-                TextField(
-                  controller: soldDateController,
-                  decoration:
-                      InputDecoration(labelText: 'Sold Date (YYYY-MM-DD)'),
-                  keyboardType: TextInputType.datetime,
-                  onTap: () async {
-                    DateTime? picked = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2100),
-                    );
-                    if (picked != null) {
-                      soldDateController.text =
-                          DateFormat('yyyy-MM-dd').format(picked);
-                    }
-                  },
-                ),
-                // ValueListenableBuilder for Status Checkbox
+                _buildDateField(soldDateController, context, 'Sold Date'),
                 ValueListenableBuilder<bool>(
                   valueListenable: isActive,
                   builder: (context, value, child) {
                     return CheckboxListTile(
                       title: Text('Is Active?'),
                       value: value,
-                      onChanged: (bool? newValue) {
-                        isActive.value =
-                            newValue ?? false; // Default to false if null
+                      onChanged: (newValue) {
+                        isActive.value = newValue ?? false;
                       },
                     );
                   },
@@ -332,32 +285,26 @@ class _DroneListScreenState extends State<DroneListScreen>
               },
               child: Text('Cancel'),
             ),
-            TextButton(
+            ElevatedButton(
               onPressed: () {
-                // Update the drone details
                 Drone updatedDrone = Drone(
-                  dId: drone.dId, // Keep the same drone ID
+                  dId: drone.dId,
                   bId: selectedBuyerId.value!,
                   sId: selectedSellerId.value!,
                   brand: brandController.text,
                   model: modelController.text,
-                  serialNumber:
-                      drone.serialNumber, // Serial number remains unchanged
+                  serialNumber: drone.serialNumber, // Unchanged serial number
                   webPrice: webPriceController.text,
                   customerPrice: customerPriceController.text,
                   commision: commissionController.text,
                   followUp: followUpController.text,
-                  status:
-                      isActive.value, // Update the status from ValueNotifier
+                  status: isActive.value, // Updated status
                   soldDate: soldDateController.text.isNotEmpty
                       ? DateTime.tryParse(soldDateController.text)
-                      : null, // Parse the date if provided
-                  contractNo: drone.contractNo, // Keep the same contract number
+                      : null,
+                  contractNo: drone.contractNo,
                 );
-
-                // Call the update service
                 droneService.updateDrone(drone.dId, updatedDrone);
-
                 Navigator.of(context).pop(); // Close dialog after updating
               },
               child: Text('Update'),
@@ -365,6 +312,79 @@ class _DroneListScreenState extends State<DroneListScreen>
           ],
         );
       },
+    );
+  }
+
+  // Helper to build a text field
+  Widget _buildTextField(TextEditingController controller, String label,
+      {TextInputType keyboardType = TextInputType.text}) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0),
+      child: TextField(
+        controller: controller,
+        keyboardType: keyboardType,
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(),
+        ),
+      ),
+    );
+  }
+
+  // Helper to build a date field
+  Widget _buildDateField(TextEditingController controller, BuildContext context,
+      String labelText) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: labelText,
+          border: OutlineInputBorder(),
+        ),
+        onTap: () async {
+          DateTime? pickedDate = await showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2000),
+            lastDate: DateTime(2101),
+          );
+          if (pickedDate != null) {
+            controller.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+          }
+        },
+      ),
+    );
+  }
+
+  // Helper to build a dropdown button
+  Widget _buildDropdownButton(BuildContext context, String hint,
+      ValueNotifier<String?> selectedId, List<DropdownMenuItem<String>> items) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0),
+      child: ValueListenableBuilder<String?>(
+        valueListenable: selectedId,
+        builder: (context, value, child) {
+          return DropdownButton<String>(
+            value: value,
+            isExpanded: true,
+            hint: Text(hint),
+            onChanged: (newValue) {
+              selectedId.value = newValue;
+            },
+            items: items,
+          );
+        },
+      ),
+    );
+  }
+
+  // Helper method for table headers
+  TextStyle _tableHeaderStyle() {
+    return TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 16,
+      color: Colors.black54,
     );
   }
 }

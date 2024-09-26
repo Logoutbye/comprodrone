@@ -30,12 +30,10 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
     buyerEmailController.dispose();
     buyerPhoneController.dispose();
     buyerCityController.dispose();
-
     sellerNameController.dispose();
     sellerEmailController.dispose();
     sellerPhoneController.dispose();
     sellerCityController.dispose();
-
     droneModelController.dispose();
     contractNumberController.dispose();
     super.dispose();
@@ -83,7 +81,9 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
                 pw.SizedBox(height: 10),
 
                 // Buyer Information
-                pw.Text("Buyer Information:", style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold)),
+                pw.Text("Buyer Information:",
+                    style: pw.TextStyle(
+                        fontSize: 16, fontWeight: pw.FontWeight.bold)),
                 pw.Text("Name: ${buyerNameController.text}"),
                 pw.Text("Email: ${buyerEmailController.text}"),
                 pw.Text("Phone: ${buyerPhoneController.text}"),
@@ -91,7 +91,9 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
                 pw.SizedBox(height: 10),
 
                 // Seller Information
-                pw.Text("Seller Information:", style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold)),
+                pw.Text("Seller Information:",
+                    style: pw.TextStyle(
+                        fontSize: 16, fontWeight: pw.FontWeight.bold)),
                 pw.Text("Name: ${sellerNameController.text}"),
                 pw.Text("Email: ${sellerEmailController.text}"),
                 pw.Text("Phone: ${sellerPhoneController.text}"),
@@ -99,7 +101,9 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
                 pw.SizedBox(height: 10),
 
                 // Drone Information
-                pw.Text("Drone Information:", style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold)),
+                pw.Text("Drone Information:",
+                    style: pw.TextStyle(
+                        fontSize: 16, fontWeight: pw.FontWeight.bold)),
                 pw.Text("Model: ${droneModelController.text}"),
                 pw.Text("Brand: DroneX"),
                 pw.Text("Serial Number: SN-123456789"),
@@ -110,7 +114,8 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
                 // Constant Terms and Conditions
                 pw.Text(
                   "Terms and Conditions:",
-                  style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold),
+                  style: pw.TextStyle(
+                      fontSize: 16, fontWeight: pw.FontWeight.bold),
                 ),
                 pw.Text(
                   "1. The seller guarantees that the drone is in good working condition.",
@@ -128,7 +133,8 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
 
                 pw.Text(
                   "Signatures:",
-                  style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold),
+                  style: pw.TextStyle(
+                      fontSize: 16, fontWeight: pw.FontWeight.bold),
                 ),
                 pw.SizedBox(height: 30),
                 pw.Text("Buyer Signature: ______________________"),
@@ -141,7 +147,6 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
       ),
     );
 
-    // Share the PDF (download it to device or share it)
     await Printing.sharePdf(
       bytes: await pdf.save(),
       filename: 'contract_${contractNumberController.text}.pdf',
@@ -196,109 +201,168 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Create Contract')),
+      appBar: AppBar(
+        foregroundColor: Colors.white,
+        title: Text(
+          'Create Contract',
+          style: TextStyle(fontSize: 20),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.blue,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: ListView(
             children: [
-              // Buyer Name Field
-              TextFormField(
-                controller: buyerNameController,
-                decoration: InputDecoration(labelText: 'Buyer Name'),
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter the buyer name' : null,
-                textInputAction: TextInputAction.next,
+              // Buyer Section
+              Text(
+                'Buyer Details',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueGrey[900]),
               ),
-              // Buyer Email Field
-              TextFormField(
-                controller: buyerEmailController,
-                decoration: InputDecoration(labelText: 'Buyer Email'),
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter the buyer email' : null,
-                textInputAction: TextInputAction.next,
+              Card(
+                elevation: 4,
+                margin: EdgeInsets.symmetric(vertical: 10),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      _buildTextField(
+                          controller: buyerNameController,
+                          labelText: 'Buyer Name',
+                          icon: Icons.person),
+                      SizedBox(height: 10),
+                      _buildTextField(
+                          controller: buyerEmailController,
+                          labelText: 'Buyer Email',
+                          icon: Icons.email),
+                      SizedBox(height: 10),
+                      _buildTextField(
+                          controller: buyerPhoneController,
+                          labelText: 'Buyer Phone',
+                          icon: Icons.phone),
+                      SizedBox(height: 10),
+                      _buildTextField(
+                          controller: buyerCityController,
+                          labelText: 'Buyer City',
+                          icon: Icons.location_city),
+                    ],
+                  ),
+                ),
               ),
-              // Buyer Phone Field
-              TextFormField(
-                controller: buyerPhoneController,
-                decoration: InputDecoration(labelText: 'Buyer Phone'),
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter the buyer phone number' : null,
-                textInputAction: TextInputAction.next,
-              ),
-              // Buyer City Field
-              TextFormField(
-                controller: buyerCityController,
-                decoration: InputDecoration(labelText: 'Buyer City'),
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter the buyer city' : null,
-                textInputAction: TextInputAction.next,
-              ),
-              SizedBox(height: 10),
+              Divider(),
 
-              // Seller Name Field
-              TextFormField(
-                controller: sellerNameController,
-                decoration: InputDecoration(labelText: 'Seller Name'),
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter the seller name' : null,
-                textInputAction: TextInputAction.next,
+              // Seller Section
+              Text(
+                'Seller Details',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueGrey[900]),
               ),
-              // Seller Email Field
-              TextFormField(
-                controller: sellerEmailController,
-                decoration: InputDecoration(labelText: 'Seller Email'),
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter the seller email' : null,
-                textInputAction: TextInputAction.next,
+              Card(
+                elevation: 4,
+                margin: EdgeInsets.symmetric(vertical: 10),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      _buildTextField(
+                          controller: sellerNameController,
+                          labelText: 'Seller Name',
+                          icon: Icons.person),
+                      SizedBox(height: 10),
+                      _buildTextField(
+                          controller: sellerEmailController,
+                          labelText: 'Seller Email',
+                          icon: Icons.email),
+                      SizedBox(height: 10),
+                      _buildTextField(
+                          controller: sellerPhoneController,
+                          labelText: 'Seller Phone',
+                          icon: Icons.phone),
+                      SizedBox(height: 10),
+                      _buildTextField(
+                          controller: sellerCityController,
+                          labelText: 'Seller City',
+                          icon: Icons.location_city),
+                    ],
+                  ),
+                ),
               ),
-              // Seller Phone Field
-              TextFormField(
-                controller: sellerPhoneController,
-                decoration: InputDecoration(labelText: 'Seller Phone'),
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter the seller phone number' : null,
-                textInputAction: TextInputAction.next,
-              ),
-              // Seller City Field
-              TextFormField(
-                controller: sellerCityController,
-                decoration: InputDecoration(labelText: 'Seller City'),
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter the seller city' : null,
-                textInputAction: TextInputAction.next,
-              ),
-              SizedBox(height: 10),
+              Divider(),
 
-              // Drone Model Field
-              TextFormField(
-                controller: droneModelController,
-                decoration: InputDecoration(labelText: 'Drone Model'),
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter the drone model' : null,
-                textInputAction: TextInputAction.next,
+              // Drone and Contract Section
+              Text(
+                'Contract & Drone Details',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blueGrey[900]),
               ),
-              // Contract Number Field
-              TextFormField(
-                controller: contractNumberController,
-                decoration: InputDecoration(labelText: 'Contract Number'),
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter the contract number' : null,
-                textInputAction: TextInputAction.done,
+              Card(
+                elevation: 4,
+                margin: EdgeInsets.symmetric(vertical: 10),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      _buildTextField(
+                          controller: droneModelController,
+                          labelText: 'Drone Model',
+                          icon: Icons.toys),
+                      SizedBox(height: 10),
+                      _buildTextField(
+                          controller: contractNumberController,
+                          labelText: 'Contract Number',
+                          icon: Icons.confirmation_number),
+                    ],
+                  ),
+                ),
               ),
               SizedBox(height: 20),
+
               // Submit Button
               ElevatedButton(
                 onPressed: () async {
                   await _submitForm();
                 },
-                child: Text('Preview and Generate Contract'),
+                child: Text(
+                  'Preview and Generate Contract',
+                  style: TextStyle(color: Colors.white),
+                ),
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: Colors.blue,
+                  textStyle: TextStyle(fontSize: 18),
+                ),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  // Helper method to build TextFormFields with icon and validation
+  Widget _buildTextField(
+      {required TextEditingController controller,
+      required String labelText,
+      required IconData icon}) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: labelText,
+        prefixIcon: Icon(icon),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+      ),
+      validator: (value) => value!.isEmpty ? 'Enter $labelText' : null,
     );
   }
 }

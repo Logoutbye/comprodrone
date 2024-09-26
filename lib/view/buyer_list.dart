@@ -11,6 +11,7 @@ class BuyerListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
+        foregroundColor: Colors.white,
         onPressed: () {
           Navigator.push(
             context,
@@ -18,79 +19,131 @@ class BuyerListScreen extends StatelessWidget {
           );
         },
         child: Icon(Icons.add),
+        backgroundColor: Colors.blueAccent, // Update the button color
       ),
-      appBar: AppBar(title: Text('Buyers')),
-      body: StreamBuilder<List<Buyer>>(
-        stream: buyerService.getAllBuyers(), // Fetch the buyers in real-time
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator()); // Loading state
-          }
+      appBar: AppBar(
+        foregroundColor: Colors.white,
+        title: Text('Buyer List', style: TextStyle(fontSize: 22)),
+        centerTitle: true,
+        backgroundColor: Colors.blueAccent, // Update the app bar color
+        elevation: 0,
+      ),
+      body: Column(
+        children: [
+          Center(
+            child: StreamBuilder<List<Buyer>>(
+              stream:
+                  buyerService.getAllBuyers(), // Fetch the buyers in real-time
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                      child: CircularProgressIndicator()); // Loading state
+                }
 
-          if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}')); // Error state
-          }
+                if (snapshot.hasError) {
+                  return Center(
+                      child: Text('Error: ${snapshot.error}')); // Error state
+                }
 
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No Buyers Found')); // Empty state
-          }
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(
+                    child: Text(
+                      'No Buyers Found',
+                      style: TextStyle(fontSize: 18, color: Colors.grey),
+                    ),
+                  ); // Empty state
+                }
 
-          // If we have data, display it in a DataTable
-          List<Buyer> buyers = snapshot.data!;
-          return SingleChildScrollView(
-            scrollDirection: Axis.horizontal, // Handle overflow
-            child: DataTable(
-              border: TableBorder.all(color: Colors.grey), // Add border to the table
-              columns: [
-                DataColumn(label: Text('ID')),
-                DataColumn(label: Text('Date')),
-                DataColumn(label: Text('Name')),
-                DataColumn(label: Text('Email')),
-                DataColumn(label: Text('City')),
-                DataColumn(label: Text('Phone')),
-                DataColumn(label: Text('Requirements')),
-                DataColumn(label: Text('Remarks')),
-                DataColumn(label: Text('Follow Up')),
-                DataColumn(label: Text('Notes')),
-                DataColumn(label: Text('Budget')),
-                DataColumn(label: Text('Actions')),
-              ],
-              rows: buyers.map((buyer) {
-                return DataRow(cells: [
-                  DataCell(Text(buyer.id)),
-                  DataCell(Text(buyer.date)),
-                  DataCell(Text(buyer.buyer)),
-                  DataCell(Text(buyer.email)),
-                  DataCell(Text(buyer.city)),
-                  DataCell(Text(buyer.phone)),
-                  DataCell(Text(buyer.requirements)),
-                  DataCell(Text(buyer.remarks)), // Show remarks
-                  DataCell(Text(buyer.followUp)), // Show follow-up
-                  DataCell(Text(buyer.notes)), // Show notes
-                  DataCell(Text(buyer.budget)), // Show budget
-                  DataCell(
-                    Row(
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.edit),
-                          onPressed: () {
-                            _showEditDialog(context, buyer); // Show dialog
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () {
-                            _confirmDelete(context, buyer.id); // Call confirmation dialog before deleting
-                          },
-                        ),
-                      ],
+                // If we have data, display it in a DataTable
+                List<Buyer> buyers = snapshot.data!;
+                return SingleChildScrollView(
+                  scrollDirection:
+                      Axis.horizontal, // Handle overflow for many columns
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: DataTable(
+                        border: TableBorder.all(
+                            color: Colors.grey[300]!,
+                            width: 1), // Add border to the table
+                        columns: [
+                          DataColumn(
+                              label: Text('ID', style: _tableHeaderStyle())),
+                          DataColumn(
+                              label: Text('Date', style: _tableHeaderStyle())),
+                          DataColumn(
+                              label: Text('Name', style: _tableHeaderStyle())),
+                          DataColumn(
+                              label: Text('Email', style: _tableHeaderStyle())),
+                          DataColumn(
+                              label: Text('City', style: _tableHeaderStyle())),
+                          DataColumn(
+                              label: Text('Phone', style: _tableHeaderStyle())),
+                          DataColumn(
+                              label: Text('Requirements',
+                                  style: _tableHeaderStyle())),
+                          DataColumn(
+                              label:
+                                  Text('Remarks', style: _tableHeaderStyle())),
+                          DataColumn(
+                              label: Text('Follow Up',
+                                  style: _tableHeaderStyle())),
+                          DataColumn(
+                              label: Text('Notes', style: _tableHeaderStyle())),
+                          DataColumn(
+                              label:
+                                  Text('Budget', style: _tableHeaderStyle())),
+                          DataColumn(
+                              label:
+                                  Text('Actions', style: _tableHeaderStyle())),
+                        ],
+                        rows: buyers.map((buyer) {
+                          return DataRow(cells: [
+                            DataCell(Text(buyer.id)),
+                            DataCell(Text(buyer.date)),
+                            DataCell(Text(buyer.buyer)),
+                            DataCell(Text(buyer.email)),
+                            DataCell(Text(buyer.city)),
+                            DataCell(Text(buyer.phone)),
+                            DataCell(Text(buyer.requirements)),
+                            DataCell(Text(buyer.remarks)), // Show remarks
+                            DataCell(Text(buyer.followUp)), // Show follow-up
+                            DataCell(Text(buyer.notes)), // Show notes
+                            DataCell(Text(buyer.budget)), // Show budget
+                            DataCell(
+                              Row(
+                                children: [
+                                  IconButton(
+                                    icon: Icon(Icons.edit,
+                                        color: Colors.blueAccent),
+                                    onPressed: () {
+                                      _showEditDialog(
+                                          context, buyer); // Show edit dialog
+                                    },
+                                    tooltip: 'Edit Buyer',
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.delete,
+                                        color: Colors.redAccent),
+                                    onPressed: () {
+                                      _confirmDelete(context,
+                                          buyer.id); // Show delete confirmation
+                                    },
+                                    tooltip: 'Delete Buyer',
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ]);
+                        }).toList(),
+                      ),
                     ),
                   ),
-                ]);
-              }).toList(),
+                );
+              },
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }
@@ -122,12 +175,14 @@ class BuyerListScreen extends StatelessWidget {
     Future<void> _selectDate(BuildContext context) async {
       final DateTime? picked = await showDatePicker(
         context: context,
-        initialDate: DateFormat('dd-MM-yyyy').parse(buyer.date), // Use the current date as initial
+        initialDate: DateFormat('dd-MM-yyyy')
+            .parse(buyer.date), // Use the current date as initial
         firstDate: DateTime(2000),
         lastDate: DateTime(2101),
       );
       if (picked != null) {
-        dateController.text = DateFormat('dd-MM-yyyy').format(picked); // Format the date
+        dateController.text =
+            DateFormat('dd-MM-yyyy').format(picked); // Format the date
       }
     }
 
@@ -152,42 +207,17 @@ class BuyerListScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                TextField(
-                  controller: nameController,
-                  decoration: InputDecoration(labelText: 'Name'),
-                ),
-                TextField(
-                  controller: emailController,
-                  decoration: InputDecoration(labelText: 'Email'),
-                ),
-                TextField(
-                  controller: phoneController,
-                  decoration: InputDecoration(labelText: 'Phone'),
-                ),
-                TextField(
-                  controller: cityController,
-                  decoration: InputDecoration(labelText: 'City'),
-                ),
-                TextField(
-                  controller: requirementsController,
-                  decoration: InputDecoration(labelText: 'Requirements'),
-                ),
-                TextField(
-                  controller: remarksController,
-                  decoration: InputDecoration(labelText: 'Remarks'),
-                ),
-                TextField(
-                  controller: followUpController,
-                  decoration: InputDecoration(labelText: 'Follow Up'),
-                ),
-                TextField(
-                  controller: notesController,
-                  decoration: InputDecoration(labelText: 'Notes'),
-                ),
-                TextField(
-                  controller: budgetController,
-                  decoration: InputDecoration(labelText: 'Budget'),
-                ),
+                _buildTextField(nameController, 'Name', Icons.person),
+                _buildTextField(emailController, 'Email', Icons.email),
+                _buildTextField(phoneController, 'Phone', Icons.phone),
+                _buildTextField(cityController, 'City', Icons.location_city),
+                _buildTextField(
+                    requirementsController, 'Requirements', Icons.list),
+                _buildTextField(remarksController, 'Remarks', Icons.comment),
+                _buildTextField(
+                    followUpController, 'Follow Up', Icons.follow_the_signs),
+                _buildTextField(notesController, 'Notes', Icons.note),
+                _buildTextField(budgetController, 'Budget', Icons.attach_money),
               ],
             ),
           ),
@@ -198,7 +228,7 @@ class BuyerListScreen extends StatelessWidget {
               },
               child: Text('Cancel'),
             ),
-            TextButton(
+            ElevatedButton(
               onPressed: () async {
                 // Update the buyer's information
                 Buyer updatedBuyer = Buyer(
@@ -215,7 +245,8 @@ class BuyerListScreen extends StatelessWidget {
                   budget: budgetController.text,
                 );
 
-                await buyerService.updateBuyer(buyer.id, updatedBuyer); // Update the buyer
+                await buyerService.updateBuyer(
+                    buyer.id, updatedBuyer); // Update the buyer
                 Navigator.of(context).pop(); // Close the dialog
               },
               child: Text('Update'),
@@ -223,6 +254,22 @@ class BuyerListScreen extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+
+  // Method to build text field with icon
+  Widget _buildTextField(
+      TextEditingController controller, String label, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: Icon(icon),
+          border: OutlineInputBorder(),
+        ),
+      ),
     );
   }
 
@@ -241,16 +288,27 @@ class BuyerListScreen extends StatelessWidget {
               },
               child: Text('Cancel'),
             ),
-            TextButton(
+            ElevatedButton(
               onPressed: () async {
                 await buyerService.deleteBuyer(buyerId); // Delete buyer
                 Navigator.of(context).pop(); // Close the dialog
               },
+              style:
+                  ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
               child: Text('Delete'),
             ),
           ],
         );
       },
+    );
+  }
+
+  // Method to define table header style
+  TextStyle _tableHeaderStyle() {
+    return TextStyle(
+      fontWeight: FontWeight.bold,
+      color: Colors.black54,
+      fontSize: 16,
     );
   }
 }
