@@ -26,7 +26,6 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
 
   // FocusNodes for input fields
   final FocusNode _brandFocusNode = FocusNode();
-  final FocusNode _statusFocusNode = FocusNode();
   final FocusNode _modelFocusNode = FocusNode();
   final FocusNode _serialNumberFocusNode = FocusNode();
   final FocusNode _webPriceFocusNode = FocusNode();
@@ -38,27 +37,16 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
   // Selected buyer and seller IDs for the dropdown
   String? _selectedBuyerId;
   String? _selectedSellerId;
+
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      // Check for null values
-      if (_sId == null ||
-          _bId == null ||
-          _brand == null ||
-          _model == null ||
-          _serialNumber == null ||
-          _webPrice == null ||
-          _customerPrice == null ||
-          _commission == null) {
-        // Handle error
-        print(
-            '::: drone ading :sId: $_sId, bId: $_bId, brand: $_brand, model: $_model, serialNumber: $_serialNumber, webPrice: $_webPrice, customerPrice: $_customerPrice, commission: $_commission');
-
+      if (_sId == null || _bId == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: const Text('Please fill all required fields')),
+          SnackBar(content: const Text('Please select both Buyer and Seller')),
         );
-        return; // Exit the method early
+        return; // Exit if required fields are missing
       }
 
       // Generate Drone ID using current timestamp
@@ -76,17 +64,15 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
         customerPrice: _customerPrice!,
         commision: _commission!,
         followUp: _followUp ?? '', // Default to empty string if not provided
-        soldDate: null, // Set soldDate to null
+        soldDate: null, // Set soldDate to null initially
         contractNo:
             _contractNo ?? '', // Default to empty string if not provided
       );
 
       // Add drone to the database
       droneService.addDrone(newDrone);
-      print(
-          '::: drone added :sId: $_sId, bId: $_bId, brand: $_brand, model: $_model, serialNumber: $_serialNumber, webPrice: $_webPrice, customerPrice: $_customerPrice, commission: $_commission');
 
-      Navigator.pop(context); // Go back after adding
+      Navigator.pop(context); // Go back after adding the drone
     }
   }
 
@@ -94,7 +80,6 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
   void dispose() {
     // Dispose FocusNodes
     _brandFocusNode.dispose();
-    _statusFocusNode.dispose();
     _modelFocusNode.dispose();
     _serialNumberFocusNode.dispose();
     _webPriceFocusNode.dispose();
@@ -108,7 +93,11 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Add Drone')),
+      appBar: AppBar(
+        foregroundColor: Colors.white,
+        title: Text('Add Drone'),
+        backgroundColor: Colors.blueAccent,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -117,20 +106,25 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
             children: [
               // StreamBuilder for selecting Buyer
               StreamBuilder<List<Buyer>>(
-                stream: buyerService
-                    .getAllBuyers(), // Ensure this method returns a Stream<List<Buyer>>
+                stream: buyerService.getAllBuyers(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator(); // Loading state
+                    return Center(child: CircularProgressIndicator());
                   }
 
                   if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}'); // Error state
+                    return Text('Error: ${snapshot.error}');
                   }
 
                   // Populate buyers dropdown
                   return DropdownButtonFormField<String>(
-                    decoration: InputDecoration(labelText: 'Select Buyer'),
+                    decoration: InputDecoration(
+                      labelText: 'Select Buyer',
+                      prefixIcon: Icon(Icons.person_outline),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
                     value: _selectedBuyerId,
                     items: snapshot.data!.map((buyer) {
                       return DropdownMenuItem<String>(
@@ -140,12 +134,12 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
                     }).toList(),
                     onChanged: (value) {
                       setState(() {
-                        _selectedBuyerId = value; // Set the selected buyer ID
-                        _bId = value; // Store the selected buyer ID
+                        _selectedBuyerId = value; // Set selected buyer ID
+                        _bId = value;
                       });
                     },
                     validator: (value) =>
-                        value == null ? 'Select a buyer' : null,
+                        value == null ? 'Please select a buyer' : null,
                   );
                 },
               ),
@@ -153,20 +147,25 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
 
               // StreamBuilder for selecting Seller
               StreamBuilder<List<Seller>>(
-                stream: sellerService
-                    .getAllSellers(), // Ensure this method returns a Stream<List<Seller>>
+                stream: sellerService.getAllSellers(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator(); // Loading state
+                    return Center(child: CircularProgressIndicator());
                   }
 
                   if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}'); // Error state
+                    return Text('Error: ${snapshot.error}');
                   }
 
                   // Populate sellers dropdown
                   return DropdownButtonFormField<String>(
-                    decoration: InputDecoration(labelText: 'Select Seller'),
+                    decoration: InputDecoration(
+                      labelText: 'Select Seller',
+                      prefixIcon: Icon(Icons.store_mall_directory),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                    ),
                     value: _selectedSellerId,
                     items: snapshot.data!.map((seller) {
                       return DropdownMenuItem<String>(
@@ -176,119 +175,154 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
                     }).toList(),
                     onChanged: (value) {
                       setState(() {
-                        _selectedSellerId = value; // Set the selected seller ID
-                        _sId = value; // Store the selected seller ID
+                        _selectedSellerId = value; // Set selected seller ID
+                        _sId = value;
                       });
                     },
                     validator: (value) =>
-                        value == null ? 'Select a seller' : null,
+                        value == null ? 'Please select a seller' : null,
                   );
                 },
               ),
               SizedBox(height: 20),
 
-              // Input fields with FocusNode
-              TextFormField(
+              // Input fields with icons and focus
+              _buildTextFormField(
+                label: 'Brand',
+                icon: Icons.flight,
                 focusNode: _brandFocusNode,
-                decoration: InputDecoration(labelText: 'Brand'),
                 validator: (value) => value!.isEmpty ? 'Enter brand' : null,
                 onSaved: (value) => _brand = value,
-                textInputAction: TextInputAction.next, // Move to the next field
-                onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_modelFocusNode);
-                },
+                nextFocusNode: _modelFocusNode,
               ),
-              TextFormField(
+              _buildTextFormField(
+                label: 'Model',
+                icon: Icons.airplanemode_active,
                 focusNode: _modelFocusNode,
-                decoration: InputDecoration(labelText: 'Model'),
                 validator: (value) => value!.isEmpty ? 'Enter model' : null,
                 onSaved: (value) => _model = value,
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_serialNumberFocusNode);
-                },
+                nextFocusNode: _serialNumberFocusNode,
               ),
-              TextFormField(
+              _buildTextFormField(
+                label: 'Serial Number',
+                icon: Icons.confirmation_number,
                 focusNode: _serialNumberFocusNode,
-                decoration: InputDecoration(labelText: 'Serial Number'),
                 validator: (value) =>
                     value!.isEmpty ? 'Enter serial number' : null,
                 onSaved: (value) => _serialNumber = value,
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_webPriceFocusNode);
-                },
+                nextFocusNode: _webPriceFocusNode,
               ),
-              TextFormField(
+              _buildTextFormField(
+                label: 'Website Price',
+                icon: Icons.monetization_on,
                 focusNode: _webPriceFocusNode,
-                decoration: InputDecoration(labelText: 'Website Price'),
                 validator: (value) => value!.isEmpty ? 'Enter web price' : null,
-                keyboardType: TextInputType.number,
                 onSaved: (value) => _webPrice = value!,
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_customerPriceFocusNode);
-                },
+                keyboardType: TextInputType.number,
+                nextFocusNode: _customerPriceFocusNode,
               ),
-              TextFormField(
+              _buildTextFormField(
+                label: 'Customer Price',
+                icon: Icons.attach_money,
                 focusNode: _customerPriceFocusNode,
-                decoration: InputDecoration(labelText: 'Customer Price'),
                 validator: (value) =>
                     value!.isEmpty ? 'Enter customer price' : null,
-                keyboardType: TextInputType.number,
                 onSaved: (value) => _customerPrice = value!,
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_commissionFocusNode);
-                },
+                keyboardType: TextInputType.number,
+                nextFocusNode: _commissionFocusNode,
               ),
-              TextFormField(
+              _buildTextFormField(
+                label: 'Commission',
+                icon: Icons.money,
                 focusNode: _commissionFocusNode,
-                decoration: InputDecoration(labelText: 'Commission'),
                 validator: (value) =>
                     value!.isEmpty ? 'Enter commission' : null,
                 onSaved: (value) => _commission = value,
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_followUpFocusNode);
-                },
+                nextFocusNode: _followUpFocusNode,
               ),
-              TextFormField(
+              _buildTextFormField(
+                label: 'Follow Up',
+                icon: Icons.follow_the_signs,
                 focusNode: _followUpFocusNode,
-                decoration: InputDecoration(labelText: 'Follow Up'),
                 onSaved: (value) => _followUp = value,
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_contractNoFocusNode);
-                },
+                nextFocusNode: _contractNoFocusNode,
+                validator: (String? value) {},
               ),
-              TextFormField(
+              _buildTextFormField(
+                label: 'Contract Number',
+                icon: Icons.note,
                 focusNode: _contractNoFocusNode,
-                decoration: InputDecoration(labelText: 'Contract Number'),
                 onSaved: (value) => _contractNo = value,
-                textInputAction: TextInputAction.done,
-                onFieldSubmitted: (_) {
-                  _submitForm(); // Submit the form when done
-                },
+                validator: (String? value) {},
               ),
               SizedBox(height: 20),
+
               // Checkbox for status
               CheckboxListTile(
                 title: Text('Is Drone Active'),
                 value: _status,
                 onChanged: (value) {
                   setState(() {
-                    _status = value ?? false; // Ensure it's not null
+                    _status = value ?? false;
                   });
                 },
+                controlAffinity: ListTileControlAffinity.leading,
               ),
+              SizedBox(height: 20),
+
+              // Submit button
               ElevatedButton(
                 onPressed: _submitForm,
-                child: Text('Add Drone'),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: Text('Add Drone', style: TextStyle(fontSize: 18)),
+                ),
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.blueAccent,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
               ),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  // Helper to build text form fields with icons
+  Widget _buildTextFormField({
+    required String label,
+    required IconData icon,
+    required FocusNode focusNode,
+    required FormFieldValidator<String> validator,
+    required FormFieldSetter<String> onSaved,
+    FocusNode? nextFocusNode,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: TextFormField(
+        focusNode: focusNode,
+        keyboardType: keyboardType,
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: Icon(icon),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+        ),
+        validator: validator,
+        onSaved: onSaved,
+        textInputAction:
+            nextFocusNode != null ? TextInputAction.next : TextInputAction.done,
+        onFieldSubmitted: (_) {
+          if (nextFocusNode != null) {
+            FocusScope.of(context).requestFocus(nextFocusNode);
+          }
+        },
       ),
     );
   }

@@ -34,9 +34,10 @@ class _AddBuyerScreenState extends State<AddBuyerScreen> {
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
-    if (picked != null && picked != DateTime.now()) {
+    if (picked != null) {
       setState(() {
-        _selectedDate = DateFormat('dd-MM-yyyy').format(picked); // Format the date
+        _selectedDate =
+            DateFormat('dd-MM-yyyy').format(picked); // Format the date
       });
     }
   }
@@ -45,16 +46,19 @@ class _AddBuyerScreenState extends State<AddBuyerScreen> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       Buyer newBuyer = Buyer(
-        id: DateTime.now().millisecondsSinceEpoch.toString(), // Use milliseconds since epoch for ID
-        date: _selectedDate.isNotEmpty ? _selectedDate : DateFormat('dd-MM-yyyy').format(DateTime.now()), // Use selected date or current date
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        date: _selectedDate.isNotEmpty
+            ? _selectedDate
+            : DateFormat('dd-MM-yyyy')
+                .format(DateTime.now()), // Use selected date or current date
         buyer: _buyerName!,
         email: _email!,
         phone: _phone!,
         city: _city!,
-        requirements: _requirements ?? 'None', // Default if empty
-        remarks: _remarks ?? 'None', // Default if empty
-        followUp: _followUp ?? 'None', // Default if empty
-        notes: _notes ?? 'None', // Default if empty
+        requirements: _requirements ?? 'None',
+        remarks: _remarks ?? 'None',
+        followUp: _followUp ?? 'None',
+        notes: _notes ?? 'None',
         budget: _budget!,
       );
       buyerService.addBuyer(newBuyer); // Add buyer to Firestore
@@ -81,117 +85,202 @@ class _AddBuyerScreenState extends State<AddBuyerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Add Buyer')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              TextFormField(
-                focusNode: _buyerNameFocusNode,
-                decoration: InputDecoration(labelText: 'Buyer Name'),
-                validator: (value) => value!.isEmpty ? 'Enter a name' : null,
-                onSaved: (value) => _buyerName = value,
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_emailFocusNode);
-                },
-              ),
-              TextFormField(
-                focusNode: _emailFocusNode,
-                decoration: InputDecoration(labelText: 'Email'),
-                validator: (value) => value!.isEmpty ? 'Enter an email' : null,
-                onSaved: (value) => _email = value,
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_phoneFocusNode);
-                },
-              ),
-              TextFormField(
-                focusNode: _phoneFocusNode,
-                decoration: InputDecoration(labelText: 'Phone'),
-                validator: (value) => value!.isEmpty ? 'Enter a phone' : null,
-                onSaved: (value) => _phone = value,
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_cityFocusNode);
-                },
-              ),
-              TextFormField(
-                focusNode: _cityFocusNode,
-                decoration: InputDecoration(labelText: 'City'),
-                validator: (value) => value!.isEmpty ? 'Enter a city' : null,
-                onSaved: (value) => _city = value,
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_budgetFocusNode);
-                },
-              ),
-              TextFormField(
-                focusNode: _budgetFocusNode,
-                decoration: InputDecoration(labelText: 'Budget'),
-                validator: (value) => value!.isEmpty ? 'Enter a budget' : null,
-                onSaved: (value) => _budget = value,
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_requirementsFocusNode);
-                },
-              ),
-              TextFormField(
-                focusNode: _requirementsFocusNode,
-                decoration: InputDecoration(labelText: 'Requirements'),
-                onSaved: (value) => _requirements = value,
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_remarksFocusNode);
-                },
-              ),
-              TextFormField(
-                focusNode: _remarksFocusNode,
-                decoration: InputDecoration(labelText: 'Remarks'),
-                onSaved: (value) => _remarks = value,
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_followUpFocusNode);
-                },
-              ),
-              TextFormField(
-                focusNode: _followUpFocusNode,
-                decoration: InputDecoration(labelText: 'Follow Up'),
-                onSaved: (value) => _followUp = value,
-                textInputAction: TextInputAction.next,
-                onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_notesFocusNode);
-                },
-              ),
-              TextFormField(
-                focusNode: _notesFocusNode,
-                decoration: InputDecoration(labelText: 'Notes'),
-                onSaved: (value) => _notes = value,
-                textInputAction: TextInputAction.done,
-                onFieldSubmitted: (_) {
-                  _submitForm(); // Submit the form when done
-                },
-              ),
-              SizedBox(height: 16),
-              TextFormField(
-                readOnly: true,
-                decoration: InputDecoration(
-                  labelText: 'Date',
-                  hintText: 'Select date',
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.calendar_today),
-                    onPressed: () => _selectDate(context),
+      body: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: 600, // Limit the maximum width
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Form(
+              key: _formKey,
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  // Buyer Name Field
+                  TextFormField(
+                    focusNode: _buyerNameFocusNode,
+                    decoration: InputDecoration(
+                      labelText: 'Buyer Name',
+                      prefixIcon: Icon(Icons.person),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) =>
+                        value!.isEmpty ? 'Enter a name' : null,
+                    onSaved: (value) => _buyerName = value,
+                    textInputAction: TextInputAction.next,
+                    onFieldSubmitted: (_) {
+                      FocusScope.of(context).requestFocus(_emailFocusNode);
+                    },
                   ),
-                ),
-                controller: TextEditingController(text: _selectedDate), // Display selected date
+                  SizedBox(height: 20),
+
+                  // Email Field
+                  TextFormField(
+                    focusNode: _emailFocusNode,
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      prefixIcon: Icon(Icons.email),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) =>
+                        value!.isEmpty ? 'Enter an email' : null,
+                    onSaved: (value) => _email = value,
+                    textInputAction: TextInputAction.next,
+                    onFieldSubmitted: (_) {
+                      FocusScope.of(context).requestFocus(_phoneFocusNode);
+                    },
+                  ),
+                  SizedBox(height: 20),
+
+                  // Phone Field
+                  TextFormField(
+                    focusNode: _phoneFocusNode,
+                    decoration: InputDecoration(
+                      labelText: 'Phone',
+                      prefixIcon: Icon(Icons.phone),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) =>
+                        value!.isEmpty ? 'Enter a phone number' : null,
+                    onSaved: (value) => _phone = value,
+                    textInputAction: TextInputAction.next,
+                    onFieldSubmitted: (_) {
+                      FocusScope.of(context).requestFocus(_cityFocusNode);
+                    },
+                  ),
+                  SizedBox(height: 20),
+
+                  // City Field
+                  TextFormField(
+                    focusNode: _cityFocusNode,
+                    decoration: InputDecoration(
+                      labelText: 'City',
+                      prefixIcon: Icon(Icons.location_city),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) =>
+                        value!.isEmpty ? 'Enter a city' : null,
+                    onSaved: (value) => _city = value,
+                    textInputAction: TextInputAction.next,
+                    onFieldSubmitted: (_) {
+                      FocusScope.of(context).requestFocus(_budgetFocusNode);
+                    },
+                  ),
+                  SizedBox(height: 20),
+
+                  // Budget Field
+                  TextFormField(
+                    focusNode: _budgetFocusNode,
+                    decoration: InputDecoration(
+                      labelText: 'Budget',
+                      prefixIcon: Icon(Icons.money),
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (value) =>
+                        value!.isEmpty ? 'Enter a budget' : null,
+                    onSaved: (value) => _budget = value,
+                    textInputAction: TextInputAction.next,
+                    onFieldSubmitted: (_) {
+                      FocusScope.of(context)
+                          .requestFocus(_requirementsFocusNode);
+                    },
+                  ),
+                  SizedBox(height: 20),
+
+                  // Requirements Field
+                  TextFormField(
+                    focusNode: _requirementsFocusNode,
+                    decoration: InputDecoration(
+                      labelText: 'Requirements',
+                      prefixIcon: Icon(Icons.list_alt),
+                      border: OutlineInputBorder(),
+                    ),
+                    onSaved: (value) => _requirements = value,
+                    textInputAction: TextInputAction.next,
+                    onFieldSubmitted: (_) {
+                      FocusScope.of(context).requestFocus(_remarksFocusNode);
+                    },
+                  ),
+                  SizedBox(height: 20),
+
+                  // Remarks Field
+                  TextFormField(
+                    focusNode: _remarksFocusNode,
+                    decoration: InputDecoration(
+                      labelText: 'Remarks',
+                      prefixIcon: Icon(Icons.comment),
+                      border: OutlineInputBorder(),
+                    ),
+                    onSaved: (value) => _remarks = value,
+                    textInputAction: TextInputAction.next,
+                    onFieldSubmitted: (_) {
+                      FocusScope.of(context).requestFocus(_followUpFocusNode);
+                    },
+                  ),
+                  SizedBox(height: 20),
+
+                  // Follow-Up Field
+                  TextFormField(
+                    focusNode: _followUpFocusNode,
+                    decoration: InputDecoration(
+                      labelText: 'Follow Up',
+                      prefixIcon: Icon(Icons.calendar_today_outlined),
+                      border: OutlineInputBorder(),
+                    ),
+                    onSaved: (value) => _followUp = value,
+                    textInputAction: TextInputAction.next,
+                    onFieldSubmitted: (_) {
+                      FocusScope.of(context).requestFocus(_notesFocusNode);
+                    },
+                  ),
+                  SizedBox(height: 20),
+
+                  // Notes Field
+                  TextFormField(
+                    focusNode: _notesFocusNode,
+                    decoration: InputDecoration(
+                      labelText: 'Notes',
+                      prefixIcon: Icon(Icons.note_add),
+                      border: OutlineInputBorder(),
+                    ),
+                    onSaved: (value) => _notes = value,
+                    textInputAction: TextInputAction.done,
+                    onFieldSubmitted: (_) {
+                      _submitForm();
+                    },
+                  ),
+                  SizedBox(height: 20),
+
+                  // Date Field with Calendar Picker
+                  TextFormField(
+                    readOnly: true,
+                    decoration: InputDecoration(
+                      labelText: 'Date',
+                      hintText: 'Select date',
+                      suffixIcon: IconButton(
+                        icon: Icon(Icons.calendar_today),
+                        onPressed: () => _selectDate(context),
+                      ),
+                      border: OutlineInputBorder(),
+                    ),
+                    controller: TextEditingController(
+                        text: _selectedDate), // Display selected date
+                  ),
+                  SizedBox(height: 30),
+
+                  // Add Buyer Button
+                  ElevatedButton(
+                    onPressed: _submitForm,
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      textStyle: TextStyle(fontSize: 18),
+                    ),
+                    child: Text('Add Buyer'),
+                  ),
+                ],
               ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _submitForm,
-                child: Text('Add Buyer'),
-              ),
-            ],
+            ),
           ),
         ),
       ),
