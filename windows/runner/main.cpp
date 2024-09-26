@@ -2,6 +2,9 @@
 #include <flutter/flutter_view_controller.h>
 #include <windows.h>
 
+// Include the generated plugin registrant
+#include "flutter/generated_plugin_registrant.h"
+
 #include "flutter_window.h"
 #include "utils.h"
 
@@ -31,6 +34,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
     return EXIT_FAILURE;
   }
   window.SetQuitOnClose(true);
+
+  // Register plugins with the Flutter engine
+  RegisterPlugins(window.engine());
 
   ::MSG msg;
   while (::GetMessage(&msg, nullptr, 0, 0)) {

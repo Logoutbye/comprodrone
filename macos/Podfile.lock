@@ -1297,7 +1297,11 @@ PODS:
   - nanopb (3.30910.0):
     - nanopb/decode (= 3.30910.0)
     - nanopb/encode (= 3.30910.0)
+  - nanopb/decode (3.30910.0)
+  - nanopb/encode (3.30910.0)
   - printing (1.0.0):
+    - FlutterMacOS
+  - url_launcher_macos (0.0.1):
     - FlutterMacOS
 
 DEPENDENCIES:
@@ -1305,6 +1309,7 @@ DEPENDENCIES:
   - firebase_core (from `Flutter/ephemeral/.symlinks/plugins/firebase_core/macos`)
   - FlutterMacOS (from `Flutter/ephemeral`)
   - printing (from `Flutter/ephemeral/.symlinks/plugins/printing/macos`)
+  - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
 
 SPEC REPOS:
   trunk:
@@ -1333,6 +1338,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral
   printing:
     :path: Flutter/ephemeral/.symlinks/plugins/printing/macos
+  url_launcher_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
 
 SPEC CHECKSUMS:
   abseil: d121da9ef7e2ff4cab7666e76c5a3e0915ae08c3
@@ -1354,7 +1361,8 @@ SPEC CHECKSUMS:
   leveldb-library: e8eadf9008a61f9e1dde3978c086d2b6d9b9dc28
   nanopb: fad817b59e0457d11a5dfbde799381cd727c1275
   printing: 1dd6a1fce2209ec240698e2439a4adbb9b427637
+  url_launcher_macos: c82c93949963e55b228a30115bd219499a6fe404
 
-PODFILE CHECKSUM: 3722386436f9d7bf55912559f6b341c72a553b1c
+PODFILE CHECKSUM: 9ebaf0ce3d369aaa26a9ea0e159195ed94724cf3
 
 COCOAPODS: 1.15.2

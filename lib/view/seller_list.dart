@@ -4,6 +4,7 @@ import 'package:com_pro_drone/view/add_seller_screen.dart';
 import 'package:com_pro_drone/view/drone_list_screen.dart';
 import 'package:flutter/material.dart';
 import '../services/seller_services.dart'; // Ensure correct service path
+import 'package:url_launcher/url_launcher.dart'; // Import url_launcher
 
 class SellerListScreen extends StatelessWidget {
   final SellerService sellerService =
@@ -135,7 +136,20 @@ class SellerListScreen extends StatelessWidget {
         DataCell(Text(seller.sellerName)),
         if (!isSmallScreen) ...[
           DataCell(Text(seller.email)),
-          DataCell(Text(seller.phone)),
+          DataCell(
+            Row(
+              children: [
+                Text(seller.phone),
+                IconButton(
+                  icon: Icon(Icons.phone, color: Colors.green),
+                  onPressed: () {
+                    _launchWhatsApp(context, seller.whatsappNo);
+                  },
+                  tooltip: 'Chat on WhatsApp',
+                ),
+              ],
+            ),
+          ),
           DataCell(Text(seller.city)),
           DataCell(Text(seller.typeOfSeller)),
           DataCell(Text(seller.address)),
@@ -163,6 +177,26 @@ class SellerListScreen extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  // Method to launch WhatsApp
+  void _launchWhatsApp(BuildContext context, String phoneNumber) async {
+    // Ensure the phone number is in international format without '+' or dashes
+    String formattedNumber =
+        phoneNumber.replaceAll('+', '').replaceAll('-', '');
+    final Uri whatsappUri = Uri.parse("https://wa.me/$formattedNumber");
+
+    // Check if the device can launch WhatsApp
+    if (await canLaunchUrl(whatsappUri)) {
+      await launchUrl(whatsappUri, mode: LaunchMode.externalApplication);
+    } else {
+      // Show an error message if WhatsApp is not installed
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("WhatsApp is not installed on this device."),
+        ),
+      );
+    }
   }
 
   // Method to show the edit dialog
