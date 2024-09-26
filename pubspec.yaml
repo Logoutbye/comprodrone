@@ -38,6 +38,8 @@ dependencies:
   firebase_core: ^3.5.0
   cloud_firestore: ^5.4.2
   intl:
+  printing: ^5.10.0
+
 
 dev_dependencies:
   flutter_test:

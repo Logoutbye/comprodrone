@@ -26,19 +26,19 @@ class SupplierService {
 
   // Add a new supplier
   Future<bool> addSupplier(Supplier supplier) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('suppliers')
-          .doc(supplier.id)
-          .set(supplier.toMap())
-          .then((v) => print(":::: DONE SAVING ON FIREBASE"));
-      print("Supplier added: ${supplier.name}");
-      return true;
-    } catch (e) {
-      print("Failed to add supplier: $e");
-      return false;
-    }
+  try {
+    await FirebaseFirestore.instance
+        .collection('suppliers')
+        .doc(supplier.id)
+        .set(supplier.toMap())
+        .then((_) => print("Supplier added: ${supplier.name}"));
+    return true;
+  } catch (e) {
+    print("Failed to add supplier: $e"); // Detailed error message
+    return false;
   }
+}
+
 
   // Update a supplier by ID
   Future<bool> updateSupplier(String id, Supplier updatedSupplier) async {

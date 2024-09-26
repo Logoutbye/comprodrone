@@ -18,21 +18,21 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
 
   // Submit form to add supplier
   Future<void> _submitForm() async {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      Supplier newSupplier = Supplier(
-        id: DateTime.now()
-            .millisecondsSinceEpoch
-            .toString(), // Generate unique ID
-        name: _supplierName!,
-        contactDetails: _contactDetails!,
-      );
-      await supplierService
-          .addSupplier(newSupplier).then((v)=>
-          Navigator.pop(context)
-          ); 
+  if (_formKey.currentState!.validate()) {
+    _formKey.currentState!.save();
+    Supplier newSupplier = Supplier(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      name: _supplierName!,
+      contactDetails: _contactDetails!,
+    );
+    print("Supplier Data: ${newSupplier.toMap()}"); // Debugging the Supplier Data
+    bool success = await supplierService.addSupplier(newSupplier);
+    if (success) {
+      Navigator.pop(context);
     }
   }
+}
+
 
   @override
   void dispose() {
