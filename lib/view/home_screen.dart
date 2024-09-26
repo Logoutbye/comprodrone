@@ -1,4 +1,5 @@
 import 'package:com_pro_drone/view/buyer_list.dart';
+import 'package:com_pro_drone/view/contract_creation_screen.dart';
 import 'package:com_pro_drone/view/seller_list.dart';
 import 'package:com_pro_drone/view/supplier_list.dart';
 import 'package:flutter/material.dart';
@@ -110,7 +111,7 @@ class HomePage extends StatelessWidget {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => BuyerListScreen(),
+                                builder: (context) => ContractCreationScreen(),
                               ));
                         },
                       ),
