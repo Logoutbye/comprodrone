@@ -17,7 +17,7 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
   String? _bId; // Buyer ID
   String? _brand, _model, _serialNumber;
   bool _status = false; // Status is now a boolean
-  double? _webPrice, _customerPrice;
+  String? _webPrice, _customerPrice;
   String? _commission, _followUp, _contractNo;
 
   final DroneService droneService = DroneService();
@@ -52,8 +52,11 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
           _customerPrice == null ||
           _commission == null) {
         // Handle error
+        print(
+            '::: drone ading :sId: $_sId, bId: $_bId, brand: $_brand, model: $_model, serialNumber: $_serialNumber, webPrice: $_webPrice, customerPrice: $_customerPrice, commission: $_commission');
+
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Please fill all required fields')),
+          SnackBar(content: const Text('Please fill all required fields')),
         );
         return; // Exit the method early
       }
@@ -73,13 +76,13 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
         customerPrice: _customerPrice!,
         commision: _commission!,
         followUp: _followUp ?? '', // Default to empty string if not provided
-        soldDate:
-            DateTime.now(), // Assuming the drone is sold at the time of adding
+        soldDate: null, // Set soldDate to null
         contractNo:
             _contractNo ?? '', // Default to empty string if not provided
       );
 
-      droneService.addDrone(newDrone); // Add drone to the database
+      // Add drone to the database
+      droneService.addDrone(newDrone);
       print(
           '::: drone added :sId: $_sId, bId: $_bId, brand: $_brand, model: $_model, serialNumber: $_serialNumber, webPrice: $_webPrice, customerPrice: $_customerPrice, commission: $_commission');
 
@@ -221,7 +224,7 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
                 decoration: InputDecoration(labelText: 'Website Price'),
                 validator: (value) => value!.isEmpty ? 'Enter web price' : null,
                 keyboardType: TextInputType.number,
-                onSaved: (value) => _webPrice = double.tryParse(value!),
+                onSaved: (value) => _webPrice = value!,
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_customerPriceFocusNode);
@@ -233,7 +236,7 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
                 validator: (value) =>
                     value!.isEmpty ? 'Enter customer price' : null,
                 keyboardType: TextInputType.number,
-                onSaved: (value) => _customerPrice = double.tryParse(value!),
+                onSaved: (value) => _customerPrice = value!,
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_commissionFocusNode);

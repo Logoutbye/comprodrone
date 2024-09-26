@@ -6,8 +6,8 @@ class Drone {
   bool status;
   String model;
   String serialNumber;
-  double webPrice;        // Price on the website
-  double customerPrice;   // Price given to the customer
+  String webPrice;        // Price on the website
+  String customerPrice;   // Price given to the customer
   String commision;       // Commission for sale
   String followUp;        // Follow-up status or actions
   DateTime? soldDate;     // Sold date (optional)

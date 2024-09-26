@@ -1,5 +1,6 @@
 import 'package:com_pro_drone/services/buyer_services.dart';
 import 'package:com_pro_drone/services/seller_services.dart';
+import 'package:com_pro_drone/view/add_drone.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // For date formatting
 import '../models/buyer_model.dart';
@@ -55,19 +56,23 @@ class _DroneListScreenState extends State<DroneListScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Drone List'),
+        title: const Text('Drone List'),
         bottom: TabBar(
           controller: _tabController,
-          tabs: [
+          tabs: const [
             Tab(text: 'Active Drones'),
             Tab(text: 'Non-Active Drones'),
           ],
         ),
         actions: [
           IconButton(
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
             onPressed: () {
-              _showAddOrUpdateDialog(context, null); // Call add dialog
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => AddDroneScreen(),
+                  ));
             },
           ),
         ],
@@ -135,8 +140,7 @@ class _DroneListScreenState extends State<DroneListScreen>
                       IconButton(
                         icon: Icon(Icons.edit),
                         onPressed: () {
-                          _showAddOrUpdateDialog(
-                              context, drone); // Update dialog
+                          _showUpdateDialog(context, drone); // Update dialog
                         },
                       ),
                       IconButton(
@@ -183,36 +187,39 @@ class _DroneListScreenState extends State<DroneListScreen>
     );
   }
 
-  // Add/Update Dialog
-  void _showAddOrUpdateDialog(BuildContext context, Drone? drone) {
-    final bool isUpdate = drone != null; // Check if it's an update or add
-
+  void _showUpdateDialog(BuildContext context, Drone drone) {
+    // Initialize controllers with existing drone data
     final TextEditingController brandController =
-        TextEditingController(text: isUpdate ? drone!.brand : '');
+        TextEditingController(text: drone.brand);
     final TextEditingController modelController =
-        TextEditingController(text: isUpdate ? drone.model : '');
+        TextEditingController(text: drone.model);
     final TextEditingController webPriceController =
-        TextEditingController(text: isUpdate ? drone.webPrice.toString() : '');
-    final TextEditingController customerPriceController = TextEditingController(
-        text: isUpdate ? drone.customerPrice.toString() : '');
+        TextEditingController(text: drone.webPrice.toString());
+    final TextEditingController customerPriceController =
+        TextEditingController(text: drone.customerPrice.toString());
     final TextEditingController commissionController =
-        TextEditingController(text: isUpdate ? drone.commision : '');
+        TextEditingController(text: drone.commision);
     final TextEditingController followUpController =
-        TextEditingController(text: isUpdate ? drone.followUp : '');
+        TextEditingController(text: drone.followUp);
     final TextEditingController soldDateController = TextEditingController(
-      text: isUpdate && drone.soldDate != null
+      text: drone.soldDate != null
           ? DateFormat('yyyy-MM-dd').format(drone.soldDate!)
           : '',
     );
 
-    String? selectedSellerId = isUpdate ? drone!.sId : null;
-    String? selectedBuyerId = isUpdate ? drone.bId : null;
+    // For dropdowns
+    ValueNotifier<String?> selectedSellerId = ValueNotifier<String?>(drone.sId);
+    ValueNotifier<String?> selectedBuyerId = ValueNotifier<String?>(drone.bId);
 
+    // Status of the drone (active or not) using ValueNotifier
+    ValueNotifier<bool> isActive = ValueNotifier<bool>(drone.status);
+
+    // Show dialog
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(isUpdate ? 'Update Drone' : 'Add Drone'),
+          title: Text('Update Drone'),
           content: SingleChildScrollView(
             child: Column(
               children: [
@@ -242,58 +249,79 @@ class _DroneListScreenState extends State<DroneListScreen>
                   controller: followUpController,
                   decoration: InputDecoration(labelText: 'Follow Up'),
                 ),
-                // Dropdown for selecting Seller
-                DropdownButton<String>(
-                  value: selectedSellerId,
-                  hint: Text('Select Seller'),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedSellerId = newValue;
-                    });
-                  },
-                  items: sellers.map<DropdownMenuItem<String>>((Seller seller) {
-                    return DropdownMenuItem<String>(
-                      value: seller.id,
-                      child: Text(seller.sellerName),
+                // ValueListenableBuilder for Seller Dropdown
+                ValueListenableBuilder<String?>(
+                  valueListenable: selectedSellerId,
+                  builder: (context, value, child) {
+                    return DropdownButton<String>(
+                      value: value,
+                      hint: Text('Select Seller'),
+                      onChanged: (String? newValue) {
+                        selectedSellerId.value = newValue;
+                      },
+                      items: sellers
+                          .map<DropdownMenuItem<String>>((Seller seller) {
+                        return DropdownMenuItem<String>(
+                          value: seller.id,
+                          child: Text(seller.sellerName),
+                        );
+                      }).toList(),
                     );
-                  }).toList(),
-                ),
-                // Dropdown for selecting Buyer
-                DropdownButton<String>(
-                  value: selectedBuyerId,
-                  hint: Text('Select Buyer'),
-                  onChanged: (String? newValue) {
-                    setState(() {
-                      selectedBuyerId = newValue;
-                    });
                   },
-                  items: buyers.map<DropdownMenuItem<String>>((Buyer buyer) {
-                    return DropdownMenuItem<String>(
-                      value: buyer.id,
-                      child: Text(buyer.buyer),
-                    );
-                  }).toList(),
                 ),
-                // Sold Date (only show in update)
-                if (isUpdate)
-                  TextField(
-                    controller: soldDateController,
-                    decoration:
-                        InputDecoration(labelText: 'Sold Date (YYYY-MM-DD)'),
-                    keyboardType: TextInputType.datetime,
-                    onTap: () async {
-                      DateTime? picked = await showDatePicker(
-                        context: context,
-                        initialDate: DateTime.now(),
-                        firstDate: DateTime(2000),
-                        lastDate: DateTime(2100),
-                      );
-                      if (picked != null) {
-                        soldDateController.text =
-                            DateFormat('yyyy-MM-dd').format(picked);
-                      }
-                    },
-                  ),
+                // ValueListenableBuilder for Buyer Dropdown
+                ValueListenableBuilder<String?>(
+                  valueListenable: selectedBuyerId,
+                  builder: (context, value, child) {
+                    return DropdownButton<String>(
+                      value: value,
+                      hint: Text('Select Buyer'),
+                      onChanged: (String? newValue) {
+                        selectedBuyerId.value = newValue;
+                      },
+                      items:
+                          buyers.map<DropdownMenuItem<String>>((Buyer buyer) {
+                        return DropdownMenuItem<String>(
+                          value: buyer.id,
+                          child: Text(buyer.buyer),
+                        );
+                      }).toList(),
+                    );
+                  },
+                ),
+                // Sold Date
+                TextField(
+                  controller: soldDateController,
+                  decoration:
+                      InputDecoration(labelText: 'Sold Date (YYYY-MM-DD)'),
+                  keyboardType: TextInputType.datetime,
+                  onTap: () async {
+                    DateTime? picked = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime(2000),
+                      lastDate: DateTime(2100),
+                    );
+                    if (picked != null) {
+                      soldDateController.text =
+                          DateFormat('yyyy-MM-dd').format(picked);
+                    }
+                  },
+                ),
+                // ValueListenableBuilder for Status Checkbox
+                ValueListenableBuilder<bool>(
+                  valueListenable: isActive,
+                  builder: (context, value, child) {
+                    return CheckboxListTile(
+                      title: Text('Is Active?'),
+                      value: value,
+                      onChanged: (bool? newValue) {
+                        isActive.value =
+                            newValue ?? false; // Default to false if null
+                      },
+                    );
+                  },
+                ),
               ],
             ),
           ),
@@ -306,38 +334,33 @@ class _DroneListScreenState extends State<DroneListScreen>
             ),
             TextButton(
               onPressed: () {
+                // Update the drone details
                 Drone updatedDrone = Drone(
-                    dId: isUpdate
-                        ? drone!.dId
-                        : '', // Drone ID in case of update
-                    bId: selectedBuyerId!,
-                    sId: selectedSellerId!,
-                    brand: brandController.text,
-                    model: modelController.text,
-                    serialNumber: isUpdate ? drone!.serialNumber : '',
-                    webPrice: double.tryParse(webPriceController.text) ?? 0.0,
-                    customerPrice:
-                        double.tryParse(customerPriceController.text) ?? 0.0,
-                    commision: commissionController.text,
-                    followUp: followUpController.text,
-                    status: isUpdate
-                        ? drone!.status
-                        : true, // Default status as true for add
-                    soldDate: isUpdate && soldDateController.text.isNotEmpty
-                        ? DateTime.tryParse(soldDateController.text)
-                        : null,
-                    contractNo: drone!.contractNo);
+                  dId: drone.dId, // Keep the same drone ID
+                  bId: selectedBuyerId.value!,
+                  sId: selectedSellerId.value!,
+                  brand: brandController.text,
+                  model: modelController.text,
+                  serialNumber:
+                      drone.serialNumber, // Serial number remains unchanged
+                  webPrice: webPriceController.text,
+                  customerPrice: customerPriceController.text,
+                  commision: commissionController.text,
+                  followUp: followUpController.text,
+                  status:
+                      isActive.value, // Update the status from ValueNotifier
+                  soldDate: soldDateController.text.isNotEmpty
+                      ? DateTime.tryParse(soldDateController.text)
+                      : null, // Parse the date if provided
+                  contractNo: drone.contractNo, // Keep the same contract number
+                );
 
-                if (isUpdate) {
-                  droneService.updateDrone(
-                      drone.dId, updatedDrone); // Update drone
-                } else {
-                  droneService.addDrone(updatedDrone); // Add new drone
-                }
+                // Call the update service
+                droneService.updateDrone(drone.dId, updatedDrone);
 
-                Navigator.of(context).pop(); // Close dialog
+                Navigator.of(context).pop(); // Close dialog after updating
               },
-              child: Text(isUpdate ? 'Update' : 'Add'),
+              child: Text('Update'),
             ),
           ],
         );
