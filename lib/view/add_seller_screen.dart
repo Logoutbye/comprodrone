@@ -15,9 +15,9 @@ class _AddSellerScreenState extends State<AddSellerScreen> {
   final FocusNode _cityFocus = FocusNode();
   final FocusNode _typeOfSellerFocus = FocusNode();
   final FocusNode _addressFocus = FocusNode();
-  final FocusNode _whatsappLinkFocus = FocusNode();
+  final FocusNode _whatsappNoFocus = FocusNode();
 
-  String? _sellerName, _email, _phone, _city, _typeOfSeller, _address, _whatsappLink;
+  String? _sellerName, _email, _phone, _city, _typeOfSeller, _address, _whatsappNo;
 
   final SellerService sellerService = SellerService();
 
@@ -32,7 +32,7 @@ class _AddSellerScreenState extends State<AddSellerScreen> {
         city: _city!,
         typeOfSeller: _typeOfSeller!,
         address: _address!,
-        whatsappLink: _whatsappLink ?? '', // Default to empty string if not provided
+        whatsappNo: _whatsappNo ?? '', // Default to empty string if not provided
       );
       sellerService.addSeller(newSeller); // Add seller to the database
       Navigator.pop(context); // Go back after adding
@@ -48,7 +48,7 @@ class _AddSellerScreenState extends State<AddSellerScreen> {
     _cityFocus.dispose();
     _typeOfSellerFocus.dispose();
     _addressFocus.dispose();
-    _whatsappLinkFocus.dispose();
+    _whatsappNoFocus.dispose();
     super.dispose();
   }
 
@@ -119,13 +119,13 @@ class _AddSellerScreenState extends State<AddSellerScreen> {
                 onSaved: (value) => _address = value,
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_whatsappLinkFocus);
+                  FocusScope.of(context).requestFocus(_whatsappNoFocus);
                 },
               ),
               TextFormField(
-                focusNode: _whatsappLinkFocus,
-                decoration: InputDecoration(labelText: 'WhatsApp Link'),
-                onSaved: (value) => _whatsappLink = value,
+                focusNode: _whatsappNoFocus,
+                decoration: InputDecoration(labelText: 'WhatsApp No'),
+                onSaved: (value) => _whatsappNo = value,
                 textInputAction: TextInputAction.done,
                 onFieldSubmitted: (_) {
                   _submitForm(); // Submit the form when the user is done

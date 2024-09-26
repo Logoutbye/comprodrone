@@ -6,7 +6,7 @@ class Seller {
   String city;
   String typeOfSeller;
   String address;
-  String whatsappLink; // Link for WhatsApp contact
+  String whatsappNo; // Link for WhatsApp contact
 
   Seller({
     required this.id,
@@ -16,7 +16,7 @@ class Seller {
     required this.city,
     required this.typeOfSeller,
     required this.address,
-    required this.whatsappLink,
+    required this.whatsappNo,
   });
 
   // Convert to a Map (useful for Firestore or other database storage)
@@ -29,7 +29,7 @@ class Seller {
       'city': city,
       'typeOfSeller': typeOfSeller,
       'address': address,
-      'whatsappLink': whatsappLink,
+      'whatsappNo': whatsappNo,
     };
   }
 
@@ -43,7 +43,7 @@ class Seller {
       city: map['city'],
       typeOfSeller: map['typeOfSeller'],
       address: map['address'],
-      whatsappLink: map['whatsappLink'],
+      whatsappNo: map['whatsappNo'],
     );
   }
 }

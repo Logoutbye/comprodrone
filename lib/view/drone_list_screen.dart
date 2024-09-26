@@ -8,6 +8,8 @@ import '../models/seller_model.dart';
 import '../services/drone_services.dart';
 
 class DroneListScreen extends StatefulWidget {
+  const DroneListScreen({super.key});
+
   @override
   _DroneListScreenState createState() => _DroneListScreenState();
 }

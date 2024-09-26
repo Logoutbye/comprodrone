@@ -89,7 +89,7 @@ class SellerListScreen extends StatelessWidget {
                   DataCell(Text(seller.city)),
                   DataCell(Text(seller.typeOfSeller)),
                   DataCell(Text(seller.address)),
-                  DataCell(Text(seller.whatsappLink)), // Show WhatsApp link
+                  DataCell(Text(seller.whatsappNo)), // Show WhatsApp link
                   DataCell(
                     Row(
                       children: [
@@ -135,7 +135,7 @@ class SellerListScreen extends StatelessWidget {
     final TextEditingController addressController =
         TextEditingController(text: seller.address);
     final TextEditingController whatsappController =
-        TextEditingController(text: seller.whatsappLink);
+        TextEditingController(text: seller.whatsappNo);
 
     showDialog(
       context: context,
@@ -195,7 +195,7 @@ class SellerListScreen extends StatelessWidget {
                   city: cityController.text,
                   typeOfSeller: typeController.text,
                   address: addressController.text,
-                  whatsappLink: whatsappController.text,
+                  whatsappNo: whatsappController.text,
                 );
 
                 await sellerService.updateSeller(
