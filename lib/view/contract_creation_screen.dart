@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'package:com_pro_drone/models/contract_model.dart';
-import 'package:com_pro_drone/services/contract_service.dart';
-import 'package:com_pro_drone/view/contract_history.dart';
 
 class ContractCreationScreen extends StatefulWidget {
   @override
@@ -13,63 +11,58 @@ class ContractCreationScreen extends StatefulWidget {
 class _ContractCreationScreenState extends State<ContractCreationScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  // Controllers for buyer and seller details
+  // Controllers for buyer, seller, and drone details
   TextEditingController buyerNameController = TextEditingController();
-  TextEditingController buyerEmailController = TextEditingController();
+  TextEditingController buyerDNIController = TextEditingController();
+  TextEditingController buyerAddressController = TextEditingController();
   TextEditingController buyerPhoneController = TextEditingController();
+  TextEditingController buyerEmailController = TextEditingController();
   TextEditingController buyerCityController = TextEditingController();
 
   TextEditingController sellerNameController = TextEditingController();
-  TextEditingController sellerEmailController = TextEditingController();
+  TextEditingController sellerDNIController = TextEditingController();
+  TextEditingController sellerAddressController = TextEditingController();
   TextEditingController sellerPhoneController = TextEditingController();
+  TextEditingController sellerEmailController = TextEditingController();
   TextEditingController sellerCityController = TextEditingController();
 
   TextEditingController droneModelController = TextEditingController();
-  TextEditingController contractNumberController = TextEditingController();
+  TextEditingController droneSerialController = TextEditingController();
+  TextEditingController dronePriceController = TextEditingController();
 
   @override
   void dispose() {
     buyerNameController.dispose();
-    buyerEmailController.dispose();
+    buyerDNIController.dispose();
+    buyerAddressController.dispose();
     buyerPhoneController.dispose();
+    buyerEmailController.dispose();
     buyerCityController.dispose();
+
     sellerNameController.dispose();
-    sellerEmailController.dispose();
+    sellerDNIController.dispose();
+    sellerAddressController.dispose();
     sellerPhoneController.dispose();
+    sellerEmailController.dispose();
     sellerCityController.dispose();
+
     droneModelController.dispose();
-    contractNumberController.dispose();
+    droneSerialController.dispose();
+    dronePriceController.dispose();
     super.dispose();
   }
 
   Future<void> _submitForm() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      await _showPreviewDialog();
+      await _generateContractPDF();
     }
   }
 
   Future<void> _generateContractPDF() async {
     final pdf = pw.Document();
-    Contract newContract = Contract(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      contractNumber: contractNumberController.text,
-      buyerName: buyerNameController.text,
-      buyerEmail: buyerEmailController.text,
-      buyerPhone: buyerPhoneController.text,
-      buyerCity: buyerCityController.text,
-      sellerName: sellerNameController.text,
-      sellerEmail: sellerEmailController.text,
-      sellerPhone: sellerPhoneController.text,
-      sellerCity: sellerCityController.text,
-      droneModel: droneModelController.text,
-      price: '1000 €', // Example price
-      commission: '100 €', // Example commission
-      createdAt: DateTime.now(),
-    );
-    await ContractService().addContract(newContract);
 
-    // Generate the contract PDF
+    // Page 1: Contract Agreement
     pdf.addPage(
       pw.Page(
         build: (pw.Context context) {
@@ -83,7 +76,212 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
                   style: pw.TextStyle(
                       fontSize: 24, fontWeight: pw.FontWeight.bold),
                 ),
-                // More content here...
+                pw.SizedBox(height: 10),
+                pw.Text("En Vitigudino a 3 de Diciembre del 2022",
+                    style: pw.TextStyle(fontSize: 16)),
+                pw.SizedBox(height: 20),
+                pw.Text("REUNIDOS:",
+                    style: pw.TextStyle(
+                        fontSize: 18, fontWeight: pw.FontWeight.bold)),
+                pw.SizedBox(height: 10),
+                pw.Text(
+                    "De una parte, como LA PARTE VENDEDORA:\nD. ${sellerNameController.text}, "
+                    "mayor de edad, con D.N.I ${sellerDNIController.text} y con domicilio en ${sellerAddressController.text}, "
+                    "${sellerCityController.text}."),
+                pw.SizedBox(height: 10),
+                pw.Text(
+                    "De otra parte, como LA PARTE COMPRADORA:\nD. ${buyerNameController.text}, "
+                    "mayor de edad, con D.N.I ${buyerDNIController.text} y con domicilio en ${buyerAddressController.text}, "
+                    "${buyerCityController.text}."),
+                pw.SizedBox(height: 20),
+                pw.Text("EXPONEN:",
+                    style: pw.TextStyle(
+                        fontSize: 18, fontWeight: pw.FontWeight.bold)),
+                pw.Bullet(
+                    text:
+                        "El vendedor ha anunciado su dron en la plataforma web www.comprodrone.com."),
+                pw.Bullet(
+                    text:
+                        "El comprador ha comprado el dron por la plataforma de ComproDrone."),
+                pw.Bullet(
+                    text:
+                        "Que ambas partes han convenido formalizar contrato de compraventa de un dron usado:"),
+                pw.SizedBox(height: 10),
+                pw.Text("MARCA: ${droneModelController.text}"),
+                pw.Text("Nº DE SERIE: ${droneSerialController.text}"),
+                pw.Text("ESTADO DEL APARATO: SEMI-NUEVO"),
+                pw.Text("POSIBLES DEFECTOS: NINGUNO"),
+                pw.SizedBox(height: 10),
+                pw.Text(
+                    "Que la parte compradora manifiesta que ha sido informada del estado del dron, en su conjunto y en el "
+                    "de sus elementos mecánicos y componentes fundamentales."),
+                pw.SizedBox(height: 10),
+                pw.Text("ESTIPULACIONES:",
+                    style: pw.TextStyle(
+                        fontSize: 18, fontWeight: pw.FontWeight.bold)),
+                pw.Text(
+                    "PRIMERA: El vendedor vende al comprador el dron de su propiedad anteriormente especificado por la cantidad de ${dronePriceController.text} euros."),
+                pw.Text(
+                    "SEGUNDA: El vendedor declara que no pesa sobre el citado dron ninguna carga o gravamen ni impuesto."),
+                pw.Text(
+                    "TERCERA: El comprador se hace responsable desde la fecha del presente documento de cuantas cuestiones pudieran derivarse del uso o posesión."),
+                pw.SizedBox(height: 20),
+                pw.Text("Firmas:"),
+                pw.Column(
+                  mainAxisAlignment: pw.MainAxisAlignment.start,
+                  crossAxisAlignment: pw.CrossAxisAlignment.end,
+                  children: [
+                    pw.Text("Firma del Vendedor: _____________________"),
+                    pw.Text("Firma del Comprador: _____________________"),
+                    pw.Text("Firma de ComproDrone: _____________________"),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+    pdf.addPage(
+      pw.Page(
+        build: (pw.Context context) {
+          return pw.Padding(
+            padding: pw.EdgeInsets.all(20),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text(
+                  "REGISTRO DE VENTA DE AERONAVES NO TRIPULADAS (UAS)",
+                  style: pw.TextStyle(
+                    fontSize: 24,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
+                ),
+                pw.SizedBox(height: 20),
+                pw.Table(
+                  border: pw.TableBorder.all(),
+                  columnWidths: {
+                    0: pw.FlexColumnWidth(3),
+                    1: pw.FlexColumnWidth(5),
+                  },
+                  children: [
+                    // Header Row
+                    pw.TableRow(
+                      children: [
+                        pw.Text("Campo",
+                            style:
+                                pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                        pw.Text("Detalle",
+                            style:
+                                pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                      ],
+                    ),
+                    // UAS Info
+                    pw.TableRow(children: [
+                      pw.Text("Número de Serie de UAS"),
+                      pw.Text("P3A0531221111132"),
+                    ]),
+                    pw.TableRow(children: [
+                      pw.Text("Fecha de registro"),
+                      pw.Text("31/07/2024"),
+                    ]),
+                    // Buyer Info
+                    pw.TableRow(
+                      children: [
+                        pw.Text("COMPRADOR DE UAS",
+                            style:
+                                pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                        pw.Text(""),
+                      ],
+                    ),
+                    pw.TableRow(children: [
+                      pw.SizedBox(height: 10),
+                      pw.SizedBox(height: 10),
+                    ]),
+                    pw.TableRow(children: [
+                      pw.Text("Nombre completo o razón social"),
+                      pw.Text("Mariano Campaña González"),
+                    ]),
+                    pw.TableRow(children: [
+                      pw.Text("DNI"),
+                      pw.Text("47425829 J"),
+                    ]),
+                    pw.TableRow(children: [
+                      pw.Text("Nacionalidad"),
+                      pw.Text("ESPAÑOLA"),
+                    ]),
+                    pw.TableRow(children: [
+                      pw.Text("Fecha de Nacimiento"),
+                      pw.Text("23/08/1998"),
+                    ]),
+                    pw.TableRow(children: [
+                      pw.Text("Teléfono"),
+                      pw.Text("615655125"),
+                    ]),
+                    pw.TableRow(children: [
+                      pw.Text("Correo electrónico"),
+                      pw.Text("mcampana@aronatur.com"),
+                    ]),
+                    pw.TableRow(children: [
+                      pw.Text("Dirección"),
+                      pw.Text(
+                          "La Cilla, nº10, 41620, Marchena, Sevilla, España"),
+                    ]),
+                    pw.TableRow(children: [
+                      pw.SizedBox(height: 10),
+                      pw.SizedBox(height: 10),
+                    ]), // Seller Info
+                    pw.TableRow(
+                      children: [
+                        pw.Text("VENDEDOR DE UAS",
+                            style:
+                                pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                        pw.Text(""),
+                      ],
+                    ),
+                    pw.TableRow(children: [
+                      pw.Text("Nombre completo o razón social"),
+                      pw.Text("Gabriel Palacios Hernandez"),
+                    ]),
+                    pw.TableRow(children: [
+                      pw.Text("DNI"),
+                      pw.Text("50078703K"),
+                    ]),
+                    pw.TableRow(children: [
+                      pw.Text("Nacionalidad"),
+                      pw.Text("Española"),
+                    ]),
+                    pw.TableRow(children: [
+                      pw.Text("Teléfono"),
+                      pw.Text("605572884"),
+                    ]),
+                    pw.TableRow(children: [
+                      pw.Text("Correo electrónico"),
+                      pw.Text("Gabby6705@gmail.com"),
+                    ]),
+                    pw.TableRow(children: [
+                      pw.Text("Dirección"),
+                      pw.Text(
+                          "C/ Jupiter 143, chalet, 28341, Valdemoro, Madrid, España"),
+                    ]),
+                  ],
+                ),
+                pw.SizedBox(height: 20),
+                pw.Text(
+                  "DECLARACIÓN RESPONSABLE",
+                  style: pw.TextStyle(
+                    fontSize: 18,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
+                ),
+                pw.SizedBox(height: 10),
+                pw.Text(
+                  "El presente documento constituye una declaración responsable. Que todos los documentos presentados en este registro son ciertos y su contenido coincide plenamente con los originales de los que son.",
+                ),
+                pw.SizedBox(height: 20),
+                pw.Text(
+                  "NORMATIVA DE REGISTRO DE AERONAVES: Según BOE, Nº136, miércoles 5 de junio del 2024.",
+                ),
               ],
             ),
           );
@@ -91,113 +289,16 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
       ),
     );
 
-    await Printing.sharePdf(
-      bytes: await pdf.save(),
-      filename: 'contrato_${contractNumberController.text}.pdf',
-    );
+    // Page 2: UAS Sale Registration
 
-    // Clear form after contract is generated
-    _clearForm();
-
-    // Show a SnackBar after contract is generated
-    _showSnackBar(context, '¡Contrato generado exitosamente!');
-  }
-
-  // Clear all form fields after generating the contract
-  void _clearForm() {
-    setState(() {
-      buyerNameController.clear();
-      buyerEmailController.clear();
-      buyerPhoneController.clear();
-      buyerCityController.clear();
-      sellerNameController.clear();
-      sellerEmailController.clear();
-      sellerPhoneController.clear();
-      sellerCityController.clear();
-      droneModelController.clear();
-      contractNumberController.clear();
-    });
-  }
-
-  // Custom method to display a SnackBar
-  void _showSnackBar(BuildContext context, String message) {
-    // Ensure the ScaffoldMessenger is properly linked
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.green,
-        duration: Duration(seconds: 2),
-      ),
-    );
-  }
-
-  Future<void> _showPreviewDialog() async {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Previsualizar Detalles del Contrato'),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("Nombre del Comprador: ${buyerNameController.text}"),
-                Text("Correo del Comprador: ${buyerEmailController.text}"),
-                Text("Teléfono del Comprador: ${buyerPhoneController.text}"),
-                Text("Ciudad del Comprador: ${buyerCityController.text}"),
-                SizedBox(height: 10),
-                Text("Nombre del Vendedor: ${sellerNameController.text}"),
-                Text("Correo del Vendedor: ${sellerEmailController.text}"),
-                Text("Teléfono del Vendedor: ${sellerPhoneController.text}"),
-                Text("Ciudad del Vendedor: ${sellerCityController.text}"),
-                SizedBox(height: 10),
-                Text("Modelo del Drone: ${droneModelController.text}"),
-                Text("Número de Contrato: ${contractNumberController.text}"),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              child: Text('Editar'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Volver al formulario
-              },
-            ),
-            ElevatedButton(
-              child: Text('Generar PDF'),
-              onPressed: () {
-                Navigator.of(context)
-                    .pop(); // Cerrar el diálogo de vista previa
-                _generateContractPDF(); // Generar el PDF
-              },
-            ),
-          ],
-        );
-      },
-    );
+    await Printing.sharePdf(bytes: await pdf.save(), filename: 'contract.pdf');
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: Icon(Icons.history),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ContractHistoryScreen()),
-              );
-            },
-            tooltip: 'Ver Historial de Contratos',
-          ),
-        ],
-        foregroundColor: Colors.white,
-        title: Text('Crear Contrato', style: TextStyle(fontSize: 20)),
-        centerTitle: true,
-        backgroundColor: Colors.blue,
+        title: Text('Crear Contrato'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -205,10 +306,53 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
           key: _formKey,
           child: ListView(
             children: [
-              _buildBuyerSection(),
-              _buildSellerSection(),
-              _buildDroneContractSection(),
-              _buildSubmitButton(),
+              Text('Detalles del Comprador',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              _buildTextField(
+                  buyerNameController, 'Nombre del Comprador', Icons.person),
+              _buildTextField(
+                  buyerDNIController, 'DNI del Comprador', Icons.credit_card),
+              _buildTextField(buyerAddressController, 'Dirección del Comprador',
+                  Icons.home),
+              _buildTextField(
+                  buyerPhoneController, 'Teléfono del Comprador', Icons.phone),
+              _buildTextField(
+                  buyerEmailController, 'Correo del Comprador', Icons.email),
+              _buildTextField(buyerCityController, 'Ciudad del Comprador',
+                  Icons.location_city),
+              SizedBox(height: 20),
+              Text('Detalles del Vendedor',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              _buildTextField(
+                  sellerNameController, 'Nombre del Vendedor', Icons.person),
+              _buildTextField(
+                  sellerDNIController, 'DNI del Vendedor', Icons.credit_card),
+              _buildTextField(sellerAddressController, 'Dirección del Vendedor',
+                  Icons.home),
+              _buildTextField(
+                  sellerPhoneController, 'Teléfono del Vendedor', Icons.phone),
+              _buildTextField(
+                  sellerEmailController, 'Correo del Vendedor', Icons.email),
+              _buildTextField(sellerCityController, 'Ciudad del Vendedor',
+                  Icons.location_city),
+              SizedBox(height: 20),
+              Text('Detalles del Drone',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              _buildTextField(
+                  droneModelController, 'Modelo del Drone', Icons.toys),
+              _buildTextField(droneSerialController, 'Número de Serie',
+                  Icons.confirmation_number),
+              _buildTextField(
+                  dronePriceController, 'Precio del Drone', Icons.attach_money),
+              SizedBox(height: 40),
+              ElevatedButton(
+                onPressed: _submitForm,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text('Generar PDF del Contrato',
+                      style: TextStyle(fontSize: 18)),
+                ),
+              ),
             ],
           ),
         ),
@@ -216,149 +360,21 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
     );
   }
 
-  // Helper Widgets
-  Widget _buildBuyerSection() {
-    return Column(
-      children: [
-        Text('Detalles del Comprador',
-            style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.blueGrey[900])),
-        Card(
-          elevation: 4,
-          margin: EdgeInsets.symmetric(vertical: 10),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                _buildTextField(
-                    controller: buyerNameController,
-                    labelText: 'Nombre del Comprador',
-                    icon: Icons.person),
-                _buildTextField(
-                    controller: buyerEmailController,
-                    labelText: 'Correo del Comprador',
-                    icon: Icons.email),
-                _buildTextField(
-                    controller: buyerPhoneController,
-                    labelText: 'Teléfono del Comprador',
-                    icon: Icons.phone),
-                _buildTextField(
-                    controller: buyerCityController,
-                    labelText: 'Ciudad del Comprador',
-                    icon: Icons.location_city),
-              ],
-            ),
-          ),
-        ),
-        Divider(),
-      ],
-    );
-  }
-
-  Widget _buildSellerSection() {
-    return Column(
-      children: [
-        Text('Detalles del Vendedor',
-            style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.blueGrey[900])),
-        Card(
-          elevation: 4,
-          margin: EdgeInsets.symmetric(vertical: 10),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                _buildTextField(
-                    controller: sellerNameController,
-                    labelText: 'Nombre del Vendedor',
-                    icon: Icons.person),
-                _buildTextField(
-                    controller: sellerEmailController,
-                    labelText: 'Correo del Vendedor',
-                    icon: Icons.email),
-                _buildTextField(
-                    controller: sellerPhoneController,
-                    labelText: 'Teléfono del Vendedor',
-                    icon: Icons.phone),
-                _buildTextField(
-                    controller: sellerCityController,
-                    labelText: 'Ciudad del Vendedor',
-                    icon: Icons.location_city),
-              ],
-            ),
-          ),
-        ),
-        Divider(),
-      ],
-    );
-  }
-
-  Widget _buildDroneContractSection() {
-    return Column(
-      children: [
-        Text('Detalles del Contrato & Drone',
-            style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.blueGrey[900])),
-        Card(
-          elevation: 4,
-          margin: EdgeInsets.symmetric(vertical: 10),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                _buildTextField(
-                    controller: droneModelController,
-                    labelText: 'Modelo del Drone',
-                    icon: Icons.toys),
-                _buildTextField(
-                    controller: contractNumberController,
-                    labelText: 'Número de Contrato',
-                    icon: Icons.confirmation_number),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSubmitButton() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: ElevatedButton(
-        onPressed: () async {
-          await _submitForm();
-        },
-        child: Text('Previsualizar y Generar Contrato',
-            style: TextStyle(color: Colors.white)),
-        style: ElevatedButton.styleFrom(
-          padding: EdgeInsets.symmetric(vertical: 16),
-          backgroundColor: Colors.blue,
-          textStyle: TextStyle(fontSize: 18),
-        ),
-      ),
-    );
-  }
-
-  // Helper for TextFormFields with icon and validation
+  // Helper method for text fields
   Widget _buildTextField(
-      {required TextEditingController controller,
-      required String labelText,
-      required IconData icon}) {
-    return TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: labelText,
-        prefixIcon: Icon(icon),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+      TextEditingController controller, String label, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: Icon(icon),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
+        ),
+        validator: (value) =>
+            value!.isEmpty ? 'Este campo es obligatorio' : null,
       ),
-      validator: (value) => value!.isEmpty ? 'Ingresa $labelText' : null,
     );
   }
 }

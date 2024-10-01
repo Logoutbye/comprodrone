@@ -37,6 +37,8 @@ dependencies:
   cupertino_icons: ^1.0.6
   firebase_core: 
   cloud_firestore: ^5.4.2
+  pdf: ^3.11.1
+
   intl:
   printing: 
   url_launcher: 
