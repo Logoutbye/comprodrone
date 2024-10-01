@@ -1,13 +1,13 @@
-import 'package:com_pro_drone/models/seller_model.dart'; // Ensure correct model path
+import 'package:com_pro_drone/models/seller_model.dart'; // Asegúrate de que esta ruta sea correcta
 import 'package:com_pro_drone/view/add_drone.dart';
 import 'package:com_pro_drone/view/add_seller_screen.dart';
 import 'package:com_pro_drone/view/drone_list_screen.dart';
 import 'package:flutter/material.dart';
-import '../services/seller_services.dart'; // Ensure correct service path
+import '../services/seller_services.dart'; // Asegúrate de que esta ruta sea correcta
+import 'package:url_launcher/url_launcher.dart'; // Importar url_launcher
 
 class SellerListScreen extends StatelessWidget {
-  final SellerService sellerService =
-      SellerService(); // Instantiate the service
+  final SellerService sellerService = SellerService(); // Instanciar el servicio
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +30,13 @@ class SellerListScreen extends StatelessWidget {
           appBar: AppBar(
             backgroundColor: Colors.blue,
             foregroundColor: Colors.white,
-            title: Text('Sellers'),
+            title: Text('Vendedores'),
             actions: [
-              IconButton(
-                icon: Icon(Icons.import_contacts),
+              TextButton(
+                child: Text(
+                  'Ver Drones',
+                  style: TextStyle(color: Colors.white),
+                ),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -41,8 +44,11 @@ class SellerListScreen extends StatelessWidget {
                   );
                 },
               ),
-              IconButton(
-                icon: Icon(Icons.add),
+              TextButton(
+                child: Text(
+                  'Agregar Drones',
+                  style: TextStyle(color: Colors.white),
+                ),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -56,7 +62,7 @@ class SellerListScreen extends StatelessWidget {
             child: Column(
               children: [
                 StreamBuilder<List<Seller>>(
-                  stream: sellerService.getAllSellers(), // Fetch sellers
+                  stream: sellerService.getAllSellers(), // Obtener vendedores
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(child: CircularProgressIndicator());
@@ -69,7 +75,7 @@ class SellerListScreen extends StatelessWidget {
                     if (!snapshot.hasData || snapshot.data!.isEmpty) {
                       return Center(
                         child: Text(
-                          'No Sellers Found',
+                          'No se encontraron vendedores',
                           style: TextStyle(fontSize: 18, color: Colors.grey),
                         ),
                       );
@@ -88,18 +94,18 @@ class SellerListScreen extends StatelessWidget {
     );
   }
 
-  // Build the responsive DataTable
+  // Construir la DataTable responsiva
   Widget _buildResponsiveDataTable(
       BuildContext context, List<Seller> sellers, BoxConstraints constraints) {
     final bool isSmallScreen = constraints.maxWidth < 600;
     return SingleChildScrollView(
-      scrollDirection: Axis.horizontal, // Enable horizontal scroll
+      scrollDirection: Axis.horizontal, // Habilitar desplazamiento horizontal
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: DataTable(
             border: TableBorder.all(color: Colors.grey[300]!, width: 1),
-            columns: _buildTableColumns(isSmallScreen), // Adjust columns
+            columns: _buildTableColumns(isSmallScreen), // Ajustar columnas
             rows: sellers
                 .map((seller) => _buildDataRow(context, seller, isSmallScreen))
                 .toList(),
@@ -109,24 +115,37 @@ class SellerListScreen extends StatelessWidget {
     );
   }
 
-  // Create the DataTable columns based on screen size
+  // Crear las columnas de DataTable según el tamaño de la pantalla
   List<DataColumn> _buildTableColumns(bool isSmallScreen) {
     return [
       DataColumn(label: Text('ID', style: _tableHeaderStyle())),
-      DataColumn(label: Text('Seller Name', style: _tableHeaderStyle())),
+      DataColumn(
+          label: Text('Nombre del Vendedor', style: _tableHeaderStyle())),
       if (!isSmallScreen) ...[
-        DataColumn(label: Text('Email', style: _tableHeaderStyle())),
-        DataColumn(label: Text('Phone', style: _tableHeaderStyle())),
-        DataColumn(label: Text('City', style: _tableHeaderStyle())),
-        DataColumn(label: Text('Type', style: _tableHeaderStyle())),
-        DataColumn(label: Text('Address', style: _tableHeaderStyle())),
+        DataColumn(
+            label: Text('Correo Electrónico', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Teléfono', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Ciudad', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Tipo', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Dirección', style: _tableHeaderStyle())),
         DataColumn(label: Text('WhatsApp', style: _tableHeaderStyle())),
+        // Add the new fields
+        DataColumn(label: Text('Fecha', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Número', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Cliente', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Dron Anunciado', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Precio Web', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Precio Cliente', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Comisión', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Seguimiento', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Estado', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Observaciones', style: _tableHeaderStyle())),
       ],
-      DataColumn(label: Text('Actions', style: _tableHeaderStyle())),
+      DataColumn(label: Text('Acciones', style: _tableHeaderStyle())),
     ];
   }
 
-  // Create the DataRow for each seller
+  // Crear DataRow para cada vendedor
   DataRow _buildDataRow(
       BuildContext context, Seller seller, bool isSmallScreen) {
     return DataRow(
@@ -135,11 +154,34 @@ class SellerListScreen extends StatelessWidget {
         DataCell(Text(seller.sellerName)),
         if (!isSmallScreen) ...[
           DataCell(Text(seller.email)),
-          DataCell(Text(seller.phone)),
+          DataCell(
+            Row(
+              children: [
+                Text(seller.phone),
+                IconButton(
+                  icon: Icon(Icons.phone, color: Colors.green),
+                  onPressed: () {
+                    _launchWhatsApp(context, seller.whatsappNo);
+                  },
+                  tooltip: 'Chatear en WhatsApp',
+                ),
+              ],
+            ),
+          ),
           DataCell(Text(seller.city)),
           DataCell(Text(seller.typeOfSeller)),
           DataCell(Text(seller.address)),
           DataCell(Text(seller.whatsappNo)),
+          DataCell(Text(seller.fecha)), // New field
+          DataCell(Text(seller.numero)), // New field
+          DataCell(Text(seller.cliente)), // New field
+          DataCell(Text(seller.dronAnunciado)), // New field
+          DataCell(Text(seller.precioWeb.toString())), // New field
+          DataCell(Text(seller.precioCliente.toString())), // New field
+          DataCell(Text(seller.comision.toString())), // New field
+          DataCell(Text(seller.seguimiento)), // New field
+          DataCell(Text(seller.estado)), // New field
+          DataCell(Text(seller.observaciones)), // New field
         ],
         DataCell(
           Row(
@@ -149,14 +191,14 @@ class SellerListScreen extends StatelessWidget {
                 onPressed: () {
                   _showEditDialog(context, seller);
                 },
-                tooltip: 'Edit Seller',
+                tooltip: 'Editar Vendedor',
               ),
               IconButton(
                 icon: Icon(Icons.delete, color: Colors.redAccent),
                 onPressed: () {
                   _confirmDelete(context, seller.id);
                 },
-                tooltip: 'Delete Seller',
+                tooltip: 'Eliminar Vendedor',
               ),
             ],
           ),
@@ -165,7 +207,24 @@ class SellerListScreen extends StatelessWidget {
     );
   }
 
-  // Method to show the edit dialog
+  // Método para lanzar WhatsApp
+  void _launchWhatsApp(BuildContext context, String phoneNumber) async {
+    String formattedNumber =
+        phoneNumber.replaceAll('+', '').replaceAll('-', '');
+    final Uri whatsappUri = Uri.parse("https://wa.me/$formattedNumber");
+
+    if (await canLaunchUrl(whatsappUri)) {
+      await launchUrl(whatsappUri, mode: LaunchMode.externalApplication);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("WhatsApp no está instalado en este dispositivo."),
+        ),
+      );
+    }
+  }
+
+  // Método para mostrar el cuadro de diálogo de edición
   void _showEditDialog(BuildContext context, Seller seller) {
     final TextEditingController nameController =
         TextEditingController(text: seller.sellerName);
@@ -181,23 +240,55 @@ class SellerListScreen extends StatelessWidget {
         TextEditingController(text: seller.address);
     final TextEditingController whatsappController =
         TextEditingController(text: seller.whatsappNo);
+    // New fields controllers
+    final TextEditingController fechaController =
+        TextEditingController(text: seller.fecha);
+    final TextEditingController numeroController =
+        TextEditingController(text: seller.numero);
+    final TextEditingController clienteController =
+        TextEditingController(text: seller.cliente);
+    final TextEditingController dronController =
+        TextEditingController(text: seller.dronAnunciado);
+    final TextEditingController precioWebController = TextEditingController(
+        text: seller.precioWeb.toString());
+    final TextEditingController precioClienteController = TextEditingController(
+        text: seller.precioCliente.toString());
+    final TextEditingController comisionController = TextEditingController(
+        text: seller.comision.toString());
+    final TextEditingController seguimientoController =
+        TextEditingController(text: seller.seguimiento);
+    final TextEditingController estadoController =
+        TextEditingController(text: seller.estado);
+    final TextEditingController observacionesController =
+        TextEditingController(text: seller.observaciones);
 
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Edit Seller'),
+          title: Text('Editar Vendedor'),
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _buildTextField(nameController, 'Seller Name'),
-                _buildTextField(emailController, 'Email'),
-                _buildTextField(phoneController, 'Phone'),
-                _buildTextField(cityController, 'City'),
-                _buildTextField(typeController, 'Type of Seller'),
-                _buildTextField(addressController, 'Address'),
+                _buildTextField(nameController, 'Nombre del Vendedor'),
+                _buildTextField(emailController, 'Correo Electrónico'),
+                _buildTextField(phoneController, 'Teléfono'),
+                _buildTextField(cityController, 'Ciudad'),
+                _buildTextField(typeController, 'Tipo de Vendedor'),
+                _buildTextField(addressController, 'Dirección'),
                 _buildTextField(whatsappController, 'WhatsApp No'),
+                // New fields in edit dialog
+                _buildTextField(fechaController, 'Fecha'),
+                _buildTextField(numeroController, 'Número'),
+                _buildTextField(clienteController, 'Cliente'),
+                _buildTextField(dronController, 'Dron Anunciado'),
+                _buildTextField(precioWebController, 'Precio Web'),
+                _buildTextField(precioClienteController, 'Precio Cliente'),
+                _buildTextField(comisionController, 'Comisión'),
+                _buildTextField(seguimientoController, 'Seguimiento'),
+                _buildTextField(estadoController, 'Estado'),
+                _buildTextField(observacionesController, 'Observaciones'),
               ],
             ),
           ),
@@ -206,7 +297,7 @@ class SellerListScreen extends StatelessWidget {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: Text('Cancelar'),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -219,12 +310,24 @@ class SellerListScreen extends StatelessWidget {
                   typeOfSeller: typeController.text,
                   address: addressController.text,
                   whatsappNo: whatsappController.text,
+                  // Updated new fields
+                  fecha: fechaController.text,
+                  numero: numeroController.text,
+                  cliente: clienteController.text,
+                  dronAnunciado: dronController.text,
+                  precioWeb: double.tryParse(precioWebController.text) ?? 0,
+                  precioCliente:
+                      double.tryParse(precioClienteController.text) ?? 0,
+                  comision: double.tryParse(comisionController.text) ?? 0,
+                  seguimiento: seguimientoController.text,
+                  estado: estadoController.text,
+                  observaciones: observacionesController.text,
                 );
 
                 await sellerService.updateSeller(seller.id, updatedSeller);
                 Navigator.of(context).pop();
               },
-              child: Text('Update'),
+              child: Text('Actualizar'),
             ),
           ],
         );
@@ -232,7 +335,7 @@ class SellerListScreen extends StatelessWidget {
     );
   }
 
-  // Method to build a TextField for the Edit dialog
+  // Método para construir un TextField para el cuadro de diálogo de edición
   Widget _buildTextField(TextEditingController controller, String label) {
     return Padding(
       padding: const EdgeInsets.only(top: 10.0),
@@ -246,20 +349,20 @@ class SellerListScreen extends StatelessWidget {
     );
   }
 
-  // Method to show a confirmation dialog before deleting
+  // Método para mostrar el cuadro de confirmación antes de eliminar
   Future<void> _confirmDelete(BuildContext context, String sellerId) async {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Confirm Deletion'),
-          content: Text('Are you sure you want to delete this seller?'),
+          title: Text('Confirmar Eliminación'),
+          content: Text('¿Estás seguro de que deseas eliminar este vendedor?'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: Text('Cancelar'),
             ),
             ElevatedButton(
               onPressed: () async {
@@ -268,7 +371,7 @@ class SellerListScreen extends StatelessWidget {
               },
               style:
                   ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
-              child: Text('Delete'),
+              child: Text('Eliminar'),
             ),
           ],
         );
@@ -276,7 +379,7 @@ class SellerListScreen extends StatelessWidget {
     );
   }
 
-  // Table Header Styling
+  // Estilo del encabezado de la tabla
   TextStyle _tableHeaderStyle() {
     return TextStyle(
       fontWeight: FontWeight.bold,

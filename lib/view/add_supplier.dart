@@ -18,25 +18,25 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
 
   // Submit form to add supplier
   Future<void> _submitForm() async {
-  if (_formKey.currentState!.validate()) {
-    _formKey.currentState!.save();
-    Supplier newSupplier = Supplier(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      name: _supplierName!,
-      contactDetails: _contactDetails!,
-    );
-    print("Supplier Data: ${newSupplier.toMap()}"); // Debugging the Supplier Data
-    bool success = await supplierService.addSupplier(newSupplier);
-    if (success) {
-      Navigator.pop(context);
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      Supplier newSupplier = Supplier(
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        name: _supplierName!,
+        contactDetails: _contactDetails!,
+      );
+      print(
+          "Datos del Proveedor: ${newSupplier.toMap()}"); // Depuración de datos del proveedor
+      bool success = await supplierService.addSupplier(newSupplier);
+      if (success) {
+        Navigator.pop(context); // Cerrar pantalla en caso de éxito
+      }
     }
   }
-}
-
 
   @override
   void dispose() {
-    // Dispose of focus nodes when the screen is destroyed
+    // Eliminar los focus nodes cuando la pantalla sea destruida
     _supplierNameFocusNode.dispose();
     _contactDetailsFocusNode.dispose();
     super.dispose();
@@ -49,59 +49,59 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         title: Text(
-          'Add Supplier',
+          'Agregar Proveedor',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
       body: Center(
         child: ConstrainedBox(
-          constraints: BoxConstraints(maxWidth: 600), // Limits the form width
+          constraints: BoxConstraints(maxWidth: 600), // Limitar el ancho del formulario
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Form(
               key: _formKey,
               child: ListView(
-                shrinkWrap: true, // Ensures the list takes only necessary space
+                shrinkWrap: true, // Asegura que la lista ocupe solo el espacio necesario
                 children: [
-                  // Supplier Name Field
+                  // Campo de Nombre del Proveedor
                   _buildTextFormField(
                     focusNode: _supplierNameFocusNode,
-                    labelText: 'Supplier Name',
+                    labelText: 'Nombre del Proveedor',
                     icon: Icons.store,
                     validator: (value) =>
-                        value!.isEmpty ? 'Enter a supplier name' : null,
+                        value!.isEmpty ? 'Ingresa un nombre de proveedor' : null,
                     onSaved: (value) => _supplierName = value,
                     nextFocusNode: _contactDetailsFocusNode,
                   ),
                   SizedBox(height: 20),
 
-                  // Contact Details Field
+                  // Campo de Detalles de Contacto
                   _buildTextFormField(
                     focusNode: _contactDetailsFocusNode,
-                    labelText: 'Contact Details',
+                    labelText: 'Detalles de Contacto',
                     icon: Icons.contact_phone,
                     validator: (value) =>
-                        value!.isEmpty ? 'Enter contact details' : null,
+                        value!.isEmpty ? 'Ingresa los detalles de contacto' : null,
                     onSaved: (value) => _contactDetails = value,
                   ),
                   SizedBox(height: 40),
 
-                  // Submit Button
+                  // Botón de Enviar
                   ElevatedButton(
                     onPressed: () async {
                       await _submitForm();
                     },
-                    child: Text(
-                      'Add Supplier',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                    ),
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 16),
                       backgroundColor: Colors.blue,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
+                    ),
+                    child: Text(
+                      'Agregar Proveedor',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                   ),
                 ],
@@ -113,7 +113,7 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
     );
   }
 
-  // Helper method to build text form fields
+  // Método auxiliar para construir campos de formulario
   Widget _buildTextFormField({
     required FocusNode focusNode,
     required String labelText,
@@ -139,7 +139,7 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
         if (nextFocusNode != null) {
           FocusScope.of(context).requestFocus(nextFocusNode);
         } else {
-          _submitForm(); // Submit form if it's the last field
+          _submitForm(); // Enviar formulario si es el último campo
         }
       },
     );

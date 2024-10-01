@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import '../models/supplier_model.dart';
 import '../services/supplier_services.dart';
-import 'add_supplier.dart'; // Ensure this path is correct
+import 'add_supplier.dart'; // Asegúrate de que esta ruta sea correcta
 
 class SupplierListScreen extends StatelessWidget {
   final SupplierService supplierService =
-      SupplierService(); // Instantiate the service
+      SupplierService(); // Instanciar el servicio
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class SupplierListScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         foregroundColor: Colors.white,
         onPressed: () {
-          // Navigate to AddSupplierScreen (you'll need to implement it)
+          // Navegar a AddSupplierScreen (debes implementarlo)
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => AddSupplierScreen()),
@@ -27,7 +27,7 @@ class SupplierListScreen extends StatelessWidget {
         backgroundColor: Colors.blue,
         foregroundColor: Colors.white,
         title: Text(
-          'Suppliers',
+          'Proveedores',
           style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
@@ -49,15 +49,15 @@ class SupplierListScreen extends StatelessWidget {
                   }
 
                   if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(child: Text('No Suppliers Found'));
+                    return Center(child: Text('No se encontraron proveedores'));
                   }
 
-                  // Display suppliers in a DataTable
+                  // Mostrar proveedores en una DataTable
                   List<Supplier> suppliers = snapshot.data!;
                   return Center(
                     child: SingleChildScrollView(
                       scrollDirection:
-                          Axis.horizontal, // Handle overflow for large tables
+                          Axis.horizontal, // Manejar desbordamiento para tablas grandes
                       child: DataTable(
                         headingRowColor: MaterialStateColor.resolveWith(
                             (states) => Colors.white!),
@@ -74,7 +74,7 @@ class SupplierListScreen extends StatelessWidget {
                           ),
                           DataColumn(
                             label: Text(
-                              'Name',
+                              'Nombre',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black54),
@@ -82,7 +82,7 @@ class SupplierListScreen extends StatelessWidget {
                           ),
                           DataColumn(
                             label: Text(
-                              'Contact Details',
+                              'Detalles de Contacto',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black54),
@@ -90,7 +90,7 @@ class SupplierListScreen extends StatelessWidget {
                           ),
                           DataColumn(
                             label: Text(
-                              'Actions',
+                              'Acciones',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black54),
@@ -108,7 +108,7 @@ class SupplierListScreen extends StatelessWidget {
                                   IconButton(
                                     icon: Icon(Icons.edit,
                                         color: Colors.blueAccent),
-                                    tooltip: 'Edit Supplier',
+                                    tooltip: 'Editar Proveedor',
                                     onPressed: () {
                                       _showEditDialog(context, supplier);
                                     },
@@ -116,7 +116,7 @@ class SupplierListScreen extends StatelessWidget {
                                   IconButton(
                                     icon: Icon(Icons.delete,
                                         color: Colors.redAccent),
-                                    tooltip: 'Delete Supplier',
+                                    tooltip: 'Eliminar Proveedor',
                                     onPressed: () {
                                       _confirmDelete(context, supplier.id);
                                     },
@@ -138,7 +138,7 @@ class SupplierListScreen extends StatelessWidget {
     );
   }
 
-  // Show dialog to edit supplier
+  // Mostrar cuadro de diálogo para editar proveedor
   void _showEditDialog(BuildContext context, Supplier supplier) {
     final TextEditingController nameController =
         TextEditingController(text: supplier.name);
@@ -149,40 +149,40 @@ class SupplierListScreen extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Edit Supplier'),
+          title: Text('Editar Proveedor'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              _buildTextField(controller: nameController, label: 'Name'),
+              _buildTextField(controller: nameController, label: 'Nombre'),
               SizedBox(height: 10),
               _buildTextField(
                   controller: contactDetailsController,
-                  label: 'Contact Details'),
+                  label: 'Detalles de Contacto'),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop(); // Cerrar el diálogo
               },
-              child: Text('Cancel'),
+              child: Text('Cancelar'),
             ),
             ElevatedButton(
               onPressed: () async {
-                // Update the supplier's information
+                // Actualizar la información del proveedor
                 Supplier updatedSupplier = Supplier(
-                  id: supplier.id, // Keep the same ID
+                  id: supplier.id, // Mantener el mismo ID
                   name: nameController.text,
                   contactDetails: contactDetailsController.text,
                 );
 
                 await supplierService.updateSupplier(
                     supplier.id, updatedSupplier);
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop(); // Cerrar el diálogo
               },
-              child: Text('Update'),
+              child: Text('Actualizar'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueGrey[800], // Update button color
+                backgroundColor: Colors.blueGrey[800], // Color del botón Actualizar
               ),
             ),
           ],
@@ -191,29 +191,29 @@ class SupplierListScreen extends StatelessWidget {
     );
   }
 
-  // Show confirmation dialog before deleting
+  // Mostrar cuadro de confirmación antes de eliminar
   Future<void> _confirmDelete(BuildContext context, String supplierId) async {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Confirm Deletion'),
-          content: Text('Are you sure you want to delete this supplier?'),
+          title: Text('Confirmar Eliminación'),
+          content: Text('¿Estás seguro de que deseas eliminar este proveedor?'),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop(); // Cerrar el diálogo
               },
-              child: Text('Cancel'),
+              child: Text('Cancelar'),
             ),
             ElevatedButton(
               onPressed: () async {
                 await supplierService.deleteSupplier(supplierId);
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop(); // Cerrar el diálogo
               },
-              child: Text('Delete'),
+              child: Text('Eliminar'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.redAccent, // Delete button color
+                backgroundColor: Colors.redAccent, // Color del botón Eliminar
               ),
             ),
           ],
@@ -222,7 +222,7 @@ class SupplierListScreen extends StatelessWidget {
     );
   }
 
-  // Helper to build text fields
+  // Helper para construir campos de texto
   Widget _buildTextField(
       {required TextEditingController controller, required String label}) {
     return TextField(
@@ -236,4 +236,3 @@ class SupplierListScreen extends StatelessWidget {
     );
   }
 }
-// fnhfhfhfhfhf

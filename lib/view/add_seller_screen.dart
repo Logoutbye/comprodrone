@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/seller_model.dart';
-import '../services/seller_services.dart'; // Update the path to your SellerService
+import '../services/seller_services.dart';
 
 class AddSellerScreen extends StatefulWidget {
   @override
@@ -10,7 +10,7 @@ class AddSellerScreen extends StatefulWidget {
 class _AddSellerScreenState extends State<AddSellerScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  // FocusNodes for managing focus transitions between text fields
+  // FocusNodes for the new fields
   final FocusNode _sellerNameFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _phoneFocus = FocusNode();
@@ -18,8 +18,18 @@ class _AddSellerScreenState extends State<AddSellerScreen> {
   final FocusNode _typeOfSellerFocus = FocusNode();
   final FocusNode _addressFocus = FocusNode();
   final FocusNode _whatsappNoFocus = FocusNode();
+  final FocusNode _fechaFocus = FocusNode();
+  final FocusNode _numeroFocus = FocusNode();
+  final FocusNode _clienteFocus = FocusNode();
+  final FocusNode _dronAnunciadoFocus = FocusNode();
+  final FocusNode _precioWebFocus = FocusNode();
+  final FocusNode _precioClienteFocus = FocusNode();
+  final FocusNode _comisionFocus = FocusNode();
+  final FocusNode _seguimientoFocus = FocusNode();
+  final FocusNode _estadoFocus = FocusNode();
+  final FocusNode _observacionesFocus = FocusNode();
 
-  // Variables to store the form data
+  // Form field variables
   String? _sellerName,
       _email,
       _phone,
@@ -27,33 +37,47 @@ class _AddSellerScreenState extends State<AddSellerScreen> {
       _typeOfSeller,
       _address,
       _whatsappNo;
+  String? _fecha,
+      _numero,
+      _cliente,
+      _dronAnunciado,
+      _seguimiento,
+      _estado,
+      _observaciones;
+  double? _precioWeb, _precioCliente, _comision;
 
-  // Seller service to handle saving seller data
   final SellerService sellerService = SellerService();
 
-  // Form submission function
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+
       Seller newSeller = Seller(
-        id: DateTime.now()
-            .millisecondsSinceEpoch
-            .toString(), // Use milliseconds since epoch for ID
-        sellerName: _sellerName!,
-        email: _email!,
-        phone: _phone!,
-        city: _city!,
-        typeOfSeller: _typeOfSeller!,
-        address: _address!,
-        whatsappNo:
-            _whatsappNo ?? '', // Default to empty string if not provided
+        id: DateTime.now().millisecondsSinceEpoch.toString(),
+        sellerName: _sellerName ?? '',
+        email: _email?? '',
+        phone: _phone?? '',
+        city: _city?? '',
+        typeOfSeller: _typeOfSeller?? '',
+        address: _address?? '',
+        whatsappNo: _whatsappNo?? '',
+        fecha: _fecha?? '',
+        numero: _numero?? '',
+        cliente: _cliente?? '',
+        dronAnunciado: _dronAnunciado?? '',
+        precioWeb: _precioWeb?? 0.0,
+        precioCliente: _precioCliente?? 0.0,
+        comision: _comision?? 0.0,
+        seguimiento: _seguimiento?? '',
+        estado: _estado?? '',
+        observaciones: _observaciones?? '',
       );
-      sellerService.addSeller(newSeller); // Add seller to the database
-      Navigator.pop(context); // Go back after adding
+
+      sellerService.addSeller(newSeller);
+      Navigator.pop(context);
     }
   }
 
-  // Dispose focus nodes to free up memory
   @override
   void dispose() {
     _sellerNameFocus.dispose();
@@ -63,16 +87,24 @@ class _AddSellerScreenState extends State<AddSellerScreen> {
     _typeOfSellerFocus.dispose();
     _addressFocus.dispose();
     _whatsappNoFocus.dispose();
+    _fechaFocus.dispose();
+    _numeroFocus.dispose();
+    _clienteFocus.dispose();
+    _dronAnunciadoFocus.dispose();
+    _precioWebFocus.dispose();
+    _precioClienteFocus.dispose();
+    _comisionFocus.dispose();
+    _seguimientoFocus.dispose();
+    _estadoFocus.dispose();
+    _observacionesFocus.dispose();
     super.dispose();
   }
 
-  // Build the form fields with improved visuals and focus transitions
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        foregroundColor: Colors.white,
-        title: Text('Add Seller'),
+        title: Text('Agregar Vendedor'),
         backgroundColor: Colors.blueAccent,
       ),
       body: Padding(
@@ -81,110 +113,140 @@ class _AddSellerScreenState extends State<AddSellerScreen> {
           key: _formKey,
           child: ListView(
             children: [
-              // Seller Name Field
               _buildTextFormField(
-                label: 'Seller Name',
-                icon: Icons.person,
-                focusNode: _sellerNameFocus,
-                onSaved: (value) => _sellerName = value,
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter a seller name' : null,
-                nextFocusNode: _emailFocus,
-              ),
-
+                  label: 'Nombre del Vendedor',
+                  icon: Icons.person,
+                  focusNode: _sellerNameFocus,
+                  onSaved: (value) => _sellerName = value,
+                  validator: (value) =>
+                      value!.isEmpty ? 'Ingresa el nombre' : null,
+                  nextFocusNode: _emailFocus),
               SizedBox(height: 16),
-
-              // Email Field
               _buildTextFormField(
-                label: 'Email',
-                icon: Icons.email,
-                focusNode: _emailFocus,
-                onSaved: (value) => _email = value,
-                validator: (value) => value!.isEmpty ? 'Enter an email' : null,
-                nextFocusNode: _phoneFocus,
-              ),
-
+                  label: 'Correo',
+                  icon: Icons.email,
+                  focusNode: _emailFocus,
+                  onSaved: (value) => _email = value,
+                  validator: (value) =>
+                      value!.isEmpty ? 'Ingresa un correo' : null,
+                  nextFocusNode: _phoneFocus),
               SizedBox(height: 16),
-
-              // Phone Field
               _buildTextFormField(
-                label: 'Phone',
-                icon: Icons.phone,
-                focusNode: _phoneFocus,
-                onSaved: (value) => _phone = value,
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter a phone number' : null,
-                nextFocusNode: _cityFocus,
-              ),
-
+                  label: 'Teléfono',
+                  icon: Icons.phone,
+                  focusNode: _phoneFocus,
+                  onSaved: (value) => _phone = value,
+                  validator: (value) =>
+                      value!.isEmpty ? 'Ingresa un número' : null,
+                  nextFocusNode: _cityFocus),
               SizedBox(height: 16),
-
-              // City Field
               _buildTextFormField(
-                label: 'City',
-                icon: Icons.location_city,
-                focusNode: _cityFocus,
-                onSaved: (value) => _city = value,
-                validator: (value) => value!.isEmpty ? 'Enter a city' : null,
-                nextFocusNode: _typeOfSellerFocus,
-              ),
-
+                  label: 'Ciudad',
+                  icon: Icons.location_city,
+                  focusNode: _cityFocus,
+                  onSaved: (value) => _city = value,
+                  validator: (value) =>
+                      value!.isEmpty ? 'Ingresa una ciudad' : null,
+                  nextFocusNode: _typeOfSellerFocus),
               SizedBox(height: 16),
-
-              // Type of Seller Field
               _buildTextFormField(
-                label: 'Type of Seller',
-                icon: Icons.store,
-                focusNode: _typeOfSellerFocus,
-                onSaved: (value) => _typeOfSeller = value,
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter the type of seller' : null,
-                nextFocusNode: _addressFocus,
-              ),
-
+                  label: 'Tipo de Vendedor',
+                  icon: Icons.store,
+                  focusNode: _typeOfSellerFocus,
+                  onSaved: (value) => _typeOfSeller = value,
+                  validator: (value) =>
+                      value!.isEmpty ? 'Ingresa el tipo de vendedor' : null,
+                  nextFocusNode: _addressFocus),
               SizedBox(height: 16),
-
-              // Address Field
               _buildTextFormField(
-                label: 'Address',
-                icon: Icons.home,
-                focusNode: _addressFocus,
-                onSaved: (value) => _address = value,
-                validator: (value) =>
-                    value!.isEmpty ? 'Enter an address' : null,
-                nextFocusNode: _whatsappNoFocus,
-              ),
-
+                  label: 'Dirección',
+                  icon: Icons.home,
+                  focusNode: _addressFocus,
+                  onSaved: (value) => _address = value,
+                  validator: (value) =>
+                      value!.isEmpty ? 'Ingresa una dirección' : null,
+                  nextFocusNode: _whatsappNoFocus),
               SizedBox(height: 16),
-
-              // WhatsApp No Field
               _buildTextFormField(
-                label: 'WhatsApp No',
-                icon: Icons.chat,
-                focusNode: _whatsappNoFocus,
-                onSaved: (value) => _whatsappNo = value,
-                textInputAction: TextInputAction.done,
-                onFieldSubmitted: (_) {
-                  _submitForm(); // Submit form when this field is done
-                },
-                validator: (String? value) {},
-              ),
-
+                  label: 'WhatsApp No',
+                  icon: Icons.chat,
+                  focusNode: _whatsappNoFocus,
+                  onSaved: (value) => _whatsappNo = value),
+              SizedBox(height: 16),
+              _buildTextFormField(
+                  label: 'Fecha',
+                  icon: Icons.date_range,
+                  focusNode: _fechaFocus,
+                  onSaved: (value) => _fecha = value,
+                  validator: (value) =>
+                      value!.isEmpty ? 'Ingresa una fecha' : null,
+                  nextFocusNode: _numeroFocus),
+              SizedBox(height: 16),
+              _buildTextFormField(
+                  label: 'Numero',
+                  icon: Icons.confirmation_number,
+                  focusNode: _numeroFocus,
+                  onSaved: (value) => _numero = value),
+              SizedBox(height: 16),
+              _buildTextFormField(
+                  label: 'Cliente',
+                  icon: Icons.person_outline,
+                  focusNode: _clienteFocus,
+                  onSaved: (value) => _cliente = value,
+                  nextFocusNode: _dronAnunciadoFocus),
+              SizedBox(height: 16),
+              _buildTextFormField(
+                  label: 'Dron Anunciado',
+                  icon: Icons.airplanemode_active,
+                  focusNode: _dronAnunciadoFocus,
+                  onSaved: (value) => _dronAnunciado = value,
+                  nextFocusNode: _precioWebFocus),
+              SizedBox(height: 16),
+              _buildTextFormField(
+                  label: 'Precio Web',
+                  icon: Icons.attach_money,
+                  focusNode: _precioWebFocus,
+                  onSaved: (value) =>
+                      _precioWeb = double.tryParse(value ?? '0')),
+              SizedBox(height: 16),
+              _buildTextFormField(
+                  label: 'Precio Cliente',
+                  icon: Icons.money,
+                  focusNode: _precioClienteFocus,
+                  onSaved: (value) =>
+                      _precioCliente = double.tryParse(value ?? '0')),
+              SizedBox(height: 16),
+              _buildTextFormField(
+                  label: 'Comisión',
+                  icon: Icons.percent,
+                  focusNode: _comisionFocus,
+                  onSaved: (value) =>
+                      _comision = double.tryParse(value ?? '0')),
+              SizedBox(height: 16),
+              _buildTextFormField(
+                  label: 'Seguimiento',
+                  icon: Icons.track_changes,
+                  focusNode: _seguimientoFocus,
+                  onSaved: (value) => _seguimiento = value),
+              SizedBox(height: 16),
+              _buildTextFormField(
+                  label: 'Estado',
+                  icon: Icons.flag,
+                  focusNode: _estadoFocus,
+                  onSaved: (value) => _estado = value),
+              SizedBox(height: 16),
+              _buildTextFormField(
+                  label: 'Observaciones',
+                  icon: Icons.notes,
+                  focusNode: _observacionesFocus,
+                  onSaved: (value) => _observaciones = value),
               SizedBox(height: 32),
-
-              // Submit Button
               ElevatedButton(
                 onPressed: _submitForm,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: Text('Add Seller', style: TextStyle(fontSize: 18)),
-                ),
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.blueAccent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
+                  child:
+                      Text('Agregar Vendedor', style: TextStyle(fontSize: 18)),
                 ),
               ),
             ],
@@ -194,25 +256,21 @@ class _AddSellerScreenState extends State<AddSellerScreen> {
     );
   }
 
-  // Helper method to build each form field
   Widget _buildTextFormField({
     required String label,
     required IconData icon,
     required FocusNode focusNode,
     required FormFieldSetter<String> onSaved,
-    required FormFieldValidator<String> validator,
+    FormFieldValidator<String>? validator,
     FocusNode? nextFocusNode,
     TextInputAction textInputAction = TextInputAction.next,
-    ValueChanged<String>? onFieldSubmitted,
   }) {
     return TextFormField(
       focusNode: focusNode,
       decoration: InputDecoration(
         labelText: label,
         prefixIcon: Icon(icon),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.0),
-        ),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
       ),
       validator: validator,
       onSaved: onSaved,
@@ -220,10 +278,7 @@ class _AddSellerScreenState extends State<AddSellerScreen> {
           nextFocusNode != null ? TextInputAction.next : textInputAction,
       onFieldSubmitted: (_) {
         if (nextFocusNode != null) {
-          FocusScope.of(context)
-              .requestFocus(nextFocusNode); // Move to the next field
-        } else if (onFieldSubmitted != null) {
-          onFieldSubmitted(_); // Submit the form if this is the last field
+          FocusScope.of(context).requestFocus(nextFocusNode);
         }
       },
     );

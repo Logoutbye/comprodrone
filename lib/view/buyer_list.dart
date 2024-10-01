@@ -1,11 +1,11 @@
 import 'package:com_pro_drone/models/buyer_model.dart';
 import 'package:com_pro_drone/view/add_buyer.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Import for date formatting
+import 'package:intl/intl.dart'; // Importar para formateo de fecha
 import '../services/buyer_services.dart';
 
 class BuyerListScreen extends StatelessWidget {
-  final BuyerService buyerService = BuyerService(); // Instantiate the service
+  final BuyerService buyerService = BuyerService(); // Instanciar el servicio
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +19,13 @@ class BuyerListScreen extends StatelessWidget {
           );
         },
         child: Icon(Icons.add),
-        backgroundColor: Colors.blueAccent, // Update the button color
+        backgroundColor: Colors.blueAccent, // Actualizar el color del botón
       ),
       appBar: AppBar(
         foregroundColor: Colors.white,
-        title: Text('Buyer List', style: TextStyle(fontSize: 22)),
+        title: Text('Lista de Compradores', style: TextStyle(fontSize: 22)),
         centerTitle: true,
-        backgroundColor: Colors.blueAccent, // Update the app bar color
+        backgroundColor: Colors.blueAccent, // Actualizar el color de la AppBar
         elevation: 0,
       ),
       body: Column(
@@ -33,69 +33,69 @@ class BuyerListScreen extends StatelessWidget {
           Center(
             child: StreamBuilder<List<Buyer>>(
               stream:
-                  buyerService.getAllBuyers(), // Fetch the buyers in real-time
+                  buyerService.getAllBuyers(), // Obtener compradores en tiempo real
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(
-                      child: CircularProgressIndicator()); // Loading state
+                      child: CircularProgressIndicator()); // Estado de carga
                 }
 
                 if (snapshot.hasError) {
                   return Center(
-                      child: Text('Error: ${snapshot.error}')); // Error state
+                      child: Text('Error: ${snapshot.error}')); // Estado de error
                 }
 
                 if (!snapshot.hasData || snapshot.data!.isEmpty) {
                   return Center(
                     child: Text(
-                      'No Buyers Found',
+                      'No se encontraron compradores',
                       style: TextStyle(fontSize: 18, color: Colors.grey),
                     ),
-                  ); // Empty state
+                  ); // Estado vacío
                 }
 
-                // If we have data, display it in a DataTable
+                // Si tenemos datos, los mostramos en un DataTable
                 List<Buyer> buyers = snapshot.data!;
                 return SingleChildScrollView(
                   scrollDirection:
-                      Axis.horizontal, // Handle overflow for many columns
+                      Axis.horizontal, // Manejar desbordamiento para muchas columnas
                   child: SingleChildScrollView(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: DataTable(
                         border: TableBorder.all(
                             color: Colors.grey[300]!,
-                            width: 1), // Add border to the table
+                            width: 1), // Agregar borde a la tabla
                         columns: [
                           DataColumn(
                               label: Text('ID', style: _tableHeaderStyle())),
                           DataColumn(
-                              label: Text('Date', style: _tableHeaderStyle())),
+                              label: Text('Fecha', style: _tableHeaderStyle())),
                           DataColumn(
-                              label: Text('Name', style: _tableHeaderStyle())),
+                              label: Text('Nombre', style: _tableHeaderStyle())),
                           DataColumn(
-                              label: Text('Email', style: _tableHeaderStyle())),
+                              label: Text('Correo', style: _tableHeaderStyle())),
                           DataColumn(
-                              label: Text('City', style: _tableHeaderStyle())),
+                              label: Text('Ciudad', style: _tableHeaderStyle())),
                           DataColumn(
-                              label: Text('Phone', style: _tableHeaderStyle())),
+                              label: Text('Teléfono', style: _tableHeaderStyle())),
                           DataColumn(
-                              label: Text('Requirements',
+                              label: Text('Requisitos',
                                   style: _tableHeaderStyle())),
                           DataColumn(
                               label:
-                                  Text('Remarks', style: _tableHeaderStyle())),
+                                  Text('Observaciones', style: _tableHeaderStyle())),
                           DataColumn(
-                              label: Text('Follow Up',
+                              label: Text('Seguimiento',
                                   style: _tableHeaderStyle())),
                           DataColumn(
-                              label: Text('Notes', style: _tableHeaderStyle())),
+                              label: Text('Notas', style: _tableHeaderStyle())),
                           DataColumn(
                               label:
-                                  Text('Budget', style: _tableHeaderStyle())),
+                                  Text('Presupuesto', style: _tableHeaderStyle())),
                           DataColumn(
                               label:
-                                  Text('Actions', style: _tableHeaderStyle())),
+                                  Text('Acciones', style: _tableHeaderStyle())),
                         ],
                         rows: buyers.map((buyer) {
                           return DataRow(cells: [
@@ -106,10 +106,10 @@ class BuyerListScreen extends StatelessWidget {
                             DataCell(Text(buyer.city)),
                             DataCell(Text(buyer.phone)),
                             DataCell(Text(buyer.requirements)),
-                            DataCell(Text(buyer.remarks)), // Show remarks
-                            DataCell(Text(buyer.followUp)), // Show follow-up
-                            DataCell(Text(buyer.notes)), // Show notes
-                            DataCell(Text(buyer.budget)), // Show budget
+                            DataCell(Text(buyer.remarks)), // Mostrar observaciones
+                            DataCell(Text(buyer.followUp)), // Mostrar seguimiento
+                            DataCell(Text(buyer.notes)), // Mostrar notas
+                            DataCell(Text(buyer.budget)), // Mostrar presupuesto
                             DataCell(
                               Row(
                                 children: [
@@ -118,18 +118,18 @@ class BuyerListScreen extends StatelessWidget {
                                         color: Colors.blueAccent),
                                     onPressed: () {
                                       _showEditDialog(
-                                          context, buyer); // Show edit dialog
+                                          context, buyer); // Mostrar diálogo de edición
                                     },
-                                    tooltip: 'Edit Buyer',
+                                    tooltip: 'Editar Comprador',
                                   ),
                                   IconButton(
                                     icon: Icon(Icons.delete,
                                         color: Colors.redAccent),
                                     onPressed: () {
                                       _confirmDelete(context,
-                                          buyer.id); // Show delete confirmation
+                                          buyer.id); // Mostrar confirmación de eliminación
                                     },
-                                    tooltip: 'Delete Buyer',
+                                    tooltip: 'Eliminar Comprador',
                                   ),
                                 ],
                               ),
@@ -148,7 +148,7 @@ class BuyerListScreen extends StatelessWidget {
     );
   }
 
-  // Method to show the edit dialog
+  // Método para mostrar el diálogo de edición
   void _showEditDialog(BuildContext context, Buyer buyer) {
     final TextEditingController dateController =
         TextEditingController(text: buyer.date);
@@ -171,18 +171,18 @@ class BuyerListScreen extends StatelessWidget {
     final TextEditingController budgetController =
         TextEditingController(text: buyer.budget);
 
-    // Function to handle date picking
+    // Función para manejar la selección de fecha
     Future<void> _selectDate(BuildContext context) async {
       final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: DateFormat('dd-MM-yyyy')
-            .parse(buyer.date), // Use the current date as initial
+            .parse(buyer.date), // Usar la fecha actual como inicial
         firstDate: DateTime(2000),
         lastDate: DateTime(2101),
       );
       if (picked != null) {
         dateController.text =
-            DateFormat('dd-MM-yyyy').format(picked); // Format the date
+            DateFormat('dd-MM-yyyy').format(picked); // Formatear la fecha
       }
     }
 
@@ -190,66 +190,66 @@ class BuyerListScreen extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Edit Buyer'),
+          title: Text('Editar Comprador'),
           content: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TextField(
-                  readOnly: true, // Make this field read-only
+                  readOnly: true, // Hacer este campo solo lectura
                   controller: dateController,
                   decoration: InputDecoration(
-                    labelText: 'Date',
-                    hintText: 'Select date',
+                    labelText: 'Fecha',
+                    hintText: 'Seleccionar fecha',
                     suffixIcon: IconButton(
                       icon: Icon(Icons.calendar_today),
-                      onPressed: () => _selectDate(context), // Open date picker
+                      onPressed: () => _selectDate(context), // Abrir selector de fecha
                     ),
                   ),
                 ),
-                _buildTextField(nameController, 'Name', Icons.person),
-                _buildTextField(emailController, 'Email', Icons.email),
-                _buildTextField(phoneController, 'Phone', Icons.phone),
-                _buildTextField(cityController, 'City', Icons.location_city),
+                _buildTextField(nameController, 'Nombre', Icons.person),
+                _buildTextField(emailController, 'Correo', Icons.email),
+                _buildTextField(phoneController, 'Teléfono', Icons.phone),
+                _buildTextField(cityController, 'Ciudad', Icons.location_city),
                 _buildTextField(
-                    requirementsController, 'Requirements', Icons.list),
-                _buildTextField(remarksController, 'Remarks', Icons.comment),
+                    requirementsController, 'Requisitos', Icons.list),
+                _buildTextField(remarksController, 'Observaciones', Icons.comment),
                 _buildTextField(
-                    followUpController, 'Follow Up', Icons.follow_the_signs),
-                _buildTextField(notesController, 'Notes', Icons.note),
-                _buildTextField(budgetController, 'Budget', Icons.attach_money),
+                    followUpController, 'Seguimiento', Icons.follow_the_signs),
+                _buildTextField(notesController, 'Notas', Icons.note),
+                _buildTextField(budgetController, 'Presupuesto', Icons.attach_money),
               ],
             ),
           ),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop(); // Cerrar el diálogo
               },
-              child: Text('Cancel'),
+              child: Text('Cancelar'),
             ),
             ElevatedButton(
               onPressed: () async {
-                // Update the buyer's information
+                // Actualizar la información del comprador
                 Buyer updatedBuyer = Buyer(
-                  id: buyer.id, // Keep the same ID
-                  date: dateController.text, // Update date
+                  id: buyer.id, // Mantener el mismo ID
+                  date: dateController.text, // Actualizar fecha
                   buyer: nameController.text,
                   email: emailController.text,
                   phone: phoneController.text,
                   city: cityController.text,
-                  requirements: requirementsController.text, // Add requirements
-                  remarks: remarksController.text, // Add remarks
-                  followUp: followUpController.text, // Add followUp
-                  notes: notesController.text, // Add notes
+                  requirements: requirementsController.text, // Agregar requisitos
+                  remarks: remarksController.text, // Agregar observaciones
+                  followUp: followUpController.text, // Agregar seguimiento
+                  notes: notesController.text, // Agregar notas
                   budget: budgetController.text,
                 );
 
                 await buyerService.updateBuyer(
-                    buyer.id, updatedBuyer); // Update the buyer
-                Navigator.of(context).pop(); // Close the dialog
+                    buyer.id, updatedBuyer); // Actualizar comprador
+                Navigator.of(context).pop(); // Cerrar el diálogo
               },
-              child: Text('Update'),
+              child: Text('Actualizar'),
             ),
           ],
         );
@@ -257,7 +257,7 @@ class BuyerListScreen extends StatelessWidget {
     );
   }
 
-  // Method to build text field with icon
+  // Método para construir campo de texto con ícono
   Widget _buildTextField(
       TextEditingController controller, String label, IconData icon) {
     return Padding(
@@ -273,29 +273,29 @@ class BuyerListScreen extends StatelessWidget {
     );
   }
 
-  // Method to show a confirmation dialog before deleting
+  // Método para mostrar un cuadro de confirmación antes de eliminar
   Future<void> _confirmDelete(BuildContext context, String buyerId) async {
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Confirm Deletion'),
-          content: Text('Are you sure you want to delete this buyer?'),
+          title: Text('Confirmar Eliminación'),
+          content: Text('¿Estás seguro de que deseas eliminar a este comprador?'),
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop(); // Cerrar el diálogo
               },
-              child: Text('Cancel'),
+              child: Text('Cancelar'),
             ),
             ElevatedButton(
               onPressed: () async {
-                await buyerService.deleteBuyer(buyerId); // Delete buyer
-                Navigator.of(context).pop(); // Close the dialog
+                await buyerService.deleteBuyer(buyerId); // Eliminar comprador
+                Navigator.of(context).pop(); // Cerrar el diálogo
               },
               style:
                   ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
-              child: Text('Delete'),
+              child: Text('Eliminar'),
             ),
           ],
         );
@@ -303,7 +303,7 @@ class BuyerListScreen extends StatelessWidget {
     );
   }
 
-  // Method to define table header style
+  // Método para definir el estilo del encabezado de la tabla
   TextStyle _tableHeaderStyle() {
     return TextStyle(
       fontWeight: FontWeight.bold,
