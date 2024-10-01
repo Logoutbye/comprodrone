@@ -7,8 +7,6 @@ class Seller {
   String typeOfSeller;
   String address;
   String whatsappNo;
-
-  // New fields
   String fecha;
   String numero;
   String cliente;
@@ -78,9 +76,9 @@ class Seller {
       numero: map['numero'],
       cliente: map['cliente'],
       dronAnunciado: map['dronAnunciado'],
-      precioWeb: map['precioWeb'],
-      precioCliente: map['precioCliente'],
-      comision: map['comision'],
+      precioWeb: (map['precioWeb'] as num).toDouble(),
+      precioCliente: (map['precioCliente'] as num).toDouble(),
+      comision: (map['comision'] as num).toDouble(),
       seguimiento: map['seguimiento'],
       estado: map['estado'],
       observaciones: map['observaciones'],

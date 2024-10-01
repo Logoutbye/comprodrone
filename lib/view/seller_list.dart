@@ -95,25 +95,6 @@ class SellerListScreen extends StatelessWidget {
   }
 
   // Construir la DataTable responsiva
-  Widget _buildResponsiveDataTable(
-      BuildContext context, List<Seller> sellers, BoxConstraints constraints) {
-    final bool isSmallScreen = constraints.maxWidth < 600;
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: DataTable(
-            border: TableBorder.all(color: Colors.grey[300]!, width: 1),
-            columns: _buildTableColumns(isSmallScreen),
-            rows: sellers
-                .map((seller) => _buildDataRow(context, seller, isSmallScreen))
-                .toList(),
-          ),
-        ),
-      ),
-    );
-  }
 
   // Crear las columnas de DataTable según el tamaño de la pantalla
   List<DataColumn> _buildTableColumns(bool isSmallScreen) {
@@ -159,29 +140,60 @@ class SellerListScreen extends StatelessWidget {
   }
 
   // Crear DataRow para cada vendedor
+  Widget _buildResponsiveDataTable(
+      BuildContext context, List<Seller> sellers, BoxConstraints constraints) {
+    final bool isSmallScreen = constraints.maxWidth < 600;
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: DataTable(
+            border: TableBorder.all(color: Colors.grey[300]!, width: 1),
+            columns: _buildTableColumns(isSmallScreen),
+            rows: sellers
+                .map((seller) => _buildDataRow(context, seller, isSmallScreen))
+                .toList(),
+          ),
+        ),
+      ),
+    );
+  }
+
+// Update _buildDataRow to handle empty values
   DataRow _buildDataRow(
       BuildContext context, Seller seller, bool isSmallScreen) {
     return DataRow(
       cells: [
         DataCell(Text(seller.id)),
-        DataCell(Text(seller.sellerName)),
+        DataCell(
+            Text(seller.sellerName.isNotEmpty ? seller.sellerName : 'N/A')),
         if (!isSmallScreen) ...[
-          DataCell(Text(seller.email)),
-          DataCell(Text(seller.phone)),
-          DataCell(Text(seller.city)),
-          DataCell(Text(seller.typeOfSeller)),
-          DataCell(Text(seller.address)),
-          DataCell(Text(seller.whatsappNo)),
-          DataCell(Text(seller.fecha)), // New field
-          DataCell(Text(seller.numero)), // New field
-          DataCell(Text(seller.cliente)), // New field
-          DataCell(Text(seller.dronAnunciado)), // New field
-          DataCell(Text(seller.precioWeb.toString())), // New field
-          DataCell(Text(seller.precioCliente.toString())), // New field
-          DataCell(Text(seller.comision.toString())), // New field
-          DataCell(Text(seller.seguimiento)), // New field
-          DataCell(Text(seller.estado)), // New field
-          DataCell(Text(seller.observaciones)), // New field
+          DataCell(Text(seller.email.isNotEmpty ? seller.email : 'N/A')),
+          DataCell(Text(seller.phone.isNotEmpty ? seller.phone : 'N/A')),
+          DataCell(Text(seller.city.isNotEmpty ? seller.city : 'N/A')),
+          DataCell(Text(
+              seller.typeOfSeller.isNotEmpty ? seller.typeOfSeller : 'N/A')),
+          DataCell(Text(seller.address.isNotEmpty ? seller.address : 'N/A')),
+          DataCell(
+              Text(seller.whatsappNo.isNotEmpty ? seller.whatsappNo : 'N/A')),
+          DataCell(Text(seller.fecha.isNotEmpty ? seller.fecha : 'N/A')),
+          DataCell(Text(seller.numero.isNotEmpty ? seller.numero : 'N/A')),
+          DataCell(Text(seller.cliente.isNotEmpty ? seller.cliente : 'N/A')),
+          DataCell(Text(
+              seller.dronAnunciado.isNotEmpty ? seller.dronAnunciado : 'N/A')),
+          DataCell(Text(
+              seller.precioWeb != 0 ? seller.precioWeb.toString() : 'N/A')),
+          DataCell(Text(seller.precioCliente != 0
+              ? seller.precioCliente.toString()
+              : 'N/A')),
+          DataCell(
+              Text(seller.comision != 0 ? seller.comision.toString() : 'N/A')),
+          DataCell(
+              Text(seller.seguimiento.isNotEmpty ? seller.seguimiento : 'N/A')),
+          DataCell(Text(seller.estado.isNotEmpty ? seller.estado : 'N/A')),
+          DataCell(Text(
+              seller.observaciones.isNotEmpty ? seller.observaciones : 'N/A')),
         ],
         DataCell(
           Row(

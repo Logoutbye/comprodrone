@@ -49,35 +49,35 @@ class _AddSellerScreenState extends State<AddSellerScreen> {
   final SellerService sellerService = SellerService();
 
   void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
+  if (_formKey.currentState!.validate()) {
+    _formKey.currentState!.save();
 
-      Seller newSeller = Seller(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
-        sellerName: _sellerName ?? '',
-        email: _email ?? '',
-        phone: _phone ?? '',
-        city: _city ?? '',
-        typeOfSeller: _typeOfSeller ?? '',
-        address: _address ?? '',
-        whatsappNo: _whatsappNo ?? '',
-        fecha: _fecha ?? '',
-        numero: _numero ?? '',
-        cliente: _cliente ?? '',
-        dronAnunciado: _dronAnunciado ?? '',
-        precioWeb: _precioWeb ?? 0.0,
-        precioCliente: _precioCliente ?? 0.0,
-        comision: _comision ?? 0.0,
-        seguimiento: _seguimiento ?? '',
-        estado: _estado ?? '',
-        observaciones: _observaciones ?? '',
-      );
+    Seller newSeller = Seller(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      sellerName: _sellerName ?? '',
+      email: _email ?? '',
+      phone: _phone ?? '',
+      city: _city ?? '',
+      typeOfSeller: _typeOfSeller ?? '',
+      address: _address ?? '',
+      whatsappNo: _whatsappNo ?? '',
+      fecha: _fecha ?? '',
+      numero: _numero ?? '',
+      cliente: _cliente ?? '',
+      dronAnunciado: _dronAnunciado ?? '',
+      precioWeb: _precioWeb ?? 0.0,
+      precioCliente: _precioCliente ?? 0.0,
+      comision: _comision ?? 0.0,
+      seguimiento: _seguimiento ?? '',
+      estado: _estado ?? '',
+      observaciones: _observaciones ?? '',
+    );
 
-      sellerService.addSeller(newSeller);
-      Navigator.pop(
-          context); // Return to previous screen after adding the seller
-    }
+    sellerService.addSeller(newSeller);
+    Navigator.pop(context); // Return to previous screen after adding the seller
   }
+}
+
 
   @override
   void dispose() {

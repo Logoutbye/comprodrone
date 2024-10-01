@@ -12,6 +12,7 @@ class Buyer {
   String budget;
 
   Buyer({
+
     required this.id,
     required this.date,
     required this.buyer,
