@@ -1,9 +1,7 @@
 import 'package:com_pro_drone/view/home_screen.dart';
-import 'package:com_pro_drone/view/seller_list.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';
-import 'view/buyer_list.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
