@@ -1,3 +1,4 @@
+import 'package:com_pro_drone/view/contract_history.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -298,6 +299,18 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: [
+          TextButton(
+            child: Icon(Icons.history),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) {
+                  return ContractHistoryScreen();
+                },
+              ));
+            },
+          ),
+        ],
         title: Text('Crear Contrato'),
       ),
       body: Padding(
