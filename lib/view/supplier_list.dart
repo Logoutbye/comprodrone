@@ -1,189 +1,165 @@
 import 'package:flutter/material.dart';
 import '../models/supplier_model.dart';
 import '../services/supplier_services.dart';
-import 'add_supplier.dart'; // Asegúrate de que esta ruta sea correcta
+import 'add_supplier.dart';
 
 class SupplierListScreen extends StatelessWidget {
-  final SupplierService supplierService =
-      SupplierService(); // Instanciar el servicio
+  final SupplierService supplierService = SupplierService();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: Text('Proveedores'),
+      ),
       floatingActionButton: FloatingActionButton(
-        foregroundColor: Colors.white,
+        child: Icon(Icons.add),
+        backgroundColor: Colors.blue,
         onPressed: () {
-          // Navegar a AddSupplierScreen (debes implementarlo)
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => AddSupplierScreen()),
           );
         },
-        child: Icon(Icons.add),
-        backgroundColor: Colors.blue,
       ),
-      appBar: AppBar(
-        backgroundColor: Colors.blue,
-        foregroundColor: Colors.white,
-        title: Text(
-          'Proveedores',
-          style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 40.0),
-        child: Column(
-          children: [
-            Center(
-              child: StreamBuilder<List<Supplier>>(
-                stream: supplierService.getAllSuppliers(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  }
+      body: StreamBuilder<List<Supplier>>(
+        stream: supplierService.getAllSuppliers(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
 
-                  if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  }
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
 
-                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(child: Text('No se encontraron proveedores'));
-                  }
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return Center(child: Text('No se encontraron proveedores'));
+          }
 
-                  // Mostrar proveedores en una DataTable
-                  List<Supplier> suppliers = snapshot.data!;
-                  return Center(
-                    child: SingleChildScrollView(
-                      scrollDirection:
-                          Axis.horizontal, // Manejar desbordamiento para tablas grandes
-                      child: DataTable(
-                        headingRowColor: MaterialStateColor.resolveWith(
-                            (states) => Colors.white!),
-                        columnSpacing: 20,
-                        border: TableBorder.all(color: Colors.grey[300]!),
-                        columns: const [
-                          DataColumn(
-                            label: Text(
-                              'ID',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black54),
-                            ),
-                          ),
-                          DataColumn(
-                            label: Text(
-                              'Nombre',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black54),
-                            ),
-                          ),
-                          DataColumn(
-                            label: Text(
-                              'Detalles de Contacto',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black54),
-                            ),
-                          ),
-                          DataColumn(
-                            label: Text(
-                              'Acciones',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black54),
-                            ),
-                          ),
-                        ],
-                        rows: suppliers.map((supplier) {
-                          return DataRow(cells: [
-                            DataCell(Text(supplier.id)),
-                            DataCell(Text(supplier.name)),
-                            DataCell(Text(supplier.contactDetails)),
-                            DataCell(
-                              Row(
-                                children: [
-                                  IconButton(
-                                    icon: Icon(Icons.edit,
-                                        color: Colors.blueAccent),
-                                    tooltip: 'Editar Proveedor',
-                                    onPressed: () {
-                                      _showEditDialog(context, supplier);
-                                    },
-                                  ),
-                                  IconButton(
-                                    icon: Icon(Icons.delete,
-                                        color: Colors.redAccent),
-                                    tooltip: 'Eliminar Proveedor',
-                                    onPressed: () {
-                                      _confirmDelete(context, supplier.id);
-                                    },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ]);
-                        }).toList(),
-                      ),
-                    ),
-                  );
-                },
-              ),
+          List<Supplier> suppliers = snapshot.data!;
+          return SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: DataTable(
+              columns: _buildTableColumns(),
+              rows: suppliers.map((supplier) => _buildDataRow(context, supplier)).toList(),
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 
-  // Mostrar cuadro de diálogo para editar proveedor
+  List<DataColumn> _buildTableColumns() {
+    return [
+      DataColumn(label: Text('ID', style: _tableHeaderStyle())),
+      DataColumn(label: Text('Nombre', style: _tableHeaderStyle())),
+      DataColumn(label: Text('Detalles de Contacto', style: _tableHeaderStyle())),
+      DataColumn(label: Text('Cliente', style: _tableHeaderStyle())), // New field
+      DataColumn(label: Text('Empresa', style: _tableHeaderStyle())), // New field
+      DataColumn(label: Text('Contacto', style: _tableHeaderStyle())), // New field
+      DataColumn(label: Text('Correo Electrónico', style: _tableHeaderStyle())), // New field
+      DataColumn(label: Text('Teléfono', style: _tableHeaderStyle())), // New field
+      DataColumn(label: Text('Ciudad', style: _tableHeaderStyle())), // New field
+      DataColumn(label: Text('Página Web', style: _tableHeaderStyle())), // New field
+      DataColumn(label: Text('Observaciones', style: _tableHeaderStyle())), // New field
+      DataColumn(label: Text('Acciones', style: _tableHeaderStyle())),
+    ];
+  }
+
+  DataRow _buildDataRow(BuildContext context, Supplier supplier) {
+    return DataRow(
+      cells: [
+        DataCell(Text(supplier.id)),
+        DataCell(Text(supplier.name)),
+        DataCell(Text(supplier.contactDetails)),
+        DataCell(Text(supplier.cliente)), // New field
+        DataCell(Text(supplier.empresa)), // New field
+        DataCell(Text(supplier.contacto)), // New field
+        DataCell(Text(supplier.email)), // New field
+        DataCell(Text(supplier.telefono)), // New field
+        DataCell(Text(supplier.ciudad)), // New field
+        DataCell(Text(supplier.paginaWeb)), // New field
+        DataCell(Text(supplier.observaciones)), // New field
+        DataCell(
+          Row(
+            children: [
+              IconButton(
+                icon: Icon(Icons.edit, color: Colors.blueAccent),
+                onPressed: () {
+                  _showEditDialog(context, supplier);
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.delete, color: Colors.redAccent),
+                onPressed: () {
+                  _confirmDelete(context, supplier.id);
+                },
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Edit dialog
   void _showEditDialog(BuildContext context, Supplier supplier) {
-    final TextEditingController nameController =
-        TextEditingController(text: supplier.name);
-    final TextEditingController contactDetailsController =
-        TextEditingController(text: supplier.contactDetails);
+    final TextEditingController nameController = TextEditingController(text: supplier.name);
+    final TextEditingController contactDetailsController = TextEditingController(text: supplier.contactDetails);
+    final TextEditingController clienteController = TextEditingController(text: supplier.cliente);
+    final TextEditingController empresaController = TextEditingController(text: supplier.empresa);
+    final TextEditingController contactoController = TextEditingController(text: supplier.contacto);
+    final TextEditingController emailController = TextEditingController(text: supplier.email);
+    final TextEditingController telefonoController = TextEditingController(text: supplier.telefono);
+    final TextEditingController ciudadController = TextEditingController(text: supplier.ciudad);
+    final TextEditingController paginaWebController = TextEditingController(text: supplier.paginaWeb);
+    final TextEditingController observacionesController = TextEditingController(text: supplier.observaciones);
 
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: Text('Editar Proveedor'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _buildTextField(controller: nameController, label: 'Nombre'),
-              SizedBox(height: 10),
-              _buildTextField(
-                  controller: contactDetailsController,
-                  label: 'Detalles de Contacto'),
-            ],
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                _buildTextField(nameController, 'Nombre'),
+                _buildTextField(contactDetailsController, 'Detalles de Contacto'),
+                _buildTextField(clienteController, 'Cliente'), // New field
+                _buildTextField(empresaController, 'Empresa'), // New field
+                _buildTextField(contactoController, 'Contacto'), // New field
+                _buildTextField(emailController, 'Correo Electrónico'), // New field
+                _buildTextField(telefonoController, 'Teléfono'), // New field
+                _buildTextField(ciudadController, 'Ciudad'), // New field
+                _buildTextField(paginaWebController, 'Página Web'), // New field
+                _buildTextField(observacionesController, 'Observaciones'), // New field
+              ],
+            ),
           ),
           actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Cerrar el diálogo
-              },
-              child: Text('Cancelar'),
-            ),
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: Text('Cancelar')),
             ElevatedButton(
               onPressed: () async {
-                // Actualizar la información del proveedor
                 Supplier updatedSupplier = Supplier(
-                  id: supplier.id, // Mantener el mismo ID
+                  id: supplier.id,
                   name: nameController.text,
                   contactDetails: contactDetailsController.text,
+                  cliente: clienteController.text,
+                  empresa: empresaController.text,
+                  contacto: contactoController.text,
+                  email: emailController.text,
+                  telefono: telefonoController.text,
+                  ciudad: ciudadController.text,
+                  paginaWeb: paginaWebController.text,
+                  observaciones: observacionesController.text,
                 );
 
-                await supplierService.updateSupplier(
-                    supplier.id, updatedSupplier);
-                Navigator.of(context).pop(); // Cerrar el diálogo
+                await supplierService.updateSupplier(supplier.id, updatedSupplier);
+                Navigator.of(context).pop();
               },
               child: Text('Actualizar'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueGrey[800], // Color del botón Actualizar
-              ),
             ),
           ],
         );
@@ -191,7 +167,7 @@ class SupplierListScreen extends StatelessWidget {
     );
   }
 
-  // Mostrar cuadro de confirmación antes de eliminar
+  // Confirm delete
   Future<void> _confirmDelete(BuildContext context, String supplierId) async {
     showDialog(
       context: context,
@@ -200,21 +176,13 @@ class SupplierListScreen extends StatelessWidget {
           title: Text('Confirmar Eliminación'),
           content: Text('¿Estás seguro de que deseas eliminar este proveedor?'),
           actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Cerrar el diálogo
-              },
-              child: Text('Cancelar'),
-            ),
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: Text('Cancelar')),
             ElevatedButton(
               onPressed: () async {
                 await supplierService.deleteSupplier(supplierId);
-                Navigator.of(context).pop(); // Cerrar el diálogo
+                Navigator.of(context).pop();
               },
               child: Text('Eliminar'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.redAccent, // Color del botón Eliminar
-              ),
             ),
           ],
         );
@@ -222,17 +190,21 @@ class SupplierListScreen extends StatelessWidget {
     );
   }
 
-  // Helper para construir campos de texto
-  Widget _buildTextField(
-      {required TextEditingController controller, required String label}) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.0),
+  // Helper method for text fields
+  Widget _buildTextField(TextEditingController controller, String label) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 10.0),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(),
         ),
       ),
     );
+  }
+
+  TextStyle _tableHeaderStyle() {
+    return TextStyle(fontWeight: FontWeight.bold, color: Colors.black54);
   }
 }

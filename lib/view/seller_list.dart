@@ -1,13 +1,13 @@
-import 'package:com_pro_drone/models/seller_model.dart'; // Asegúrate de que esta ruta sea correcta
+import 'package:com_pro_drone/models/seller_model.dart';
 import 'package:com_pro_drone/view/add_drone.dart';
 import 'package:com_pro_drone/view/add_seller_screen.dart';
 import 'package:com_pro_drone/view/drone_list_screen.dart';
 import 'package:flutter/material.dart';
-import '../services/seller_services.dart'; // Asegúrate de que esta ruta sea correcta
-import 'package:url_launcher/url_launcher.dart'; // Importar url_launcher
+import '../services/seller_services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SellerListScreen extends StatelessWidget {
-  final SellerService sellerService = SellerService(); // Instanciar el servicio
+  final SellerService sellerService = SellerService();
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +62,7 @@ class SellerListScreen extends StatelessWidget {
             child: Column(
               children: [
                 StreamBuilder<List<Seller>>(
-                  stream: sellerService.getAllSellers(), // Obtener vendedores
+                  stream: sellerService.getAllSellers(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(child: CircularProgressIndicator());
@@ -99,13 +99,13 @@ class SellerListScreen extends StatelessWidget {
       BuildContext context, List<Seller> sellers, BoxConstraints constraints) {
     final bool isSmallScreen = constraints.maxWidth < 600;
     return SingleChildScrollView(
-      scrollDirection: Axis.horizontal, // Habilitar desplazamiento horizontal
+      scrollDirection: Axis.horizontal,
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: DataTable(
             border: TableBorder.all(color: Colors.grey[300]!, width: 1),
-            columns: _buildTableColumns(isSmallScreen), // Ajustar columnas
+            columns: _buildTableColumns(isSmallScreen),
             rows: sellers
                 .map((seller) => _buildDataRow(context, seller, isSmallScreen))
                 .toList(),
@@ -129,17 +129,30 @@ class SellerListScreen extends StatelessWidget {
         DataColumn(label: Text('Tipo', style: _tableHeaderStyle())),
         DataColumn(label: Text('Dirección', style: _tableHeaderStyle())),
         DataColumn(label: Text('WhatsApp', style: _tableHeaderStyle())),
-        // Add the new fields
-        DataColumn(label: Text('Fecha', style: _tableHeaderStyle())),
-        DataColumn(label: Text('Número', style: _tableHeaderStyle())),
-        DataColumn(label: Text('Cliente', style: _tableHeaderStyle())),
-        DataColumn(label: Text('Dron Anunciado', style: _tableHeaderStyle())),
-        DataColumn(label: Text('Precio Web', style: _tableHeaderStyle())),
-        DataColumn(label: Text('Precio Cliente', style: _tableHeaderStyle())),
-        DataColumn(label: Text('Comisión', style: _tableHeaderStyle())),
-        DataColumn(label: Text('Seguimiento', style: _tableHeaderStyle())),
-        DataColumn(label: Text('Estado', style: _tableHeaderStyle())),
-        DataColumn(label: Text('Observaciones', style: _tableHeaderStyle())),
+        DataColumn(
+            label: Text('Fecha', style: _tableHeaderStyle())), // New field
+        DataColumn(
+            label: Text('Número', style: _tableHeaderStyle())), // New field
+        DataColumn(
+            label: Text('Cliente', style: _tableHeaderStyle())), // New field
+        DataColumn(
+            label: Text('Dron Anunciado',
+                style: _tableHeaderStyle())), // New field
+        DataColumn(
+            label: Text('Precio Web', style: _tableHeaderStyle())), // New field
+        DataColumn(
+            label: Text('Precio Cliente',
+                style: _tableHeaderStyle())), // New field
+        DataColumn(
+            label: Text('Comisión', style: _tableHeaderStyle())), // New field
+        DataColumn(
+            label:
+                Text('Seguimiento', style: _tableHeaderStyle())), // New field
+        DataColumn(
+            label: Text('Estado', style: _tableHeaderStyle())), // New field
+        DataColumn(
+            label:
+                Text('Observaciones', style: _tableHeaderStyle())), // New field
       ],
       DataColumn(label: Text('Acciones', style: _tableHeaderStyle())),
     ];
@@ -154,20 +167,7 @@ class SellerListScreen extends StatelessWidget {
         DataCell(Text(seller.sellerName)),
         if (!isSmallScreen) ...[
           DataCell(Text(seller.email)),
-          DataCell(
-            Row(
-              children: [
-                Text(seller.phone),
-                IconButton(
-                  icon: Icon(Icons.phone, color: Colors.green),
-                  onPressed: () {
-                    _launchWhatsApp(context, seller.whatsappNo);
-                  },
-                  tooltip: 'Chatear en WhatsApp',
-                ),
-              ],
-            ),
-          ),
+          DataCell(Text(seller.phone)),
           DataCell(Text(seller.city)),
           DataCell(Text(seller.typeOfSeller)),
           DataCell(Text(seller.address)),
@@ -240,7 +240,6 @@ class SellerListScreen extends StatelessWidget {
         TextEditingController(text: seller.address);
     final TextEditingController whatsappController =
         TextEditingController(text: seller.whatsappNo);
-    // New fields controllers
     final TextEditingController fechaController =
         TextEditingController(text: seller.fecha);
     final TextEditingController numeroController =
@@ -249,12 +248,12 @@ class SellerListScreen extends StatelessWidget {
         TextEditingController(text: seller.cliente);
     final TextEditingController dronController =
         TextEditingController(text: seller.dronAnunciado);
-    final TextEditingController precioWebController = TextEditingController(
-        text: seller.precioWeb.toString());
-    final TextEditingController precioClienteController = TextEditingController(
-        text: seller.precioCliente.toString());
-    final TextEditingController comisionController = TextEditingController(
-        text: seller.comision.toString());
+    final TextEditingController precioWebController =
+        TextEditingController(text: seller.precioWeb.toString());
+    final TextEditingController precioClienteController =
+        TextEditingController(text: seller.precioCliente.toString());
+    final TextEditingController comisionController =
+        TextEditingController(text: seller.comision.toString());
     final TextEditingController seguimientoController =
         TextEditingController(text: seller.seguimiento);
     final TextEditingController estadoController =
@@ -278,7 +277,6 @@ class SellerListScreen extends StatelessWidget {
                 _buildTextField(typeController, 'Tipo de Vendedor'),
                 _buildTextField(addressController, 'Dirección'),
                 _buildTextField(whatsappController, 'WhatsApp No'),
-                // New fields in edit dialog
                 _buildTextField(fechaController, 'Fecha'),
                 _buildTextField(numeroController, 'Número'),
                 _buildTextField(clienteController, 'Cliente'),
@@ -310,7 +308,6 @@ class SellerListScreen extends StatelessWidget {
                   typeOfSeller: typeController.text,
                   address: addressController.text,
                   whatsappNo: whatsappController.text,
-                  // Updated new fields
                   fecha: fechaController.text,
                   numero: numeroController.text,
                   cliente: clienteController.text,
