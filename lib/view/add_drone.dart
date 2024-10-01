@@ -17,8 +17,14 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
   String? _bId; // ID del comprador
   String? _brand, _model, _serialNumber;
   bool _status = false; // El estado ahora es un booleano
-  String? _webPrice, _customerPrice;
-  String? _commission, _followUp, _contractNo;
+
+  // TextEditingControllers for dynamic field updates
+  final TextEditingController _webPriceController = TextEditingController();
+  final TextEditingController _customerPriceController =
+      TextEditingController();
+  final TextEditingController _commissionController = TextEditingController();
+
+  String? _followUp, _contractNo;
 
   final DroneService droneService = DroneService();
   final BuyerService buyerService = BuyerService();
@@ -38,13 +44,29 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
   String? _selectedBuyerId;
   String? _selectedSellerId;
 
+  void _updateCustomerPriceAndCommission(String webPrice) {
+    if (webPrice.isNotEmpty) {
+      double webPriceValue = double.tryParse(webPrice) ?? 0;
+      double customerPriceValue = webPriceValue * 0.9;
+      double commissionValue = webPriceValue - customerPriceValue;
+
+      // Update the text in the customer price and commission fields
+      setState(() {
+        _customerPriceController.text = customerPriceValue.toStringAsFixed(2);
+        _commissionController.text = commissionValue.toStringAsFixed(2);
+      });
+    }
+  }
+
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
       if (_sId == null || _bId == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: const Text('Selecciona tanto un comprador como un vendedor')),
+          SnackBar(
+              content:
+                  const Text('Selecciona tanto un comprador como un vendedor')),
         );
         return; // Salir si faltan campos requeridos
       }
@@ -60,12 +82,13 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
         status: _status,
         model: _model!,
         serialNumber: _serialNumber!,
-        webPrice: _webPrice!,
-        customerPrice: _customerPrice!,
-        commision: _commission!,
+        webPrice: _webPriceController.text,
+        customerPrice: _customerPriceController.text, // Use controller text
+        commision: _commissionController.text, // Use controller text
         followUp: _followUp ?? '', // Por defecto, vacío si no se proporciona
         soldDate: null, // Establecer soldDate a null inicialmente
-        contractNo: _contractNo ?? '', // Por defecto, vacío si no se proporciona
+        contractNo:
+            _contractNo ?? '', // Por defecto, vacío si no se proporciona
       );
 
       // Agregar el dron a la base de datos
@@ -77,6 +100,11 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
 
   @override
   void dispose() {
+    // Dispose the controllers
+    _webPriceController.dispose();
+    _customerPriceController.dispose();
+    _commissionController.dispose();
+
     // Eliminar FocusNodes
     _brandFocusNode.dispose();
     _modelFocusNode.dispose();
@@ -128,12 +156,13 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
                     items: snapshot.data!.map((buyer) {
                       return DropdownMenuItem<String>(
                         value: buyer.id,
-                        child: Text(buyer.buyer), // Mostrar nombre del comprador
+                        child:
+                            Text(buyer.buyer), // Mostrar nombre del comprador
                       );
                     }).toList(),
                     onChanged: (value) {
                       setState(() {
-                        _selectedBuyerId = value; // Establecer ID del comprador seleccionado
+                        _selectedBuyerId = value;
                         _bId = value;
                       });
                     },
@@ -169,12 +198,13 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
                     items: snapshot.data!.map((seller) {
                       return DropdownMenuItem<String>(
                         value: seller.id,
-                        child: Text(seller.sellerName), // Mostrar nombre del vendedor
+                        child: Text(
+                            seller.sellerName), // Mostrar nombre del vendedor
                       );
                     }).toList(),
                     onChanged: (value) {
                       setState(() {
-                        _selectedSellerId = value; // Establecer ID del vendedor seleccionado
+                        _selectedSellerId = value;
                         _sId = value;
                       });
                     },
@@ -190,7 +220,8 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
                 label: 'Marca',
                 icon: Icons.flight,
                 focusNode: _brandFocusNode,
-                validator: (value) => value!.isEmpty ? 'Ingresa la marca' : null,
+                validator: (value) =>
+                    value!.isEmpty ? 'Ingresa la marca' : null,
                 onSaved: (value) => _brand = value,
                 nextFocusNode: _modelFocusNode,
               ),
@@ -198,7 +229,8 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
                 label: 'Modelo',
                 icon: Icons.airplanemode_active,
                 focusNode: _modelFocusNode,
-                validator: (value) => value!.isEmpty ? 'Ingresa el modelo' : null,
+                validator: (value) =>
+                    value!.isEmpty ? 'Ingresa el modelo' : null,
                 onSaved: (value) => _model = value,
                 nextFocusNode: _serialNumberFocusNode,
               ),
@@ -215,10 +247,13 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
                 label: 'Precio Web',
                 icon: Icons.monetization_on,
                 focusNode: _webPriceFocusNode,
-                validator: (value) => value!.isEmpty ? 'Ingresa el precio web' : null,
-                onSaved: (value) => _webPrice = value!,
+                validator: (value) =>
+                    value!.isEmpty ? 'Ingresa el precio web' : null,
+                controller: _webPriceController,
+                onChanged: (value) => _updateCustomerPriceAndCommission(value),
                 keyboardType: TextInputType.number,
                 nextFocusNode: _customerPriceFocusNode,
+                onSaved: (value) => _serialNumber = value,
               ),
               _buildTextFormField(
                 label: 'Precio al Cliente',
@@ -226,9 +261,9 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
                 focusNode: _customerPriceFocusNode,
                 validator: (value) =>
                     value!.isEmpty ? 'Ingresa el precio al cliente' : null,
-                onSaved: (value) => _customerPrice = value!,
+                controller: _customerPriceController,
                 keyboardType: TextInputType.number,
-                nextFocusNode: _commissionFocusNode,
+                onSaved: (value) => _serialNumber = value,
               ),
               _buildTextFormField(
                 label: 'Comisión',
@@ -236,8 +271,8 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
                 focusNode: _commissionFocusNode,
                 validator: (value) =>
                     value!.isEmpty ? 'Ingresa la comisión' : null,
-                onSaved: (value) => _commission = value,
-                nextFocusNode: _followUpFocusNode,
+                controller: _commissionController,
+                onSaved: (value) => _serialNumber = value,
               ),
               _buildTextFormField(
                 label: 'Seguimiento',
@@ -300,12 +335,15 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
     required FormFieldSetter<String> onSaved,
     FocusNode? nextFocusNode,
     TextInputType keyboardType = TextInputType.text,
+    TextEditingController? controller,
+    ValueChanged<String>? onChanged,
   }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
       child: TextFormField(
         focusNode: focusNode,
         keyboardType: keyboardType,
+        controller: controller,
         decoration: InputDecoration(
           labelText: label,
           prefixIcon: Icon(icon),
@@ -315,6 +353,7 @@ class _AddDroneScreenState extends State<AddDroneScreen> {
         ),
         validator: validator,
         onSaved: onSaved,
+        onChanged: onChanged,
         textInputAction:
             nextFocusNode != null ? TextInputAction.next : TextInputAction.done,
         onFieldSubmitted: (_) {

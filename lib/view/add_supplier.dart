@@ -92,16 +92,16 @@ class _AddSupplierScreenState extends State<AddSupplierScreen> {
                     onPressed: () async {
                       await _submitForm();
                     },
-                    child: Text(
-                      'Agregar Proveedor',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                    ),
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 16),
                       backgroundColor: Colors.blue,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
+                    ),
+                    child: Text(
+                      'Agregar Proveedor',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
                     ),
                   ),
                 ],

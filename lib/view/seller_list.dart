@@ -32,8 +32,11 @@ class SellerListScreen extends StatelessWidget {
             foregroundColor: Colors.white,
             title: Text('Vendedores'),
             actions: [
-              IconButton(
-                icon: Icon(Icons.import_contacts),
+              TextButton(
+                child: Text(
+                  'Ver Drones',
+                  style: TextStyle(color: Colors.white),
+                ),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -41,8 +44,11 @@ class SellerListScreen extends StatelessWidget {
                   );
                 },
               ),
-              IconButton(
-                icon: Icon(Icons.add),
+              TextButton(
+                child: Text(
+                  'Agregar Drones',
+                  style: TextStyle(color: Colors.white),
+                ),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -123,6 +129,17 @@ class SellerListScreen extends StatelessWidget {
         DataColumn(label: Text('Tipo', style: _tableHeaderStyle())),
         DataColumn(label: Text('Dirección', style: _tableHeaderStyle())),
         DataColumn(label: Text('WhatsApp', style: _tableHeaderStyle())),
+        // Add the new fields
+        DataColumn(label: Text('Fecha', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Número', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Cliente', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Dron Anunciado', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Precio Web', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Precio Cliente', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Comisión', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Seguimiento', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Estado', style: _tableHeaderStyle())),
+        DataColumn(label: Text('Observaciones', style: _tableHeaderStyle())),
       ],
       DataColumn(label: Text('Acciones', style: _tableHeaderStyle())),
     ];
@@ -155,6 +172,16 @@ class SellerListScreen extends StatelessWidget {
           DataCell(Text(seller.typeOfSeller)),
           DataCell(Text(seller.address)),
           DataCell(Text(seller.whatsappNo)),
+          DataCell(Text(seller.fecha)), // New field
+          DataCell(Text(seller.numero)), // New field
+          DataCell(Text(seller.cliente)), // New field
+          DataCell(Text(seller.dronAnunciado)), // New field
+          DataCell(Text(seller.precioWeb.toString())), // New field
+          DataCell(Text(seller.precioCliente.toString())), // New field
+          DataCell(Text(seller.comision.toString())), // New field
+          DataCell(Text(seller.seguimiento)), // New field
+          DataCell(Text(seller.estado)), // New field
+          DataCell(Text(seller.observaciones)), // New field
         ],
         DataCell(
           Row(
@@ -182,16 +209,13 @@ class SellerListScreen extends StatelessWidget {
 
   // Método para lanzar WhatsApp
   void _launchWhatsApp(BuildContext context, String phoneNumber) async {
-    // Asegurarse de que el número de teléfono esté en formato internacional sin '+' ni guiones
     String formattedNumber =
         phoneNumber.replaceAll('+', '').replaceAll('-', '');
     final Uri whatsappUri = Uri.parse("https://wa.me/$formattedNumber");
 
-    // Verificar si el dispositivo puede abrir WhatsApp
     if (await canLaunchUrl(whatsappUri)) {
       await launchUrl(whatsappUri, mode: LaunchMode.externalApplication);
     } else {
-      // Mostrar mensaje de error si WhatsApp no está instalado
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("WhatsApp no está instalado en este dispositivo."),
@@ -216,6 +240,27 @@ class SellerListScreen extends StatelessWidget {
         TextEditingController(text: seller.address);
     final TextEditingController whatsappController =
         TextEditingController(text: seller.whatsappNo);
+    // New fields controllers
+    final TextEditingController fechaController =
+        TextEditingController(text: seller.fecha);
+    final TextEditingController numeroController =
+        TextEditingController(text: seller.numero);
+    final TextEditingController clienteController =
+        TextEditingController(text: seller.cliente);
+    final TextEditingController dronController =
+        TextEditingController(text: seller.dronAnunciado);
+    final TextEditingController precioWebController = TextEditingController(
+        text: seller.precioWeb.toString());
+    final TextEditingController precioClienteController = TextEditingController(
+        text: seller.precioCliente.toString());
+    final TextEditingController comisionController = TextEditingController(
+        text: seller.comision.toString());
+    final TextEditingController seguimientoController =
+        TextEditingController(text: seller.seguimiento);
+    final TextEditingController estadoController =
+        TextEditingController(text: seller.estado);
+    final TextEditingController observacionesController =
+        TextEditingController(text: seller.observaciones);
 
     showDialog(
       context: context,
@@ -233,6 +278,17 @@ class SellerListScreen extends StatelessWidget {
                 _buildTextField(typeController, 'Tipo de Vendedor'),
                 _buildTextField(addressController, 'Dirección'),
                 _buildTextField(whatsappController, 'WhatsApp No'),
+                // New fields in edit dialog
+                _buildTextField(fechaController, 'Fecha'),
+                _buildTextField(numeroController, 'Número'),
+                _buildTextField(clienteController, 'Cliente'),
+                _buildTextField(dronController, 'Dron Anunciado'),
+                _buildTextField(precioWebController, 'Precio Web'),
+                _buildTextField(precioClienteController, 'Precio Cliente'),
+                _buildTextField(comisionController, 'Comisión'),
+                _buildTextField(seguimientoController, 'Seguimiento'),
+                _buildTextField(estadoController, 'Estado'),
+                _buildTextField(observacionesController, 'Observaciones'),
               ],
             ),
           ),
@@ -254,6 +310,18 @@ class SellerListScreen extends StatelessWidget {
                   typeOfSeller: typeController.text,
                   address: addressController.text,
                   whatsappNo: whatsappController.text,
+                  // Updated new fields
+                  fecha: fechaController.text,
+                  numero: numeroController.text,
+                  cliente: clienteController.text,
+                  dronAnunciado: dronController.text,
+                  precioWeb: double.tryParse(precioWebController.text) ?? 0,
+                  precioCliente:
+                      double.tryParse(precioClienteController.text) ?? 0,
+                  comision: double.tryParse(comisionController.text) ?? 0,
+                  seguimiento: seguimientoController.text,
+                  estado: estadoController.text,
+                  observaciones: observacionesController.text,
                 );
 
                 await sellerService.updateSeller(seller.id, updatedSeller);
