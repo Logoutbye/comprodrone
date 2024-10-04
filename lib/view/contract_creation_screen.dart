@@ -64,10 +64,14 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
     final pdf = pw.Document();
 
     // 1st page: Contract of Sale
+
+    // 1st page: Contract of Sale
+
+    // Using MultiPage to handle page breaks automatically
     pdf.addPage(
-      pw.Page(
-        build: (pw.Context context) {
-          return pw.Padding(
+      pw.MultiPage(
+        build: (pw.Context context) => [
+          pw.Padding(
             padding: pw.EdgeInsets.all(20),
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -78,69 +82,111 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
                       fontSize: 24, fontWeight: pw.FontWeight.bold),
                 ),
                 pw.SizedBox(height: 10),
-                pw.Text("En Vitigudino a 3 de Diciembre del 2022",
-                    style: pw.TextStyle(fontSize: 16)),
+                pw.Text(
+                  "En Vitigudino a 3 de Diciembre del 2022",
+                  style: pw.TextStyle(fontSize: 16),
+                ),
                 pw.SizedBox(height: 20),
-                pw.Text("REUNIDOS:",
-                    style: pw.TextStyle(
-                        fontSize: 18, fontWeight: pw.FontWeight.bold)),
+                pw.Text(
+                  "REUNIDOS:",
+                  style: pw.TextStyle(
+                      fontSize: 18, fontWeight: pw.FontWeight.bold),
+                ),
                 pw.SizedBox(height: 10),
                 pw.Text(
-                    "De una parte, como LA PARTE VENDEDORA:\nD. ${sellerNameController.text}, "
-                    "mayor de edad, con D.N.I ${sellerDNIController.text} y con domicilio en ${sellerAddressController.text}, "
-                    "${sellerCityController.text}."),
+                  "De una parte, como LA PARTE VENDEDORA:\n"
+                  "D. Jorge Pajares Maldonado, mayor de edad, con D.N.I 40562375N y con domicilio en Sant Martí Puigcerda (Girona), Clna. Colonia Simón 29 C P01 -0001",
+                ),
                 pw.SizedBox(height: 10),
                 pw.Text(
-                    "De otra parte, como LA PARTE COMPRADORA:\nD. ${buyerNameController.text}, "
-                    "mayor de edad, con D.N.I ${buyerDNIController.text} y con domicilio en ${buyerAddressController.text}, "
-                    "${buyerCityController.text}."),
+                  "De otra parte, como LA PARTE COMPRADORA:\n"
+                  "D. Miguel Ángel Sánchez Vizcaíno, mayor de edad, con D.N.I 75895782Z y con domicilio en Algeciras (Cádiz), Urbn Los Sauces 1 P09D",
+                ),
                 pw.SizedBox(height: 20),
-                pw.Text("EXPONEN:",
-                    style: pw.TextStyle(
-                        fontSize: 18, fontWeight: pw.FontWeight.bold)),
+                pw.Text(
+                  "Ambas partes contratantes se reconocen capacidad legal para este acto, e intervienen en su propio nombre y derecho.",
+                ),
+                pw.SizedBox(height: 20),
+                pw.Text(
+                  "EXPONEN:",
+                  style: pw.TextStyle(
+                      fontSize: 18, fontWeight: pw.FontWeight.bold),
+                ),
                 pw.Bullet(
-                    text:
-                        "El vendedor ha anunciado su dron en la plataforma web www.comprodrone.com."),
+                  text:
+                      "Que el vendedor ha anunciado su dron en la plataforma web www.comprodrone.com propiedad de Don Eliseo Prieto Iglesias con D.N.I 70873396T con domicilio en calle Afueras de Santa Ana 22 de Vitigudino Salamanca. En adelante ComproDrone.",
+                ),
                 pw.Bullet(
-                    text:
-                        "El comprador ha comprado el dron por la plataforma de ComproDrone."),
+                  text:
+                      "El comprador ha comprado el dron, más abajo especificado, por la plataforma de ComproDrone.",
+                ),
                 pw.Bullet(
-                    text:
-                        "Que ambas partes han convenido formalizar contrato de compraventa de un dron usado:"),
+                  text:
+                      "Que ambas partes han convenido formalizar contrato de compraventa de un dron usado:",
+                ),
                 pw.SizedBox(height: 10),
-                pw.Text("MARCA: ${droneModelController.text}"),
-                pw.Text("Nº DE SERIE: ${droneSerialController.text}"),
+                pw.Text("MARCA: YUNEEC"),
+                pw.Text("MODELO: TYPHOON H"),
+                pw.Text("Nº DE SERIE: YU16230469B08A02"),
                 pw.Text("ESTADO DEL APARATO: SEMI-NUEVO"),
                 pw.Text("POSIBLES DEFECTOS: NINGUNO"),
                 pw.SizedBox(height: 10),
                 pw.Text(
-                    "Que la parte compradora manifiesta que ha sido informada del estado del dron, en su conjunto y en el "
-                    "de sus elementos mecánicos y componentes fundamentales."),
+                  "Que la parte compradora manifiesta que ha sido informada del estado del dron, en su conjunto y en el de sus elementos mecánicos y componentes fundamentales, de su antigüedad así como de los extras que tiene. También del estado de las baterías.",
+                ),
                 pw.SizedBox(height: 10),
-                pw.Text("ESTIPULACIONES:",
-                    style: pw.TextStyle(
-                        fontSize: 18, fontWeight: pw.FontWeight.bold)),
                 pw.Text(
-                    "PRIMERA: El vendedor vende al comprador el dron de su propiedad anteriormente especificado por la cantidad de ${dronePriceController.text} euros."),
+                  "Asimismo se hace constar que el comprador ha examinado personal y directamente o a través de un tercero o por medios telemáticos el dron y realizado las pruebas que libremente ha estimado pertinentes para comprobar su buen funcionamiento.",
+                ),
+                pw.SizedBox(height: 10),
                 pw.Text(
-                    "SEGUNDA: El vendedor declara que no pesa sobre el citado dron ninguna carga o gravamen ni impuesto."),
+                  "Que el dron objeto de la presente Compra-Venta no tiene fallos o vicios ocultos conocidos y que funciona correctamente. Debiendo el vendedor avisar al comprador de posibles desperfectos, fallas o accidentes que haya sufrido el dron durante su uso.",
+                ),
+                pw.SizedBox(height: 10),
                 pw.Text(
-                    "TERCERA: El comprador se hace responsable desde la fecha del presente documento de cuantas cuestiones pudieran derivarse del uso o posesión."),
+                  "El comprador ha adquirido el dron mediante la plataforma web www.comprodrone.com.",
+                ),
                 pw.SizedBox(height: 20),
-                pw.Text("Firmas:"),
-                pw.Column(
-                  mainAxisAlignment: pw.MainAxisAlignment.start,
-                  crossAxisAlignment: pw.CrossAxisAlignment.end,
-                  children: [
-                    pw.Text("Firma del Vendedor: _____________________"),
-                    pw.Text("Firma del Comprador: _____________________"),
-                    pw.Text("Firma de ComproDrone: _____________________"),
-                  ],
+                pw.Text(
+                  "ESTIPULACIONES:",
+                  style: pw.TextStyle(
+                      fontSize: 18, fontWeight: pw.FontWeight.bold),
+                ),
+                pw.Text(
+                  "PRIMERA: El vendedor vende al comprador el dron de su propiedad anteriormente especificado por la cantidad de 450 euros, sin incluir los impuestos correspondientes, si se generaran (no todos los países hay que pagar impuestos por la venta del dron), que será a cargo del comprador y la comisión a ComproDrone.",
+                ),
+                pw.Text(
+                  "SEGUNDA: El vendedor declara que no pesa sobre el citado dron ninguna carga o gravamen ni impuesto, ni pago pendiente, ni deuda o sanción pendiente de abono en la fecha de la firma de este contrato, y se compromete en caso contrario a regularizar tal situación a su exclusivo cargo. Igualmente el vendedor garantiza que el dron ha sido dado de baja del registro de operadoras profesionales o cualquier otro registro asociado al vendedor.",
+                ),
+                pw.Text(
+                  "TERCERA: Por el acto se hace entrega al comprador del drone. El comprador se hace responsable desde la fecha del presente documento, de cuantas cuestiones pudieran derivarse del uso o posesión del mismo, incluidas responsabilidades, sanciones, contratación de seguros de responsabilidad civil o cualquier otro documento que la regulación del país requiera para el uso de drones.",
+                ),
+                pw.Text(
+                  "CUARTA: El comprador declara conocer el estado actual del dron y exonera de manera expresa a ComproDrone y al vendedor de cualquier responsabilidad por vicios o defectos ocultos o posibles averías que el bien manifieste en un futuro, según se determina en el Código Civil del país, salvo aquellos ocultos que tengan su origen en dolo o mala fe del vendedor y no hayan sido comunicados.",
+                ),
+                pw.Text(
+                  "El vendedor responderá frente al comprador tanto de la posesión legal y pacífica del dron como de los vicios o defectos ocultos que tuviere, durante el plazo que marque la ley de conformidad con lo establecido en el Código Civil del país.",
+                ),
+                pw.Text(
+                  "No existirá responsabilidad del vendedor por averías o deficiencias del dron, aparecidas con posterioridad a la entrega del mismo, cuando estas circunstancias se produzcan o vengan motivadas por un uso inadecuado; o a consecuencia de fuerza mayor, robo, hurto, negligencia, accidente o falta de mantenimiento aconsejado por el fabricante, así como de los defectos existentes en el momento de la entrega del dron, siempre y cuando hubieran sido conocidos y consentidos por el comprador.",
+                ),
+                pw.Text(
+                  "La empresa ComproDrone no se hace responsable por los daños que sufran los artículos enviados, así como por perdida o por retrasos en la logística.",
+                ),
+                pw.Text(
+                  "QUINTA: Para cualquier litigio que surja entre las partes de la interpretación o cumplimiento del presente contrato, estas, con expresa renuncia al fuero que pudiera corresponderles, se someterán a los Juzgados y Tribunales de Salamanca.",
+                ),
+                pw.SizedBox(height: 20),
+                pw.Text(
+                    "Y para que así conste, firman el presente contrato de compraventa de 5 hojas, por duplicado, en la fecha y lugar arriba indicados."),
+                pw.SizedBox(height: 40),
+                pw.Text(
+                  "Firma de EL VENDEDOR                    Firma de ComproDrone                   Firma de EL COMPRADOR",
                 ),
               ],
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
 
@@ -437,4 +483,3 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
     );
   }
 }
-s
