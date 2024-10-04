@@ -63,7 +63,7 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
   Future<void> _generateContractPDF() async {
     final pdf = pw.Document();
 
-    // Page 1: Contract Agreement
+    // 1st page: Contract of Sale
     pdf.addPage(
       pw.Page(
         build: (pw.Context context) {
@@ -143,10 +143,12 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
         },
       ),
     );
+
+    // 2nd page: UAS Sale Registration and Declaration
     pdf.addPage(
-      pw.Page(
-        build: (pw.Context context) {
-          return pw.Padding(
+      pw.MultiPage(
+        build: (pw.Context context) => [
+          pw.Padding(
             padding: pw.EdgeInsets.all(20),
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -281,16 +283,60 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
                 ),
                 pw.SizedBox(height: 20),
                 pw.Text(
-                  "NORMATIVA DE REGISTRO DE AERONAVES: Según BOE, Nº136, miércoles 5 de junio del 2024.",
+                  "NORMATIVA DE REGISTRO DE AERONAVES/ AIRCRAFT REGISTRATION REGULATIONS",
+                  style: pw.TextStyle(
+                    fontSize: 16,
+                    fontWeight: pw.FontWeight.bold,
+                  ),
                 ),
+                pw.SizedBox(height: 10),
+                pw.Text(
+                  "Según BOE, Nº136, miércoles 5 de junio del 2024.\n\n"
+                  "En su capítulo VI de la sección 1ª, en los artículos:",
+                ),
+                pw.Bullet(text: "Artículo 48. Registro de operadores de UAS."),
+                pw.Bullet(
+                    text:
+                        "Artículo 49. Inscripción y actualización de datos registrados."),
+                pw.Bullet(
+                    text:
+                        "Artículo 50. Cancelación y suspensión de la inscripción a instancia de parte."),
+                pw.Bullet(
+                    text:
+                        "Artículo 51. Cancelación de la inscripción de oficio."),
+                pw.SizedBox(height: 10),
+                pw.Text(
+                  "En su sección 2ª, articulo 52 Registro de aeronaves no tripuladas cuyo diseño esté sujeto a certificación.",
+                ),
+                pw.SizedBox(height: 10),
+                pw.Text(
+                  "Sección 3ª, Registro aeronaves no tripuladas del Ministerio del Interior y registro de comercialización y venta.\n\n"
+                  "En los artículos:",
+                ),
+                pw.Bullet(
+                    text:
+                        "Artículo 53. Creación del Registro de aeronaves no tripuladas del Ministerio del Interior."),
+                pw.Bullet(
+                    text:
+                        "Artículo 54. Obligaciones de inscripción en la comercialización, venta y adquisición."),
+                pw.Bullet(
+                    text:
+                        "Artículo 55. Obligaciones de comunicar la transmisión de las aeronaves no tripuladas."),
+                pw.Bullet(
+                    text:
+                        "Artículo 56. Obligaciones de inscripción sobre la pérdida de la aeronave o su inhabilidad para operar."),
+                pw.Bullet(
+                    text:
+                        "Artículo 57. Obligaciones adicionales del establecimiento."),
+                pw.Bullet(
+                    text:
+                        "Artículo 58. Tratamiento de datos de carácter personal."),
               ],
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
-
-    // Page 2: UAS Sale Registration
 
     await Printing.sharePdf(bytes: await pdf.save(), filename: 'contract.pdf');
   }
@@ -391,3 +437,4 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
     );
   }
 }
+s
