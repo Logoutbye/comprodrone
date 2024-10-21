@@ -10,6 +10,7 @@ class Buyer {
   String followUp; // 'follow up' cannot be used directly as it's two words, so 'followUp' is used.
   String notes;
   String budget;
+  
 
   Buyer({
 

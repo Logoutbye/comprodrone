@@ -1,5 +1,7 @@
+import 'package:com_pro_drone/view/add_order_screen.dart';
 import 'package:com_pro_drone/view/buyer_list.dart';
 import 'package:com_pro_drone/view/contract_creation_screen.dart';
+import 'package:com_pro_drone/view/order_list_screen.dart';
 import 'package:com_pro_drone/view/seller_list.dart';
 import 'package:com_pro_drone/view/supplier_list.dart';
 import 'package:flutter/material.dart';
@@ -121,17 +123,20 @@ class HomePage extends StatelessWidget {
                     ),
                   ],
                 ),
-                // CustomButton(
-                //   text: 'TASACION / Assessment',
-                //   onPressed: () {
-                //     Navigator.push(
-                //       context,
-                //       MaterialPageRoute(
-                //         builder: (context) => BuyerListScreen(),
-                //       ),
-                //     );
-                //   },
-                // )
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 200.0),
+                  child: CustomButton(
+                    text: 'Órdenes',
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => OrderListScreen(),
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ],
             ),
           ),

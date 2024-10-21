@@ -45,7 +45,7 @@ class ContractHistoryScreen extends StatelessWidget {
                   child: SingleChildScrollView(
                     child: DataTable(
                       columns: [
-                        DataColumn(label: Text('Número de Contrato')),
+                        // DataColumn(label: Text('Número de Contrato')),
                         DataColumn(label: Text('Fecha')),
                         DataColumn(label: Text('Comprador')),
                         DataColumn(label: Text('Correo del Comprador')),
@@ -59,21 +59,25 @@ class ContractHistoryScreen extends StatelessWidget {
                       ],
                       rows: contracts.map((contract) {
                         return DataRow(cells: [
-                          DataCell(Text(contract.contractNumber)),
-                          DataCell(Text(DateFormat('dd-MM-yyyy').format(contract.createdAt))),
-                          DataCell(Text(contract.buyerName)),
-                          DataCell(Text(contract.buyerEmail)),
-                          DataCell(Text(contract.buyerCity)),
-                          DataCell(Text(contract.sellerName)),
-                          DataCell(Text(contract.sellerEmail)),
-                          DataCell(Text(contract.droneModel)),
-                          DataCell(Text(contract.price)),
-                          DataCell(Text(contract.commission)),
+                          // DataCell(Text(contract.contractNumber ?? '')), // Handle null case
+                          DataCell(Text(contract.createdAt != null
+                              ? DateFormat('dd-MM-yyyy')
+                                  .format(contract.createdAt)
+                              : '')), // Handle null case
+                          DataCell(Text(contract.buyerName ?? '')),
+                          DataCell(Text(contract.buyerEmail ?? '')),
+                          DataCell(Text(contract.buyerCity ?? '')),
+                          DataCell(Text(contract.sellerName ?? '')),
+                          DataCell(Text(contract.sellerEmail ?? '')),
+                          DataCell(Text(contract.droneModel ?? '')),
+                          DataCell(Text(contract.price ?? '')),
+                          DataCell(Text(contract.commission ?? '')),
                           DataCell(
                             Row(
                               children: [
                                 IconButton(
-                                  icon: Icon(Icons.delete, color: Colors.redAccent),
+                                  icon: Icon(Icons.delete,
+                                      color: Colors.redAccent),
                                   onPressed: () {
                                     _confirmDelete(context, contract.id);
                                   },
@@ -113,7 +117,8 @@ class ContractHistoryScreen extends StatelessWidget {
                 await ContractService().deleteContract(contractId);
                 Navigator.of(context).pop(); // Cerrar el diálogo
               },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
+              style:
+                  ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
               child: Text('Eliminar'),
             ),
           ],

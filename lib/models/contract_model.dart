@@ -54,20 +54,22 @@ class Contract {
   // Creates a Contract object from a map
   factory Contract.fromMap(Map<String, dynamic> map) {
     return Contract(
-      id: map['id'],
-      contractNumber: map['contractNumber'],
-      buyerName: map['buyerName'],
-      buyerEmail: map['buyerEmail'],
-      buyerPhone: map['buyerPhone'],
-      buyerCity: map['buyerCity'],
-      sellerName: map['sellerName'],
-      sellerEmail: map['sellerEmail'],
-      sellerPhone: map['sellerPhone'],
-      sellerCity: map['sellerCity'],
-      droneModel: map['droneModel'],
-      price: map['price'],
-      commission: map['commission'],
-      createdAt: DateTime.parse(map['createdAt']),
+      id: map['id'] ?? '', // Default to an empty string if null
+      contractNumber: map['contractNumber'] ?? '', // Default to empty string
+      buyerName: map['buyerName'] ?? '', // Default to empty string
+      buyerEmail: map['buyerEmail'] ?? '', // Default to empty string
+      buyerPhone: map['buyerPhone'] ?? '', // Default to empty string
+      buyerCity: map['buyerCity'] ?? '', // Default to empty string
+      sellerName: map['sellerName'] ?? '', // Default to empty string
+      sellerEmail: map['sellerEmail'] ?? '', // Default to empty string
+      sellerPhone: map['sellerPhone'] ?? '', // Default to empty string
+      sellerCity: map['sellerCity'] ?? '', // Default to empty string
+      droneModel: map['droneModel'] ?? '', // Default to empty string
+      price: map['price'] ?? '0', // Default to '0' in case of null
+      commission: map['commission'] ?? '0', // Default to '0' in case of null
+      createdAt: map['createdAt'] != null
+          ? DateTime.parse(map['createdAt'])
+          : DateTime.now(), // Default to the current time if null
     );
   }
 }
