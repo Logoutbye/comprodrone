@@ -19,6 +19,7 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
   TextEditingController buyerNameController = TextEditingController();
   TextEditingController buyerDNIController = TextEditingController();
   TextEditingController buyerAddressController = TextEditingController();
+  TextEditingController corporateNameController = TextEditingController();
   TextEditingController buyerPhoneController = TextEditingController();
   TextEditingController buyerEmailController = TextEditingController();
   TextEditingController buyerCityController = TextEditingController();
@@ -30,12 +31,14 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
   TextEditingController sellerPhoneController = TextEditingController();
   TextEditingController sellerEmailController = TextEditingController();
   TextEditingController sellerCityController = TextEditingController();
+  TextEditingController modelController = TextEditingController();
 
   TextEditingController droneModelController = TextEditingController();
   TextEditingController droneSerialController = TextEditingController();
   TextEditingController dronePriceController = TextEditingController();
   TextEditingController uasSerialNumberController = TextEditingController();
   TextEditingController registrationDateController = TextEditingController();
+  TextEditingController registrationTypeController = TextEditingController();
   TextEditingController buyerNationalityController = TextEditingController();
   TextEditingController buyerZipCodeController = TextEditingController();
   TextEditingController birthDateCodeController = TextEditingController();
@@ -46,6 +49,7 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
   TextEditingController uasModelController = TextEditingController();
   TextEditingController notificationMethodController = TextEditingController();
   TextEditingController observationsController = TextEditingController();
+  TextEditingController acquisitionController = TextEditingController();
 
   var image;
   var image1;
@@ -83,6 +87,9 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
             buyerDNIController.text.isNotEmpty ? buyerDNIController.text : "",
         'direccionComprador': buyerAddressController.text.isNotEmpty
             ? buyerAddressController.text
+            : "",
+        'direccionComprador': corporateNameController.text.isNotEmpty
+            ? corporateNameController.text
             : "",
         'telefonoComprador': buyerPhoneController.text.isNotEmpty
             ? buyerPhoneController.text
@@ -124,6 +131,9 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
         'numeroSerieUAS': uasSerialNumberController.text.isNotEmpty
             ? uasSerialNumberController.text
             : "",
+        'numeroSerieUAS': registrationTypeController.text.isNotEmpty
+            ? registrationTypeController.text
+            : "",
         'fechaRegistro': registrationDateController.text.isNotEmpty
             ? registrationDateController.text
             : "",
@@ -142,6 +152,9 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
         'observations': observationsController.text.isNotEmpty
             ? observationsController.text
             : "",
+        'observations': acquisitionController.text.isNotEmpty
+            ? acquisitionController.text
+            : "",
         'provinciaComprador': buyerProvinceController.text.isNotEmpty
             ? buyerProvinceController.text
             : "",
@@ -159,6 +172,7 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
     }
   }
 
+  @override
   void initState() {
     makeImage();
     super.initState();
@@ -177,6 +191,7 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
     final fontBold = pw.Font.ttf(fontBoldData);
 
     final pdfSecondPage = pw.Document();
+
     pdfSecondPage.addPage(
       pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
@@ -208,16 +223,679 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
                         ),
                       ],
                     ),
-                    pw.SizedBox(height: 50),
+                    pw.SizedBox(height: 20),
                     pw.Text(
                       "REGISTRO DE VENTA DE SISTEMAS DE AERONAVES NO TRIPULADAS (UAS)",
                       textAlign: pw.TextAlign.center,
                       style: pw.TextStyle(
-                        fontSize: 15,
+                        fontSize: 12,
                         fontWeight: pw.FontWeight.bold,
                         font: fontBold,
                       ),
                     ),
+                    pw.SizedBox(height: 20),
+
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                          color: PdfColors.black, width: 0.5),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                      },
+                      children: [
+                        pw.TableRow(children: [
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            color: PdfColors.grey300,
+                            child: pw.Text(
+                              "Tipo de Registro",
+                              style: pw.TextStyle(
+                                  fontSize: 9,
+                                  fontWeight: pw.FontWeight.bold,
+                                  font: fontBold),
+                            ),
+                          ),
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            child: pw.Text(
+                              uasSerialNumberController.text,
+                              style: pw.TextStyle(
+                                fontSize: 9,
+                                font: font,
+                              ),
+                            ),
+                          ),
+                        ]),
+                      ],
+                    ),
+                    pw.SizedBox(height: 10),
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                      },
+                      children: [],
+                    ),
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                        2: pw.FlexColumnWidth(3),
+                        3: pw.FlexColumnWidth(5),
+                      },
+                      children: [
+                        pw.TableRow(children: [
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            color: PdfColors.grey300,
+                            child: pw.Text(
+                              "Número de Serie de UAS",
+                              style: pw.TextStyle(
+                                  fontSize: 9,
+                                  fontWeight: pw.FontWeight.bold,
+                                  font: fontBold),
+                            ),
+                          ),
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            child: pw.Row(
+                              children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    uasSerialNumberController.text,
+                                    style: pw.TextStyle(
+                                      color: PdfColors.green600,
+                                      fontSize: 13,
+                                      fontWeight: pw.FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ],
+                            ),
+                          ),
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            color: PdfColors.grey300,
+                            child: pw.Text(
+                              "Fecha de registro",
+                              style: pw.TextStyle(
+                                  fontSize: 9,
+                                  fontWeight: pw.FontWeight.bold,
+                                  font: fontBold),
+                            ),
+                          ),
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            child: pw.Row(
+                              children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    registrationDateController.text,
+                                    style: pw.TextStyle(
+                                      fontSize: 9,
+                                      color: PdfColors.red,
+                                    ),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ],
+                            ),
+                          ),
+                        ]),
+                      ],
+                    ),
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(1),
+                      },
+                      children: [
+                        pw.TableRow(
+                          children: [
+                            pw.Container(
+                              padding: pw.EdgeInsets.all(8),
+                              color: PdfColors.grey300,
+                              child: pw.Text(
+                                "COMPRADOR DE UAS",
+                                textAlign: pw.TextAlign.center,
+                                style: pw.TextStyle(
+                                  fontSize: 9,
+                                  fontWeight: pw.FontWeight.bold,
+                                  font: fontBold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                      },
+                      children: [
+                        _buildTableRow("nombre completo o razón social",
+                            corporateNameController.text,
+                            font: font, fontBold: fontBold),
+                      ],
+                    ),
+                    // First Table for DNI and Address
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                      },
+                      children: [
+                        _buildTableRow("DNI, NIF, NIE o Pasaporte",
+                            buyerDNIController.text,
+                            font: font, fontBold: fontBold),
+                      ],
+                    ),
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                        2: pw.FlexColumnWidth(3),
+                        3: pw.FlexColumnWidth(5),
+                      },
+                      children: [
+                        pw.TableRow(children: [
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            color: PdfColors.grey300,
+                            child: pw.Text(
+                              "Nacionalidad",
+                              style: pw.TextStyle(
+                                  fontSize: 9, fontWeight: pw.FontWeight.bold),
+                            ),
+                          ),
+                          pw.Container(
+                              padding: pw.EdgeInsets.all(8),
+                              child: pw.Row(children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    buyerNationalityController.text,
+                                    style: pw.TextStyle(fontSize: 9),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ])),
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            color: PdfColors.grey300,
+                            child: pw.Text(
+                              "Fecha de Nacimiento",
+                              style: pw.TextStyle(
+                                  fontSize: 9, fontWeight: pw.FontWeight.bold),
+                            ),
+                          ),
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            child: pw.Row(
+                              children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    birthDateCodeController.text,
+                                    style: pw.TextStyle(fontSize: 9),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ],
+                            ),
+                          ),
+                        ]),
+                      ],
+                    ),
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                        2: pw.FlexColumnWidth(3),
+                        3: pw.FlexColumnWidth(5),
+                      },
+                      children: [
+                        pw.TableRow(children: [
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            color: PdfColors.grey300,
+                            child: pw.Text(
+                              "Teléfono",
+                              style: pw.TextStyle(
+                                  fontSize: 9, fontWeight: pw.FontWeight.bold),
+                            ),
+                          ),
+                          pw.Container(
+                              padding: pw.EdgeInsets.all(8),
+                              child: pw.Row(children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    buyerPhoneController.text,
+                                    style: pw.TextStyle(fontSize: 9),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ])),
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            color: PdfColors.grey300,
+                            child: pw.Text(
+                              "Correo Electrónico",
+                              style: pw.TextStyle(
+                                  fontSize: 9, fontWeight: pw.FontWeight.bold),
+                            ),
+                          ),
+                          pw.Container(
+                              padding: pw.EdgeInsets.all(8),
+                              child: pw.Row(children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    buyerEmailController.text,
+                                    style: pw.TextStyle(fontSize: 9),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ])),
+                        ]),
+                      ],
+                    ),
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                      },
+                      children: [
+                        _buildTableRow("Dirección", buyerAddressController.text,
+                            font: font, fontBold: fontBold),
+                      ],
+                    ),
+                    // First Table for Código Postal and Municipio
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                        2: pw.FlexColumnWidth(3),
+                        3: pw.FlexColumnWidth(5),
+                      },
+                      children: [
+                        pw.TableRow(children: [
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            color: PdfColors.grey300,
+                            child: pw.Text(
+                              "Código Postal",
+                              style: pw.TextStyle(
+                                  fontSize: 9, fontWeight: pw.FontWeight.bold),
+                            ),
+                          ),
+                          pw.Container(
+                              padding: pw.EdgeInsets.all(8),
+                              child: pw.Row(children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    buyerZipCodeController.text,
+                                    style: pw.TextStyle(fontSize: 9),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ])),
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            color: PdfColors.grey300,
+                            child: pw.Text(
+                              "Municipio",
+                              style: pw.TextStyle(
+                                  fontSize: 9, fontWeight: pw.FontWeight.bold),
+                            ),
+                          ),
+                          pw.Container(
+                              padding: pw.EdgeInsets.all(8),
+                              child: pw.Row(children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    buyerMunicipalityController.text,
+                                    style: pw.TextStyle(fontSize: 9),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ])),
+                        ]),
+                      ],
+                    ),
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                        2: pw.FlexColumnWidth(3),
+                        3: pw.FlexColumnWidth(5),
+                      },
+                      children: [
+                        pw.TableRow(children: [
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            color: PdfColors.grey300,
+                            child: pw.Text(
+                              "Provincia",
+                              style: pw.TextStyle(
+                                  fontSize: 9, fontWeight: pw.FontWeight.bold),
+                            ),
+                          ),
+                          pw.Container(
+                              padding: pw.EdgeInsets.all(8),
+                              child: pw.Row(children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    buyerProvinceController.text,
+                                    style: pw.TextStyle(fontSize: 9),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ])),
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            color: PdfColors.grey300,
+                            child: pw.Text(
+                              "País/Country",
+                              style: pw.TextStyle(
+                                  fontSize: 9, fontWeight: pw.FontWeight.bold),
+                            ),
+                          ),
+                          pw.Container(
+                              padding: pw.EdgeInsets.all(8),
+                              child: pw.Row(children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    buyerCountryController.text,
+                                    style: pw.TextStyle(fontSize: 9),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ])),
+                        ]),
+                      ],
+                    ),
+                    // Table for Método de Notificación
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                      },
+                      children: [
+                        pw.TableRow(children: [
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            color: PdfColors.grey300,
+                            child: pw.Text(
+                              "Método de Notificación",
+                              style: pw.TextStyle(
+                                fontSize: 9,
+                                fontWeight: pw.FontWeight.bold,
+                                font: fontBold,
+                              ),
+                            ),
+                          ),
+                          pw.Container(
+                              padding: pw.EdgeInsets.all(8),
+                              child: pw.Row(children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    notificationMethodController.text == 'email'
+                                        ? 'Por Email'
+                                        : 'Por Papel',
+                                    style:
+                                        pw.TextStyle(fontSize: 9, font: font),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ])),
+                        ]),
+                      ],
+                    ),
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                      },
+                      children: [
+                        pw.TableRow(children: [
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            color: PdfColors.grey300,
+                            child: pw.Text(
+                              "Marca y modelo del UAS",
+                              style: pw.TextStyle(
+                                fontSize: 9,
+                                fontWeight: pw.FontWeight.bold,
+                                font: fontBold,
+                              ),
+                            ),
+                          ),
+                          pw.Container(
+                              padding: pw.EdgeInsets.all(8),
+                              child: pw.Row(children: [
+                                pw.Text(
+                                  modelController.text,
+                                  style: pw.TextStyle(
+                                    fontSize: 9,
+                                    color: PdfColors.yellow,
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ])),
+                        ]),
+                      ],
+                    ),
+
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                      },
+                      children: [
+                        pw.TableRow(children: [
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            color: PdfColors.grey300,
+                            child: pw.Text(
+                              "medio de adquisición",
+                              style: pw.TextStyle(
+                                fontSize: 9,
+                                fontWeight: pw.FontWeight.bold,
+                                font: fontBold,
+                              ),
+                            ),
+                          ),
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            child: pw.Row(
+                              children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    acquisitionController.text,
+                                    style: pw.TextStyle(fontSize: 9),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ],
+                            ),
+                          ),
+                        ]),
+                      ],
+                    ),
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                      },
+                      children: [
+                        pw.TableRow(children: [
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            color: PdfColors.grey300,
+                            child: pw.Text(
+                              "Observaciones",
+                              style: pw.TextStyle(
+                                fontSize: 9,
+                                fontWeight: pw.FontWeight.bold,
+                                font: fontBold,
+                              ),
+                            ),
+                          ),
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            child: pw.Row(
+                              children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    observationsController.text,
+                                    style: pw.TextStyle(fontSize: 9),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ],
+                            ),
+                          ),
+                        ]),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+
+    pdfSecondPage.addPage(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context context) => [
+          pw.Padding(
+            padding: pw.EdgeInsets.all(20),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Column(
+                  children: [
+                    pw.Row(
+                      mainAxisAlignment: pw.MainAxisAlignment.start,
+                      children: [
+                        pw.Image(
+                          width: 200,
+                          height: 100,
+                          pw.MemoryImage(image1),
+                        ),
+                        pw.Image(
+                          width: 140,
+                          height: 100,
+                          pw.MemoryImage(image2),
+                        ),
+                        pw.Image(
+                          width: 120,
+                          height: 100,
+                          pw.MemoryImage(image),
+                        ),
+                      ],
+                    ),
+
                     pw.SizedBox(height: 20),
                     // Start of Table
                     pw.Table(
@@ -229,8 +907,20 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
                         0: pw.FlexColumnWidth(3),
                         1: pw.FlexColumnWidth(5),
                       },
+                      children: [],
+                    ),
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                        2: pw.FlexColumnWidth(3),
+                        3: pw.FlexColumnWidth(5),
+                      },
                       children: [
-                        // Header Row for Serial and Date
                         pw.TableRow(children: [
                           pw.Container(
                             padding: pw.EdgeInsets.all(8),
@@ -238,65 +928,137 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
                             child: pw.Text(
                               "Número de Serie de UAS",
                               style: pw.TextStyle(
-                                  fontSize: 12,
+                                  fontSize: 9,
                                   fontWeight: pw.FontWeight.bold,
                                   font: fontBold),
                             ),
                           ),
                           pw.Container(
                             padding: pw.EdgeInsets.all(8),
-                            color: PdfColors.yellow,
-                            child: pw.Text(
-                              uasSerialNumberController.text,
-                              style: pw.TextStyle(
-                                fontSize: 12,
-                                font: font,
-                              ),
+                            child: pw.Row(
+                              children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    uasSerialNumberController.text,
+                                    style: pw.TextStyle(
+                                      color: PdfColors.green600,
+                                      fontSize: 9,
+                                      fontWeight: pw.FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ],
                             ),
                           ),
-                          pw.Container(
-                            padding: pw.EdgeInsets.all(8),
-                            color: PdfColors.white,
-                            child: pw.Text(
-                              "Fecha de registro",
-                              style: pw.TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: pw.FontWeight.bold,
-                                  font: fontBold),
-                            ),
-                          ),
-                          pw.Container(
-                            color: PdfColors.yellow,
-                            padding: pw.EdgeInsets.all(8),
-                            child: pw.Text(
-                              registrationDateController.text,
-                              style: pw.TextStyle(fontSize: 12, font: font),
-                            ),
-                          ),
-                        ]),
-
-                        pw.TableRow(children: [
                           pw.Container(
                             padding: pw.EdgeInsets.all(8),
                             color: PdfColors.grey300,
                             child: pw.Text(
-                              "DNI, NIF, NIE o Pasaporte",
+                              "Fecha de registro",
                               style: pw.TextStyle(
-                                fontSize: 12,
-                                fontWeight: pw.FontWeight.bold,
-                                font: fontBold,
-                              ),
+                                  fontSize: 9,
+                                  fontWeight: pw.FontWeight.bold,
+                                  font: fontBold),
                             ),
                           ),
                           pw.Container(
                             padding: pw.EdgeInsets.all(8),
-                            color: PdfColors.yellow,
-                            child: pw.Text(
-                              buyerDNIController.text,
-                              style: pw.TextStyle(fontSize: 12, font: font),
+                            child: pw.Row(
+                              children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    registrationDateController.text,
+                                    style: pw.TextStyle(
+                                      fontSize: 9,
+                                      color: PdfColors.red,
+                                    ),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ],
                             ),
                           ),
                         ]),
+                      ],
+                    ),
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(1),
+                      },
+                      children: [
+                        pw.TableRow(
+                          children: [
+                            pw.Container(
+                              padding: pw.EdgeInsets.all(8),
+                              color: PdfColors.grey300,
+                              child: pw.Text(
+                                "VENDEDOR DE UAS",
+                                textAlign: pw.TextAlign.center,
+                                style: pw.TextStyle(
+                                  fontSize: 9,
+                                  fontWeight: pw.FontWeight.bold,
+                                  font: fontBold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                      },
+                      children: [
+                        _buildTableRow("nombre completo o razón social",
+                            corporateNameController.text,
+                            font: font, fontBold: fontBold),
+                      ],
+                    ),
+                    // First Table for DNI and Address
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                      },
+                      children: [
+                        _buildTableRow("DNI, NIF, NIE o Pasaporte",
+                            buyerDNIController.text,
+                            font: font, fontBold: fontBold),
+                      ],
+                    ),
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                        2: pw.FlexColumnWidth(3),
+                        3: pw.FlexColumnWidth(5),
+                      },
+                      children: [
                         pw.TableRow(children: [
                           pw.Container(
                             padding: pw.EdgeInsets.all(8),
@@ -304,36 +1066,64 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
                             child: pw.Text(
                               "Nacionalidad",
                               style: pw.TextStyle(
-                                  fontSize: 12, fontWeight: pw.FontWeight.bold),
+                                  fontSize: 9, fontWeight: pw.FontWeight.bold),
                             ),
                           ),
                           pw.Container(
-                            padding: pw.EdgeInsets.all(8),
-                            color: PdfColors.yellow,
-                            child: pw.Text(
-                              buyerNationalityController.text,
-                              style: pw.TextStyle(fontSize: 12),
-                            ),
-                          ),
+                              padding: pw.EdgeInsets.all(8),
+                              child: pw.Row(children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    buyerNationalityController.text,
+                                    style: pw.TextStyle(fontSize: 9),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ])),
                           pw.Container(
                             padding: pw.EdgeInsets.all(8),
                             color: PdfColors.grey300,
                             child: pw.Text(
                               "Fecha de Nacimiento",
                               style: pw.TextStyle(
-                                  fontSize: 12, fontWeight: pw.FontWeight.bold),
+                                  fontSize: 9, fontWeight: pw.FontWeight.bold),
                             ),
                           ),
                           pw.Container(
                             padding: pw.EdgeInsets.all(8),
-                            color: PdfColors.yellow,
-                            child: pw.Text(
-                              birthDateCodeController.text,
-                              style: pw.TextStyle(fontSize: 12),
+                            child: pw.Row(
+                              children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    birthDateCodeController.text,
+                                    style: pw.TextStyle(fontSize: 9),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ],
                             ),
                           ),
                         ]),
-
+                      ],
+                    ),
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                        2: pw.FlexColumnWidth(3),
+                        3: pw.FlexColumnWidth(5),
+                      },
+                      children: [
                         pw.TableRow(children: [
                           pw.Container(
                             padding: pw.EdgeInsets.all(8),
@@ -341,38 +1131,76 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
                             child: pw.Text(
                               "Teléfono",
                               style: pw.TextStyle(
-                                  fontSize: 12, fontWeight: pw.FontWeight.bold),
+                                  fontSize: 9, fontWeight: pw.FontWeight.bold),
                             ),
                           ),
                           pw.Container(
-                            padding: pw.EdgeInsets.all(8),
-                            color: PdfColors.yellow,
-                            child: pw.Text(
-                              buyerPhoneController.text,
-                              style: pw.TextStyle(fontSize: 12),
-                            ),
-                          ),
+                              padding: pw.EdgeInsets.all(8),
+                              child: pw.Row(children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    buyerPhoneController.text,
+                                    style: pw.TextStyle(fontSize: 9),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ])),
                           pw.Container(
                             padding: pw.EdgeInsets.all(8),
                             color: PdfColors.grey300,
                             child: pw.Text(
                               "Correo Electrónico",
                               style: pw.TextStyle(
-                                  fontSize: 12, fontWeight: pw.FontWeight.bold),
+                                  fontSize: 9, fontWeight: pw.FontWeight.bold),
                             ),
                           ),
                           pw.Container(
-                            padding: pw.EdgeInsets.all(8),
-                            color: PdfColors.yellow,
-                            child: pw.Text(
-                              buyerEmailController.text,
-                              style: pw.TextStyle(fontSize: 12),
-                            ),
-                          ),
+                              padding: pw.EdgeInsets.all(8),
+                              child: pw.Row(children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    buyerEmailController.text,
+                                    style: pw.TextStyle(fontSize: 9),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ])),
                         ]),
-                        // Continue table rows...
+                      ],
+                    ),
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                      },
+                      children: [
                         _buildTableRow("Dirección", buyerAddressController.text,
                             font: font, fontBold: fontBold),
+                      ],
+                    ),
+                    // First Table for Código Postal and Municipio
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                        2: pw.FlexColumnWidth(3),
+                        3: pw.FlexColumnWidth(5),
+                      },
+                      children: [
                         pw.TableRow(children: [
                           pw.Container(
                             padding: pw.EdgeInsets.all(8),
@@ -380,35 +1208,61 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
                             child: pw.Text(
                               "Código Postal",
                               style: pw.TextStyle(
-                                  fontSize: 12, fontWeight: pw.FontWeight.bold),
+                                  fontSize: 9, fontWeight: pw.FontWeight.bold),
                             ),
                           ),
                           pw.Container(
-                            padding: pw.EdgeInsets.all(8),
-                            color: PdfColors.yellow,
-                            child: pw.Text(
-                              buyerZipCodeController.text,
-                              style: pw.TextStyle(fontSize: 12),
-                            ),
-                          ),
+                              padding: pw.EdgeInsets.all(8),
+                              child: pw.Row(children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    buyerZipCodeController.text,
+                                    style: pw.TextStyle(fontSize: 9),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ])),
                           pw.Container(
                             padding: pw.EdgeInsets.all(8),
                             color: PdfColors.grey300,
                             child: pw.Text(
                               "Municipio",
                               style: pw.TextStyle(
-                                  fontSize: 12, fontWeight: pw.FontWeight.bold),
+                                  fontSize: 9, fontWeight: pw.FontWeight.bold),
                             ),
                           ),
                           pw.Container(
-                            padding: pw.EdgeInsets.all(8),
-                            color: PdfColors.yellow,
-                            child: pw.Text(
-                              buyerMunicipalityController.text,
-                              style: pw.TextStyle(fontSize: 12),
-                            ),
-                          ),
+                              padding: pw.EdgeInsets.all(8),
+                              child: pw.Row(children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    buyerMunicipalityController.text,
+                                    style: pw.TextStyle(fontSize: 9),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ])),
                         ]),
+                      ],
+                    ),
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                        2: pw.FlexColumnWidth(3),
+                        3: pw.FlexColumnWidth(5),
+                      },
+                      children: [
                         pw.TableRow(children: [
                           pw.Container(
                             padding: pw.EdgeInsets.all(8),
@@ -416,158 +1270,476 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
                             child: pw.Text(
                               "Provincia",
                               style: pw.TextStyle(
-                                  fontSize: 12, fontWeight: pw.FontWeight.bold),
+                                  fontSize: 9, fontWeight: pw.FontWeight.bold),
                             ),
                           ),
                           pw.Container(
-                            padding: pw.EdgeInsets.all(8),
-                            color: PdfColors.yellow,
-                            child: pw.Text(
-                              buyerProvinceController.text,
-                              style: pw.TextStyle(fontSize: 12),
-                            ),
-                          ),
+                              padding: pw.EdgeInsets.all(8),
+                              child: pw.Row(children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    buyerProvinceController.text,
+                                    style: pw.TextStyle(fontSize: 9),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ])),
                           pw.Container(
                             padding: pw.EdgeInsets.all(8),
                             color: PdfColors.grey300,
                             child: pw.Text(
-                              "País",
+                              "País/Country",
                               style: pw.TextStyle(
-                                  fontSize: 12, fontWeight: pw.FontWeight.bold),
+                                  fontSize: 9, fontWeight: pw.FontWeight.bold),
+                            ),
+                          ),
+                          pw.Container(
+                              padding: pw.EdgeInsets.all(8),
+                              child: pw.Row(children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    buyerCountryController.text,
+                                    style: pw.TextStyle(fontSize: 9),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ])),
+                        ]),
+                      ],
+                    ),
+                    // Table for Método de Notificación
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                      },
+                      children: [
+                        pw.TableRow(children: [
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            color: PdfColors.grey300,
+                            child: pw.Text(
+                              "Método de Notificación",
+                              style: pw.TextStyle(
+                                fontSize: 9,
+                                fontWeight: pw.FontWeight.bold,
+                                font: fontBold,
+                              ),
+                            ),
+                          ),
+                          pw.Container(
+                              padding: pw.EdgeInsets.all(8),
+                              child: pw.Row(children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    notificationMethodController.text == 'email'
+                                        ? 'Por Email'
+                                        : 'Por Papel',
+                                    style:
+                                        pw.TextStyle(fontSize: 9, font: font),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ])),
+                        ]),
+                      ],
+                    ),
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                      },
+                      children: [
+                        pw.TableRow(children: [
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            color: PdfColors.grey300,
+                            child: pw.Text(
+                              "Marca y modelo del UAS",
+                              style: pw.TextStyle(
+                                fontSize: 9,
+                                fontWeight: pw.FontWeight.bold,
+                                font: fontBold,
+                              ),
+                            ),
+                          ),
+                          pw.Container(
+                              padding: pw.EdgeInsets.all(8),
+                              child: pw.Row(children: [
+                                pw.Text(
+                                  modelController.text,
+                                  style: pw.TextStyle(
+                                    fontSize: 9,
+                                    color: PdfColors.yellow,
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ])),
+                        ]),
+                      ],
+                    ),
+
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                      },
+                      children: [
+                        pw.TableRow(children: [
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            color: PdfColors.grey300,
+                            child: pw.Text(
+                              "medio de adquisición",
+                              style: pw.TextStyle(
+                                fontSize: 9,
+                                fontWeight: pw.FontWeight.bold,
+                                font: fontBold,
+                              ),
                             ),
                           ),
                           pw.Container(
                             padding: pw.EdgeInsets.all(8),
-                            color: PdfColors.yellow,
-                            child: pw.Text(
-                              buyerCountryController.text,
-                              style: pw.TextStyle(fontSize: 12),
+                            child: pw.Row(
+                              children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    acquisitionController.text,
+                                    style: pw.TextStyle(fontSize: 9),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ],
                             ),
                           ),
                         ]),
-                        _buildTableRow(
-                            "Método de Notificación",
-                            notificationMethodController.text == 'email'
-                                ? 'Por Email'
-                                : 'Por Papel',
-                            grey: false,
-                            font: font,
-                            fontBold: fontBold),
-
-                        // Add additional rows as necessary
+                      ],
+                    ),
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(3),
+                        1: pw.FlexColumnWidth(5),
+                      },
+                      children: [
+                        pw.TableRow(children: [
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            color: PdfColors.grey300,
+                            child: pw.Text(
+                              "Observaciones",
+                              style: pw.TextStyle(
+                                fontSize: 9,
+                                fontWeight: pw.FontWeight.bold,
+                                font: fontBold,
+                              ),
+                            ),
+                          ),
+                          pw.Container(
+                            padding: pw.EdgeInsets.all(8),
+                            child: pw.Row(
+                              children: [
+                                pw.Container(
+                                  color: PdfColors.yellow,
+                                  child: pw.Text(
+                                    observationsController.text,
+                                    style: pw.TextStyle(fontSize: 9),
+                                  ),
+                                ),
+                                pw.Expanded(
+                                  child: pw.Text(""),
+                                )
+                              ],
+                            ),
+                          ),
+                        ]),
+                      ],
+                    ),
+                    pw.SizedBox(height: 10),
+                    pw.Table(
+                      border: pw.TableBorder.all(
+                        color: PdfColors.black,
+                        width: 0.5,
+                      ),
+                      columnWidths: {
+                        0: pw.FlexColumnWidth(1),
+                      },
+                      children: [
+                        pw.TableRow(
+                          children: [
+                            pw.Container(
+                              padding: pw.EdgeInsets.all(8),
+                              color: PdfColors.grey300,
+                              child: pw.Text(
+                                "DECLARACIÓN RESPONSABLE",
+                                textAlign: pw.TextAlign.center,
+                                style: pw.TextStyle(
+                                  fontSize: 9,
+                                  fontWeight: pw.FontWeight.bold,
+                                  font: fontBold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        pw.TableRow(
+                          children: [
+                            pw.Container(
+                              padding: pw.EdgeInsets.all(8),
+                              child: pw.Text(
+                                "El presente documento constituye una declaración responsable. Que todos los documentos presentados en este registro son ciertos y su contenido coincide plenamente con los originales de los que son, responsabilizándome de la veracidad de los mismos. Adjuntado a este documento copia de DNI, NIF, NIE o nº pasaporte del comprador y vendedor.",
+                                style: pw.TextStyle(
+                                  fontSize: 9,
+                                  font: font,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ],
                 ),
-                pw.SizedBox(height: 50),
-                // Footer Section
-                pw.Container(
-                  color: PdfColors.grey300,
-                  width: 600,
-                  height: 60,
-                  alignment: pw.Alignment.center,
-                  child: pw.Text(
-                    'VALIDEZ DE ESTE DOCUMENTO',
-                    style: pw.TextStyle(
-                      fontSize: 18,
-                      fontWeight: pw.FontWeight.bold,
-                      font: fontBold,
-                    ),
-                  ),
-                ),
-                pw.SizedBox(height: 20),
-                pw.Text(
-                  'Los documentos emitidos por COMPRODRONE tienen un código de verificación para que el destinatario pueda verificar su autenticidad. Este código se puede encontrar en la parte inferior del documento. Por lo tanto, el Código Seguro de Verificación (CSV) o Código de Identificación del Documento (CID) permite verificar la integridad de la copia de este documento.',
-                  textAlign: pw.TextAlign.center,
-                  style: pw.TextStyle(fontSize: 12, font: font),
-                ),
-                pw.SizedBox(height: 20),
-                // Empty signature-like section (3 columns, 2 rows)
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+
+    pdfSecondPage.addPage(
+      pw.MultiPage(
+        pageFormat: PdfPageFormat.a4,
+        build: (pw.Context context) => [
+          pw.Padding(
+            padding: pw.EdgeInsets.all(20),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
                 pw.Table(
-                  border:
-                      pw.TableBorder.all(color: PdfColors.black, width: 0.5),
+                  border: pw.TableBorder.all(
+                    color: PdfColors.black,
+                    width: 0.5,
+                  ),
                   columnWidths: {
-                    0: pw.FlexColumnWidth(3),
-                    1: pw.FlexColumnWidth(5),
+                    0: pw.FlexColumnWidth(1),
                   },
                   children: [
-                    pw.TableRow(children: [
-                      pw.Container(height: 100), // First row, 3 empty cells
-                      pw.Container(height: 100),
-                      pw.Container(height: 100),
-                    ]),
-                    pw.TableRow(children: [
-                      pw.Container(height: 100), // Second row, 3 empty cells
-                      pw.Container(height: 100),
-                      pw.Container(height: 100),
-                    ]),
+                    pw.TableRow(
+                      children: [
+                        pw.Container(
+                          padding: pw.EdgeInsets.all(8),
+                          color: PdfColors.grey300,
+                          child: pw.Text(
+                            "NORMATIVA DE REGISTRO DE AERONAVES/ AIRCRAFT REGISTRATION REGULATIONS",
+                            textAlign: pw.TextAlign.center,
+                            style: pw.TextStyle(
+                              fontSize: 9,
+                              fontWeight: pw.FontWeight.bold,
+                              font: fontBold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    pw.TableRow(
+                      children: [
+                        pw.Container(
+                          padding: pw.EdgeInsets.all(8),
+                          child: pw.Column(
+                              mainAxisAlignment: pw.MainAxisAlignment.start,
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              children: [
+                                pw.Text(
+                                  "Según BOE, Nº136, miércoles 5 de junio del 2024.\n\n"
+                                  "En su capítulo VI de la sección 1ª, en los artículos:\n\n"
+                                  "Artículo 48. Registro de operadores de UAS.\n\n"
+                                  "Artículo 49. Inscripción y actualización de datos registrados\n\n"
+                                  "Artículo 50. Cancelación y suspensión de la inscripción a instancia de parte.\n\n"
+                                  "Artículo 51. Cancelación de la inscripción de oficio.\n\n"
+                                  "En su sección 2ª, articulo 52 Registro de aeronaves no tripuladas cuyo diseño esté sujeto a certificación.\n\n",
+                                  style: pw.TextStyle(
+                                    fontSize: 9,
+                                    font: font,
+                                  ),
+                                ),
+                                //   pw.Text(
+                                //    "Sección 3ª, Registro aeronaves no tripuladas del Ministerio del Interior y registro de comercialización y venta.\n\n"
+
+                                //  ,
+                                //   style: pw.TextStyle(
+                                //     fontSize: 9,
+                                //     font: font,
+                                //   ),
+                                // ),
+                                pw.Container(
+                                  padding: pw.EdgeInsets.all(8),
+                                  child: pw.Row(
+                                    children: [
+                                      pw.Container(
+                                        color: PdfColors.greenAccent,
+                                        child: pw.Text(
+                                          "Sección 3ª, Registro aeronaves no tripuladas del Ministerio del Interior y registro de\ncomercialización y venta.\n",
+                                          style: pw.TextStyle(
+                                            fontSize: 9,
+                                            font: font,
+                                          ),
+                                        ),
+                                      ),
+                                      pw.Expanded(
+                                        child: pw.Text(""),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                pw.Text(
+                                  "En los artículos:\n\n",
+                                  style: pw.TextStyle(
+                                    fontSize: 9,
+                                    font: font,
+                                  ),
+                                ),
+                                pw.Text(
+                                  "Artículo 53. Creación del Registro de aeronaves no tripuladas del Ministerio del Interior.\n",
+                                  style: pw.TextStyle(
+                                    fontSize: 9,
+                                    font: font,
+                                  ),
+                                ),
+                                pw.Container(
+                                  padding: pw.EdgeInsets.all(8),
+                                  child: pw.Row(
+                                    children: [
+                                      pw.Container(
+                                        color: PdfColors.greenAccent,
+                                        child: pw.Text(
+                                          "Artículo 54. Obligaciones de inscripción en la comercialización, venta y adquisición.\n\n",
+                                          style: pw.TextStyle(
+                                            fontSize: 9,
+                                            font: font,
+                                          ),
+                                        ),
+                                      ),
+                                      pw.Expanded(
+                                        child: pw.Text(""),
+                                      )
+                                    ],
+                                  ),
+                                ),
+
+                                pw.Text(
+                                  "Artículo 55. Obligaciones de comunicar la transmisión de las aeronaves no tripuladas.\n\n"
+                                  "Artículo 56. Obligaciones de inscripción sobre la pérdida de la aeronave o su inhabilidad para operar.\n\n"
+                                  "Artículo 57. Obligaciones adicionales del establecimiento.\n\n"
+                                  "Artículo 58. Tratamiento de datos de carácter personal.",
+                                  style: pw.TextStyle(
+                                    fontSize: 9,
+                                    font: font,
+                                  ),
+                                ),
+                              ]),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-                pw.Container(
-                  color: PdfColors.grey300,
-                  padding: pw.EdgeInsets.all(16),
-                  width: 600,
-                  alignment: pw.Alignment.center,
-                  child: pw.Text(
-                    'COMPRODRONE\n'
-                    'C/ Afueras de Santa Ana 22\n'
-                    '37210 Vitigudino\n'
-                    '(Salamanca)',
-                    textAlign: pw.TextAlign.center,
-                    style: pw.TextStyle(
-                      fontSize: 12,
-                      font: font,
+                pw.SizedBox(height: 20),
+                pw.Table(
+                  border: pw.TableBorder.all(
+                    color: PdfColors.black,
+                    width: 0.5,
+                  ),
+                  columnWidths: {
+                    0: pw.FlexColumnWidth(1),
+                  },
+                  children: [
+                    pw.TableRow(
+                      children: [
+                        pw.Container(
+                          padding: pw.EdgeInsets.all(8),
+                          color: PdfColors.grey300,
+                          child: pw.Text(
+                            "VALIDEZ DEL PRESENTE DOCUMENTO",
+                            textAlign: pw.TextAlign.center,
+                            style: pw.TextStyle(
+                              fontSize: 9,
+                              fontWeight: pw.FontWeight.bold,
+                              font: fontBold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    pw.TableRow(
+                      children: [
+                        pw.Container(
+                          padding: pw.EdgeInsets.all(8),
+                          child: pw.Text(
+                            "Los documentos emitidos por COMPRODRONE disponen de un código de verificación para que el destinatario pueda verificar su autenticidad. Este código puede encontrarse al pie del documento. Por tanto, el Código Seguro de Verificación (CSV) o Código de Identificación del Documento (CID) permite la verificación de la integridad de la copia de este documento.",
+                            style: pw.TextStyle(
+                              color: PdfColors.brown,
+                              fontSize: 9,
+                              font: font,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                pw.SizedBox(height: 70),
+                pw.Center(
+                  child: pw.Container(
+                    padding: pw.EdgeInsets.all(8),
+                    color: PdfColors.grey300,
+                    child: pw.Text(
+                      "COMPRODRONE\n C/ Afueras de Santa Ana 22\n 37210 Vitigudino\n (Salamanca)",
+                      textAlign: pw.TextAlign.center,
+                      style: pw.TextStyle(
+                        fontSize: 9,
+                        font: font,
+                      ),
                     ),
                   ),
                 ),
-                pw.SizedBox(height: 50),
-                pw.Image(pw.MemoryImage(image)),
-                pw.SizedBox(height: 50),
-                pw.Container(
-                  alignment: pw.Alignment.center,
-                  child: pw.Text(
-                    "VENTA NO. 1 Tipo de registro",
-                    style: pw.TextStyle(
-                      fontWeight: pw.FontWeight.bold,
-                      font: fontBold,
-                    ),
-                    textAlign: pw.TextAlign.center,
-                  ),
-                ),
                 pw.SizedBox(height: 20),
-                pw.Text(
-                  textAlign: pw.TextAlign.center,
-                  style: pw.TextStyle(
-                    fontWeight: pw.FontWeight.bold,
-                    font: fontBold,
+                pw.Center(
+                  child: pw.Image(
+                    pw.MemoryImage(image),
+                    width: 200, // Set the desired width
+                    height: 200, // Set the desired height
                   ),
-                  "Este documento constituye una declaración responsable. Que todos los documentos presentados en este registro son verdaderos y su contenido coincide plenamente con los originales de los cuales son, asumiendo la responsabilidad por la veracidad de los mismos. Adjunto a este documento se encuentra una copia del DNI, NIF, NIE o pasaporte del comprador y vendedor. DECLARACIÓN RESPONSABLE",
                 ),
-                pw.SizedBox(height: 20),
-                pw.Text(
-                  textAlign: pw.TextAlign.center,
-                  style: pw.TextStyle(
-                    fontSize: 12,
-                    font: font,
-                  ),
-                  "NORMATIVA DE REGISTRO DE AERONAVES\n"
-                  "Según BOE, Nº136, Miércoles, 5 de junio de 2024.\n"
-                  "En su capítulo VI de la sección 1, en los artículos:\n"
-                  "Artículo 48. Registro de Operadores de UAS.\n"
-                  "Artículo 49. Registro y actualización de datos registrados.\n"
-                  "Artículo 50. Cancelación y suspensión del registro a solicitud de la parte.\n"
-                  "Artículo 51. Cancelación del registro de oficio.\n"
-                  "En su sección 2, artículo 52 Registro de aeronaves no tripuladas cuyo diseño está sujeto a certificación.\n"
-                  "Sección 3, Registro de aeronaves no tripuladas del Ministerio del Interior y registro de comercialización y venta.\n"
-                  "En los artículos:\n"
-                  "Artículo 53. Creación del Registro de aeronaves no tripuladas del Ministerio del Interior.\n"
-                  "Artículo 54. Obligaciones de registro en comercialización, venta y adquisición.\n"
-                  "Artículo 55. Obligaciones de comunicar la transmisión de aeronaves no tripuladas.\n"
-                  "Artículo 56. Obligaciones de registro sobre la pérdida de la aeronave o su incapacidad para operar.\n"
-                  "Artículo 57. Obligaciones adicionales del establecimiento.\n"
-                  "Artículo 58. Tratamiento de datos personales.",
-                ),
-                pw.SizedBox(height: 150),
+                pw.SizedBox(height: 30),
               ],
             ),
           ),
@@ -589,18 +1761,35 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
         child: pw.Text(
           field,
           style: pw.TextStyle(
-            fontSize: 12,
+            fontSize: 9,
             fontWeight: pw.FontWeight.bold,
             font: fontBold, // Use fontBold for the field name
           ),
         ),
       ),
       // Second Column: Value
+      // pw.Container(
+      //   padding: pw.EdgeInsets.all(8),
+      //   child: pw.Text(
+      //     value,
+      //     style: pw.TextStyle(fontSize: 9, font: font), // Use font for value
+      //   ),
+      // ),
       pw.Container(
         padding: pw.EdgeInsets.all(8),
-        child: pw.Text(
-          value,
-          style: pw.TextStyle(fontSize: 12, font: font), // Use font for value
+        child: pw.Row(
+          children: [
+            pw.Container(
+              color: PdfColors.yellow,
+              child: pw.Text(
+                value,
+                style: pw.TextStyle(fontSize: 9, font: font),
+              ),
+            ),
+            pw.Expanded(
+              child: pw.Text(""),
+            ),
+          ],
         ),
       ),
     ]);
@@ -627,7 +1816,7 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
               child: pw.Text(
                 '${context.pageNumber}',
                 style: pw.TextStyle(
-                  fontSize: 12,
+                  fontSize: 9,
                   fontWeight: pw.FontWeight.bold,
                   color: PdfColors.white,
                 ),
@@ -861,12 +2050,12 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
   //       padding: pw.EdgeInsets.all(8),
   //       color: grey ? PdfColors.grey300 : PdfColors.white,
   //       child: pw.Text(field,
-  //           style: pw.TextStyle(fontSize: 12, fontWeight: pw.FontWeight.bold)),
+  //           style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold)),
   //     ),
   //     // Second Column: Value
   //     pw.Container(
   //       padding: pw.EdgeInsets.all(8),
-  //       child: pw.Text(value, style: pw.TextStyle(fontSize: 12)),
+  //       child: pw.Text(value, style: pw.TextStyle(fontSize: 9)),
   //     ),
   //   ]);
   // }
@@ -904,12 +2093,14 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
               _buildTextField(buyerAddressController, 'Dirección del Comprador',
                   Icons.home),
               _buildTextField(
+                  corporateNameController, 'Nombre Corporativo', Icons.home),
+              _buildTextField(
                   buyerPhoneController, 'Teléfono del Comprador', Icons.phone),
               _buildTextField(
                   buyerEmailController, 'Email del Comprador', Icons.email),
               _buildTextField(
                   OrderNumberController, 'numeroOrden', Icons.location_city),
-              _buildTextField(OrderNumberController, 'Ciudad del Comprador',
+              _buildTextField(buyerCityController, 'Ciudad del Comprador',
                   Icons.location_city),
               SizedBox(height: 20),
               Text('Detalles del Vendedor',
@@ -943,6 +2134,8 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
               // Add these additional fields to the form:
               _buildTextField(uasSerialNumberController,
                   'Número de Serie de UAS', Icons.confirmation_number),
+              _buildTextField(registrationTypeController, 'Tipo de Registro',
+                  Icons.confirmation_number),
               GestureDetector(
                 onTap: () async {
                   DateTime? pickedDate = await showDatePicker(
@@ -974,11 +2167,17 @@ class _ContractCreationScreenState extends State<ContractCreationScreen> {
                   buyerZipCodeController, 'Código Postal', Icons.location_on),
               _buildTextField(buyerMunicipalityController, 'Municipio',
                   Icons.location_city),
-              _buildTextField(buyerProvinceController, 'Provincia', Icons.map),
-              _buildTextField(buyerCountryController, 'País', Icons.map),
+              _buildTextField(
+                  buyerProvinceController, 'Provincia', Icons.kayaking),
+              _buildTextField(
+                  buyerCountryController, 'País del Comprador', Icons.map),
+              _buildTextField(modelController, 'Modelo', Icons.update),
+              // _buildTextField(buyerCityController, 'País', Icons.map),
               _buildTextField(uasModelController, 'Modelo de UAS', Icons.toys),
               _buildTextField(
                   observationsController, 'Observaciones', Icons.note),
+              _buildTextField(acquisitionController, 'Medio de Adquisición',
+                  Icons.label_important),
               Row(
                 children: [
                   Text('Método de Notificación:'),

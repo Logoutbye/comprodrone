@@ -38,7 +38,9 @@ dependencies:
   firebase_core: 
   cloud_firestore: ^5.4.2
   pdf: ^3.11.1
-
+  syncfusion_flutter_pdfviewer: ^27.1.53
+  path_provider:
+  flutter_pdfview:
   intl:
   printing: 
   url_launcher: 
